@@ -1,0 +1,14 @@
+#!/usr/bin/with-contenv bash
+
+while [ ! -f /tmp/state/10-loolwsd-init ]
+do
+  sleep 1
+done
+
+if [ ! -f /tmp/state/10-loolwsd ]; then
+  touch /tmp/state/10-loolwsd
+fi
+
+echo '**'
+echo '** [libreoffice-online] Starting loolwsd'
+exec s6-setuidgid lool /opt/lool/bin/loolwsd --version --o:sys_template_path=/opt/lool/systemplate --o:lo_template_path=/opt/libreoffice/instdir --o:child_root_path=/opt/lool/jails --o:file_server_root_path=/opt/lool/share/loolwsd storage.filesystem[@allow]=true --o:admin_console.username=${ADMIN_USER} --o:admin_console.password=${ADMIN_PASS} > /var/log/lool/loolwsd.log

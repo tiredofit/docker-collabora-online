@@ -1,0 +1,25 @@
+  libreoffice-app:
+    image: tiredofit/libreoffice-online
+    container_name: libreoffice-app
+    expose:
+      - 9980
+    cap_add:
+      - MKNOD
+    environment:
+      - domain=allowedhostname.example.com
+      - VIRTUAL_HOST=libreoffice.example.com
+      - VIRTUAL_NETWORK=nginx-proxy
+      - VIRTUAL_PORT=9980
+      - VIRTUAL_PROTO=https
+      - LETSENCRYPT_HOST=code.example.com
+      - LETSENCRYPT_EMAIL=techsupport@example.com
+ 
+      - ZABBIX_HOSTNAME=libreoffice-app
+    networks:
+      - proxy-tier
+
+networks:
+  proxy-tier:
+    external:
+      name: nginx-proxy
+
