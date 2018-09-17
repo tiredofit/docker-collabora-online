@@ -5,9 +5,6 @@
     missingok
     compress
     dateext
-    sharedscripts
-    postrotate
-    s6-svc -h /var/run/s6/services/10-loolwsd
-    endscript
+    copytruncate
 }
 

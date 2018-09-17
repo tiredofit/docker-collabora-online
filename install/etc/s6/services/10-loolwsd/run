@@ -10,5 +10,5 @@ if [ ! -f /tmp/state/10-loolwsd ]; then
 fi
 
 echo '**'
-echo '** [libreoffice-online] Starting loolwsd'
-exec s6-setuidgid lool /opt/lool/bin/loolwsd --version --o:sys_template_path=/opt/lool/systemplate --o:lo_template_path=/opt/libreoffice/instdir --o:child_root_path=/opt/lool/jails --o:file_server_root_path=/opt/lool/share/loolwsd storage.filesystem[@allow]=true --o:admin_console.username=${ADMIN_USER} --o:admin_console.password=${ADMIN_PASS} > /var/log/lool/loolwsd.log
+echo '** [libreoffice-online] Starting Libreoffice Online Web Services daemon'
+exec s6-setuidgid lool /opt/lool/bin/loolwsd --version --o:sys_template_path=/opt/lool/systemplate --o:lo_template_path=/opt/libreoffice --o:child_root_path=/opt/lool/jails --o:file_server_root_path=/opt/lool/share/loolwsd storage.filesystem[@allow]=true --o:admin_console.username=${ADMIN_USER} --o:admin_console.password=${ADMIN_PASS} >> /var/log/lool/loolwsd.log

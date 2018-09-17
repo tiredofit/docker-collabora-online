@@ -6,15 +6,20 @@
     cap_add:
       - MKNOD
     environment:
-      - domain=allowedhostname.example.com
       - VIRTUAL_HOST=libreoffice.example.com
       - VIRTUAL_NETWORK=nginx-proxy
       - VIRTUAL_PORT=9980
       - VIRTUAL_PROTO=https
-      - LETSENCRYPT_HOST=code.example.com
+      - LETSENCRYPT_HOST=libreoffice.example.com
       - LETSENCRYPT_EMAIL=techsupport@example.com
  
       - ZABBIX_HOSTNAME=libreoffice-app
+      
+      - ADMIN_USER=admin
+      - ADMIN_PASS=libreoffice
+      - ALLOWED_HOSTS=allowedhostname.example.com
+      - DICTIONARIES="en_GB en_US"
+      - LOG_LEVEL=warning
     networks:
       - proxy-tier
 

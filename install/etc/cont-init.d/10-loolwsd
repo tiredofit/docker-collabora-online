@@ -1,5 +1,9 @@
 #!/usr/bin/with-contenv bash
 
+mkdir -p /var/log/lool
+touch /var/log/lool/loolwsd.log
+chown -R lool /var/log/lool
+
 rm /opt/lool/systemplate/etc/resolv.conf
 ln -s /etc/resolv.conf /opt/lool/systemplate/etc/resolv.conf
 
@@ -27,14 +31,14 @@ mv certs/ca/root.crt.pem /etc/loolwsd/ca-chain.cert.pem
 rm -rf /tmp/ssl
 fi
 
-# Replace trusted host and set admin username and password
-perl -pi -e "s/localhost<\/host>/${domain}<\/host>/g" /etc/loolwsd/loolwsd.xml
-perl -pi -e "s/<username (.*)>.*<\/username>/<username \1>${username}<\/username>/" /etc/loolwsd/loolwsd.xml
-perl -pi -e "s/<password (.*)>.*<\/password>/<password \1>${password}<\/password>/" /etc/loolwsd/loolwsd.xml
-perl -pi -e "s/<server_name (.*)>.*<\/server_name>/<server_name \1>${server_name}<\/server_name>/" /etc/loolwsd/loolwsd.xml
-
-mkdir -p /var/log/lool
-chown -R lool /var/log/lool
+# Replace Configureation directives
+perl -pi -e "s/<allowed_languages (.*)>.*<\/allowed_languages>/<allowed_languages \1>${LANGUAGES}<\/allowed_languages>/" /etc/loolwsd/loolwsd.xml
+perl -pi -e "s/<level (.*)>.*<\/level>/<level \1>${LOG_LEVEL}<\/level>/" /etc/loolwsd/loolwsd.xml
+perl -pi -e "s/localhost<\/host>/${ALLOWED_HOSTS}<\/host>/g" /etc/loolwsd/loolwsd.xml
+perl -pi -e "s/localhost<\/host>/${ALLOWED_HOSTS}<\/host>/g" /etc/loolwsd/loolwsd.xml
+perl -pi -e "s/<username (.*)>.*<\/username>/<username \1>${ADMIN_USER}<\/username>/" /etc/loolwsd/loolwsd.xml
+perl -pi -e "s/<password (.*)>.*<\/password>/<password \1>${ADMIN_PASS}<\/password>/" /etc/loolwsd/loolwsd.xml
+perl -pi -e "s/<server_name (.*)>.*<\/server_name>/<server_name \1>${HOSTNAME}<\/server_name>/" /etc/loolwsd/loolwsd.xml
 
 mkdir -p /tmp/state
 echo 'Initialization Complete' >/tmp/state/10-loolwsd-init

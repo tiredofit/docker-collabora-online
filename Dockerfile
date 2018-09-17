@@ -1,117 +1,74 @@
-FROM tiredofit/debian:stretch
+FROM tiredofit/ubuntu:16.04 as builder
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Set Environment Variables
-ENV ADMIN_USER=admin \
-    ADMIN_PASS=libreoffice \
-    LIBREOFFICE_BRANCH=master \
-    LIBREOFFICE_COMMIT=376eaac300a303c4ad2193fb7f6a7522caf550b9 \
+ENV LIBREOFFICE_BRANCH=master \
+    ## 6.0.6.2
+    LIBREOFFICE_COMMIT=0857a8f6d8dd1b5b9114e9e0c1e1b6b98394434f \
     LOOL_BRANCH=master \
-    LOOL_COMMIT=fba8488b2549f531fcc0d4e1e7228a7345c2f57d \
-    MAX_CONNECTIONS=2000 \
-    MAX_DOCUMENTS=1000 \
-    POCO_VERSION=1.9.0
+    ## 3.2.0.4
+    LOOL_COMMIT=9927458251fd069e11efc8e83c78449497cc2048 \
+    MAX_CONNECTIONS=5000 \
+    ## Uses Approximately 20mb per document open
+    MAX_DOCUMENTS=5000 
 
-### Add User Accounts
-RUN useradd lool -G sudo && \
-    mkdir /home/lool && \
-    chown lool:lool /home/lool -R && \
-
-### Add Repositories
-    echo "deb http://ftp.us.debian.org/debian/ jessie-backports main" >>/etc/apt/sources.list && \
-    echo "deb-src http://ftp.us.debian.org/debian/ jessie-backports main" >>/etc/apt/sources.list && \
-    echo "deb http://deb.debian.org/debian stretch contrib" >> /etc/apt/sources.list && \
+### Get Updates
+RUN apt-get update && \
+    apt-get -y install apt-transport-https && \
+    echo "deb https://collaboraoffice.com/repos/Poco/ /" >> /etc/apt/sources.list.d/poco.list && \
+    echo "deb-src http://archive.ubuntu.com/ubuntu/ xenial main restricted" >> /etc/apt/sources.list && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0C54D189F4BA284D && \
     curl -sL https://deb.nodesource.com/setup_6.x | bash - && \
-    
-### Downgrade LibSSL
-    echo "Package: openssl libssl1.0.0 libssl-dev libssl-doc" >> /etc/apt/preferences.d/00_ssl && \
-    echo "Pin: release a=jessie-backports" >> /etc/apt/preferences.d/00_ssl && \
-    echo "Pin-Priority: 1001" >> /etc/apt/preferences.d/00_ssl && \
-    apt-get update && \
-    apt-get install openssl libssl-dev locales -y --allow-downgrades && \
-
-### Setup Distribution
+    \
+    ## Install Poco Libs
+    apt-get -y install \
+            libpoco-dev \
+            libpocodata60 \
+            libpocofoundation60 \
+            libpocojson60 \
+            libpocodataodbc60 \
+            libpococrypto60 \
+            libpoconet60 \
+            libpoconetssl60 \
+            libpocoutil60 \
+            libpocoxml60 \
+            libpocozip60 \
+            && \
+    \
+    mkdir -p /home/lool && \
+    useradd lool -G sudo && \
+    chown lool:lool /home/lool -R && \
     echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections && \
-    apt-get upgrade -y && \
+    \
+    ## Add Build Dependencies
     apt-get install -y \
-            ant \
-            automake \
-            bison \
-            build-essential \
-            ccache \
             cpio \
-            doxygen \
-            flex \
-            g++ \
             git \
-            gperf \
-            graphviz \
-            junit4 \
-            libcap2-bin \
             libcap-dev \
-            libcppunit-dev \
-            libcppunit-doc \
-            libcunit1 \
-            libcunit1-dev \
-            libcups2-dev \
-            libegl1-mesa-dev \
-            libfontconfig1-dev \
-            libgl1-mesa-dev \
-            libgstreamer1.0-dev \
-            libgstreamer-plugins-base1.0-dev \
-            libgtk2.0-dev \
-            libgtk-3-dev \
-            libkrb5-dev \
+            libghc-zlib-dev \
             libpam0g-dev \
-            libpcap0.8 \
-            libpcap0.8-dev \
-            libpng16.16 \
-            libpng-dev \
-            libssl-dev \
             libtool \
-            libxml2-utils \
-            libxrandr-dev \
-            libxrender-dev \
-            libxslt1-dev \
-            libxt-dev \
-            lsof \
-            m4 \
-            make \
-            nasm \
             nodejs \
-            openjdk-8-jdk \
-            openssl \
-            pkg-config \
-            procps \
-            python3-dev \
-            python-dev \
-            python-lxml \
             python-polib \
             sudo \
+            translate-toolkit \
             ttf-mscorefonts-installer \
-            uuid-runtime \
             wget \
-            xsltproc \
-            zip \
             && \
-            
+    \
     apt-get build-dep -y \
             libreoffice \
             && \
-            
-
-### Build and Install Poco Libraries
-    mkdir -p /usr/src/poco && \
-    curl -sSL https://pocoproject.org/releases/poco-${POCO_VERSION}/poco-${POCO_VERSION}-all.tar.gz | tar xvfz - --strip 1 -C /usr/src/poco && \
-    cd /usr/src/poco && \
-    ./configure --prefix=/opt/poco && \
-    make install
-
-### Build and Install Libreoffice (This'll take a while)
-RUN git clone -b ${LIBREOFFICE_BRANCH} https://github.com/LibreOffice/core.git /usr/src/libreoffice-core && \
+    \
+### Build Fetch LibreOffice - This will take a while..
+    git clone -b ${LIBREOFFICE_BRANCH} https://github.com/LibreOffice/core.git /usr/src/libreoffice-core && \
     cd /usr/src/libreoffice-core && \
+    echo "lo_sources_ver="`env | grep LIBREOFFICE_VERSION | cut -d'-' -f2` > sources.ver && \
     git reset --hard ${LIBREOFFICE_COMMIT} && \
-    chown -R lool /usr/src/libreoffice-core && \
+    git submodule init && \
+    git submodule update translations && \
+    git submodule update dictionaries && \
+    cd /usr/src/libreoffice-core && \
     echo "--disable-dbus \n\
 --disable-dconf \n\
 --disable-epm \n\
@@ -143,11 +100,11 @@ RUN git clone -b ${LIBREOFFICE_BRANCH} https://github.com/LibreOffice/core.git /
 --with-external-thes-dir=/usr/share/mythes \n\
 --with-fonts \n\
 --with-galleries=no \n\
---with-lang=\n\
+--with-lang=en-GB en-US\n\
 --with-linker-hash-style=both \n\
 --with-system-dicts \n\
 --with-system-zlib \n\
---with-theme=tango \n\
+--with-theme=galaxy \n\
 --without-branding \n\
 --without-help \n\
 --without-java \n\
@@ -163,159 +120,159 @@ RUN git clone -b ${LIBREOFFICE_BRANCH} https://github.com/LibreOffice/core.git /
 --without-system-postgresql \n\
 --prefix=/opt/libreoffice \n\
 " > /usr/src/libreoffice-core/distro-configs/LibreOfficeOnline.conf && \
-    sudo -u lool ./autogen.sh --with-distro="LibreOfficeOnline" && \
+    ./autogen.sh --with-distro="LibreOfficeOnline" && \
+    rm -rf /usr/src/libreoffice-core/translations /usr/src/lobreoffice-core/dictionaries && \
+    chown -R lool /usr/src/libreoffice-core && \
     sudo -u lool make && \
     cd /usr/src/libreoffice-core && \
     mkdir -p /opt/libreoffice && \
     chown -R lool /opt/libreoffice && \
     sudo -u lool make install && \
-    sudo -u lool cp -R /usr/src/libreoffice-core/instdir /opt/libreoffice/ && \
-    cd /usr/src 
-
+    cp -R /usr/src/libreoffice-core/instdir/* /opt/libreoffice/ && \
+    cd /usr/src && \
+    \
 ### Build LibreOffice Online (Not as long as above)
-RUN git clone -b ${LOOL_BRANCH} https://github.com/LibreOffice/online.git /usr/src/libreoffice-online && \
-    npm install -g npm && \
-    npm install -g jake && \
-    chown -R lool /usr/src/libreoffice-online && \
+    git clone -b ${LOOL_BRANCH} https://github.com/LibreOffice/online.git /usr/src/libreoffice-online && \
     cd /usr/src/libreoffice-online && \
-    sudo -u lool git reset --hard ${LOOL_COMMIT} && \
-    sudo -u lool ./autogen.sh && \
-    sudo -u lool ./configure --enable-silent-rules \
+    git reset --hard ${LOOL_COMMIT} && \
+    npm install -g \
+                bootstrap \
+                browserify-css \
+                d3 \
+                d3 \
+                eslint \
+                evol-colorpicker \
+                exorcist \
+                jake \
+                npm \
+                uglify-js \
+                && \
+    \
+    cd /usr/src/libreoffice-online && \
+    ./autogen.sh && \
+    ./configure --enable-silent-rules \
                 --with-lokit-path=/usr/src/libreoffice-online/bundled/include \
-                --with-lo-path=/usr/src/libreoffice-online/instdir \
+                --with-lo-path=/opt/libreoffice \
                 --with-max-connections=${MAX_CONNECTIONS} \
                 --with-max-documents=${MAX_DOCUMENTS} \
-                --with-poco-includes=/opt/poco/include \
-                --with-poco-libs=/opt/poco/lib \
                 --with-logfile=/var/log/lool/lool.log \
                 --prefix=/opt/lool \
                 --sysconfdir=/etc \
                 --localstatedir=/var && \
-    sudo -u lool make -j$cpu && \
+    ( cd loleaflet/po && ../../scripts/downloadpootle.sh ) && \
+    ( cd loleaflet && make l10n) || exit 1 && \
+    ( scripts/locorestrings.py /usr/src/libreoffice-online /usr/src/libreoffice-core/translations ) && \
+    make -j`nproc` && \
     mkdir -p /opt/lool && \
     chown -R lool /opt/lool && \
-    sudo -u lool make install && \
+    cp -R loolwsd.xml /opt/lool/ && \
+    cp -R loolkitconfig.xcu /opt/lool && \
+    make install && \
     cd /usr/src && \
-
-### Setup Directories and Permissions
-    mkdir -p /opt/lool/jails && \
-    chown -R lool /opt/* && \
-    mkdir -p /var/cache/loolwsd && \
-    chown -R lool /var/cache/loolwsd && \
-    mkdir -p /var/log/lool && \
-    chown -R lool /var/log/lool && \
-    setcap cap_fowner,cap_mknod,cap_sys_chroot=ep /opt/lool/bin/loolforkit && \
-    setcap cap_sys_admin=ep /opt/lool/bin/loolmount && \
-    mkdir -p /usr/share/hunspell && \
-    mkdir -p /usr/share/hyphen && \
-    mkdir -p /usr/share/mythes && \
-
-### Setup LibreOffice Online Jails
-    sudo -u lool /opt/lool/bin/loolwsd-systemplate-setup /opt/lool/systemplate /opt/libreoffice/instdir/
-
-### Cleanup
-RUN npm uninstall -g npm jake && \
-    apt-get purge -y \
-            ant \
-            automake \
-            binutils-mingw-w64-i686 \
-            bison \
-            build-essential \
-            ccache \
-            coinor-libcbc-dev \
-            coinor-libcoinmp-dev \
-            flex \
-            g++ \
-            gcc \
-            gcc-6 \
-            git \
-            gperf \
-            graphviz \
-            java-common \
-            junit4 \
-            libcap-dev \
-            libcppunit-dev \
-            libcppunit-doc \
-            libcunit1-dev \
-            libegl1-mesa-dev \
-            libfontconfig1-dev \
-            libgl1-mesa-dev \
-            libgtk-3-dev \
-            libgtk2.0-dev \
-            libkrb5-dev \
-            libpam0g-dev \
-            libpcap0.8 \
-            libpcap0.8-dev \
-            libpng-dev \
-            librevenge-dev \
-            libsane-dev \
-            libssl-dev \
-            libstdc++-6-dev \
-            libvisio-dev \
-            libwpg-dev \
-            libxrandr-dev \
-            libxrender-dev \
-            libxslt1-dev \
-            libxt-dev \
-            linux-libc-dev \
-            m4 \
-            make \
-            manpages \
-            manpages-dev \
-            mingw-w64-i686-dev \
-            nasm \
-            nodejs \
-            openjdk-8-jdk \
-            perl \
-            pkg-config \
-            python \
-            python-dev \
-            python-lxml \
-            python-polib \
-            python2.7-minimal \
-            python3 \
-            python3-dev \
-            unixodbc-dev \
-            wget \
-            x11-* \
-            zlib1g-dev \
-            doxygen \
-            libx11-doc \
-            ucpp \
-            libapache-pom-java \
-            libx11-dev \
-            libxdmcp-dev \
-            libc-l10n \
-            locales \
-            lp-solve \
-            fastjar \
-            x11proto-core-dev \
-            && \
-
-    apt-get purge --auto-remove -y && \
-
-## Install Last little bit of packages that may have been removed during cleanup
-    apt-get install -y \
-            cups \
-            libgl1-mesa-glx \
-            libsm6 \
-            libx11-6 \
-            && \
-
+    \
+    apt-get autoremove -y && \
     apt-get clean && \
-
-## Filesystem Cleanup
+### Cleanup
     rm -rf /usr/src/* && \
-    rm -rf /home/lool/.npm /root/.npm && \
-    rm -rf /home/lool/.ccache /root/.ccache && \
     rm -rf /usr/share/doc && \
     rm -rf /usr/share/man && \
     rm -rf /usr/share/locale && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /var/log/*
 
+FROM registry.selfdesign.org/docker/ubuntu:16.04
+LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
+
+### Set Defaults
+ENV ADMIN_USER=admin \
+    ADMIN_PASS=libreoffice \
+    LOG_LEVEL=warning \
+    DICTIONARIES="en_GB en_US" \
+    ENABLE_SMTP=false \
+    PYTHONWARNINGS=ignore
+
+### Grab Compiled Assets from builder image
+COPY --from=builder /opt/ /opt/
+
+### Install Dependencies
+RUN adduser --quiet --system --group --home /opt/lool lool && \
+    \
+    apt-get update && \
+    apt-get upgrade -y && \
+    echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections && \
+    apt-get install -y\
+             adduser \
+             apt-transport-https \
+             cpio \
+             findutils \
+             fonts-droid-fallback \
+             fonts-noto-cjk \
+             libcups2 \
+             libfontconfig1 \
+             libfreetype6 \
+             libgl1-mesa-glx \
+             libpam0g \
+             libpng12-0 \
+             libxcb-render0 \
+             libxcb-shm0 \
+             libxinerama1 \
+             libxrender1 \
+             locales-all \
+             python3-requests \
+             python3-websocket \
+             sudo \
+             ttf-mscorefonts-installer \
+             && \
+    \
+    echo "deb https://collaboraoffice.com/repos/Poco/ /" >> /etc/apt/sources.list.d/poco.list && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0C54D189F4BA284D && \
+    apt-get update && \
+    apt-get -y install \
+                libpocodata60 \
+                libpocofoundation60 \
+                libpocojson60 \
+                libpocodataodbc60 \
+                libpococrypto60 \
+                libpoconet60 \
+                libpoconetssl60 \
+                libpocoutil60 \
+                libpocoxml60 \
+                libpocozip60 \
+                && \
+    \
+### Setup Directories and Permissions
+    mkdir -p /etc/loolwsd && \
+    mv /opt/lool/loolwsd.xml /etc/loolwsd/ && \
+    mv /opt/lool/loolkitconfig.xcu /etc/loolwsd/ && \
+    chown -R lool /etc/loolwsd && \
+    mkdir -p /opt/lool/jails && \
+    chown -R lool /opt/* && \
+    mkdir -p /var/cache/loolwsd && \
+    chown -R lool /var/cache/loolwsd && \
+    setcap cap_fowner,cap_mknod,cap_sys_chroot=ep /opt/lool/bin/loolforkit && \
+    setcap cap_sys_admin=ep /opt/lool/bin/loolmount && \
+    mkdir -p /usr/share/hunspell && \
+    mkdir -p /usr/share/hyphen && \
+    mkdir -p /usr/share/mythes && \
+    \
+### Setup LibreOffice Online Jails
+    sudo -u lool /opt/lool/bin/loolwsd-systemplate-setup /opt/lool/systemplate /opt/libreoffice && \
+    \
+    apt-get autoremove -y && \
+    apt-get clean && \
+    \
+    rm -rf /usr/src/* && \
+    rm -rf /usr/share/doc && \
+    rm -rf /usr/share/man && \
+    rm -rf /var/lib/apt/lists/* && \
+    rm -rf /var/log/* && \
+    mkdir -p /var/log/lool && \
+    touch /var/log/lool/loolwsd.log && \
+    chown -R lool /var/log/lool
+
 ### Networking Configuration
 EXPOSE 9980
 
 ### Assets
 ADD install /
+
