@@ -1,7 +1,7 @@
 #!/usr/bin/with-contenv bash
 
 mkdir -p /var/log/lool
-touch /var/log/lool/loolwsd.log
+touch /var/log/lool/lool.log
 chown -R lool /var/log/lool
 
 rm /opt/lool/systemplate/etc/resolv.conf

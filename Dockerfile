@@ -180,7 +180,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /var/log/*
 
-FROM registry.selfdesign.org/docker/ubuntu:16.04
+FROM tiredofit/ubuntu:16.04
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Set Defaults
@@ -267,7 +267,7 @@ RUN adduser --quiet --system --group --home /opt/lool lool && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /var/log/* && \
     mkdir -p /var/log/lool && \
-    touch /var/log/lool/loolwsd.log && \
+    touch /var/log/lool/lool.log && \
     chown -R lool /var/log/lool
 
 ### Networking Configuration

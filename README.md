@@ -74,7 +74,7 @@ The following directories should be mapped for persistent storage in order to ut
 
 | Folder    | Description |
 |-----------|-------------|
-| `/var/log/loolwsd` | Log files
+| `/var/log/lool` | Log files
 
 ### Environment Variables
 
