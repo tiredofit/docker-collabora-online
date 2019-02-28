@@ -1,4 +1,4 @@
-FROM registry.selfdesign.org/docker/debian/stretch as builder
+FROM tiredofit/debian:stretch as builder
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Set Environment Variables
@@ -187,7 +187,7 @@ RUN set -x && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /var/log/*
 
-FROM registry.selfdesign.org/docker/debian/stretch
+FROM tiredofit/debian:stretch
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Set Defaults
