@@ -1,11 +1,24 @@
 #!/usr/bin/with-contenv bash
 
+### Set Debug Mode
+if [ "$DEBUG_MODE" = "TRUE" ] || [ "$DEBUG_MODE" = "true" ]; then
+    set -x
+fi
+echo "** [libreoffice-online] Setting configuration"
+
 mkdir -p /var/log/lool
-touch /var/log/lool/lool.log
+touch /var/log/lool/loolwsd.log
 chown -R lool /var/log/lool
 
 rm /opt/lool/systemplate/etc/resolv.conf
 ln -s /etc/resolv.conf /opt/lool/systemplate/etc/resolv.conf
+
+### Custom File Support
+  if [ -d /assets/custom ] ; then
+     echo "** [libreoffice-online] Custom Files Found, Copying over top of Master.."
+     cp -R /assets/custom/* /opt/lool/share/
+     chown -R lool. /opt/lool/share/
+  fi
 
 if test "${DONT_GEN_SSL_CERT-set}" == set; then
 
@@ -32,7 +45,7 @@ rm -rf /tmp/ssl
 fi
 
 # Replace Configureation directives
-perl -pi -e "s/<allowed_languages (.*)>.*<\/allowed_languages>/<allowed_languages \1>${LANGUAGES}<\/allowed_languages>/" /etc/loolwsd/loolwsd.xml
+perl -pi -e "s/<allowed_languages (.*)>.*<\/allowed_languages>/<allowed_languages \1>${DICTIONARIES}<\/allowed_languages>/" /etc/loolwsd/loolwsd.xml
 perl -pi -e "s/<level (.*)>.*<\/level>/<level \1>${LOG_LEVEL}<\/level>/" /etc/loolwsd/loolwsd.xml
 perl -pi -e "s/localhost<\/host>/${ALLOWED_HOSTS}<\/host>/g" /etc/loolwsd/loolwsd.xml
 perl -pi -e "s/localhost<\/host>/${ALLOWED_HOSTS}<\/host>/g" /etc/loolwsd/loolwsd.xml

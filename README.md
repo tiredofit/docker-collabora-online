@@ -3,14 +3,13 @@
 [![Build Status](https://img.shields.io/docker/build/tiredofit/libreoffice-online.svg)](https://hub.docker.com/r/tiredofit/libreoffice-online)
 [![Docker Pulls](https://img.shields.io/docker/pulls/tiredofit/libreoffice-online.svg)](https://hub.docker.com/r/tiredofit/libreoffice-online)
 [![Docker Stars](https://img.shields.io/docker/stars/tiredofit/libreoffice-online.svg)](https://hub.docker.com/r/tiredofit/libreoffice-online)
-[![Docker 
-Layers](https://images.microbadger.com/badges/image/tiredofit/libreoffice-online.svg)](https://microbadger.com/images/tiredofit/libreoffice-online)
+[![Docker Layers](https://images.microbadger.com/badges/image/tiredofit/libreoffice-online.svg)](https://microbadger.com/images/tiredofit/libreoffice-online)
 
 # Introduction
 
 This will build a container for [LibreOffice Online](https://libreoffice.org/) for editing documents in a browser from supported applications
 
-* This Container uses a [customized Ubuntu Linux base](https://hub.docker.com/r/tiredofit/ubuntu) which includes [s6 overlay](https://github.com/just-containers/s6-overlay) enabled for PID 1 Init capabilities, [zabbix-agent](https://zabbix.org) for individual container monitoring, Cron also installed along with other tools (bash,curl, less, logrotate, nano, vim) for easier management.
+* This Container uses a [customized Debian Linux base](https://hub.docker.com/r/tiredofit/debian) which includes [s6 overlay](https://github.com/just-containers/s6-overlay) enabled for PID 1 Init capabilities, [zabbix-agent](https://zabbix.org) for individual container monitoring, Cron also installed along with other tools (bash,curl, less, logrotate, nano, vim) for easier management.
 
 * Configurable Concurrent User and Document Limit (set to generarous values by default)
 * Zabbix Monitoring of Active Documents, Users, Memory Consumed
@@ -56,7 +55,7 @@ docker pull tiredofit/libreoffice-online
 
 The following image tags are available:
 
-* `latest` - Libreoffice 6.0.6.2 with Collabora Office Online 3.2.0.4
+* `latest` - Collabora Libreoffice 5.3.61 with Collabora Office Online 3.4.2.1
 
 # Quick Start
 
@@ -74,11 +73,11 @@ The following directories should be mapped for persistent storage in order to ut
 
 | Folder    | Description |
 |-----------|-------------|
-| `/var/log/lool` | Log files
-
+| `/var/log/loolwsd` | Log files
+| `/assets/custom` | If you want to update the theme of LibreOffice online, dropping files in here will overwrite /opt/lool/share on startup |
 ### Environment Variables
 
-Along with the Environment Variables from the [Base image](https://hub.docker.com/r/tiredofit/ubuntu),  below is the complete list of available options that can be used to customize your installation.
+Along with the Environment Variables from the [Base image](https://hub.docker.com/r/tiredofit/debian),  below is the complete list of available options that can be used to customize your installation.
 
 | Parameter | Description |
 |-----------|-------------|

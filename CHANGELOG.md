@@ -1,3 +1,11 @@
+## 1.1 2019-02-28 <dave at tiredofit dot ca>
+
+* Switch back to Debian Stretch
+* Collabora Office 5.3.61
+* Libre office online 3.4.2.1
+* Add Zabbix Checks
+* Add Custom Assets overwrite support
+
 ## 1.0 2018-09-15 <dave at tiredofit dot ca>
 
 * Switch to Ubuntu 16.04

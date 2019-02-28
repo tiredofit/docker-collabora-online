@@ -1,44 +1,38 @@
-FROM tiredofit/ubuntu:16.04 as builder
+FROM registry.selfdesign.org/docker/debian/stretch as builder
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Set Environment Variables
 ENV LIBREOFFICE_BRANCH=master \
-    ## 6.0.6.2
-    LIBREOFFICE_COMMIT=0857a8f6d8dd1b5b9114e9e0c1e1b6b98394434f \
+    ## cp-5.3.61
+    LIBREOFFICE_COMMIT=cd2475c52a096b001a7e3179f02e11cbc8a5615f \
     LOOL_BRANCH=master \
-    ## 3.2.0.4
-    LOOL_COMMIT=9927458251fd069e11efc8e83c78449497cc2048 \
+    ## 3.4.2.1
+    LOOL_COMMIT=d02d1983e164b322dc3f46753433bcb23c871ce6 \
     MAX_CONNECTIONS=5000 \
     ## Uses Approximately 20mb per document open
-    MAX_DOCUMENTS=5000 
+    MAX_DOCUMENTS=5000 \
+    POCO_VERSION=1.9.0
 
 ### Get Updates
-RUN apt-get update && \
-    apt-get -y install apt-transport-https && \
-    echo "deb https://collaboraoffice.com/repos/Poco/ /" >> /etc/apt/sources.list.d/poco.list && \
-    echo "deb-src http://archive.ubuntu.com/ubuntu/ xenial main restricted" >> /etc/apt/sources.list && \
-    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0C54D189F4BA284D && \
+RUN set -x && \
+### Add Repositories
+    echo "deb http://ftp.us.debian.org/debian/ jessie-backports main" >>/etc/apt/sources.list && \
+    echo "deb-src http://ftp.us.debian.org/debian/ jessie-backports main" >>/etc/apt/sources.list && \
+    echo "deb http://deb.debian.org/debian stretch contrib" >> /etc/apt/sources.list && \
     curl -sL https://deb.nodesource.com/setup_6.x | bash - && \
     \
-    ## Install Poco Libs
-    apt-get -y install \
-            libpoco-dev \
-            libpocodata60 \
-            libpocofoundation60 \
-            libpocojson60 \
-            libpocodataodbc60 \
-            libpococrypto60 \
-            libpoconet60 \
-            libpoconetssl60 \
-            libpocoutil60 \
-            libpocoxml60 \
-            libpocozip60 \
-            && \
+### Downgrade LibSSL
+    echo "Package: openssl libssl1.0.0 libssl-dev libssl-doc" >> /etc/apt/preferences.d/00_ssl && \
+    echo "Pin: release a=jessie-backports" >> /etc/apt/preferences.d/00_ssl && \
+    echo "Pin-Priority: 1001" >> /etc/apt/preferences.d/00_ssl && \
+    apt-get install openssl libssl-dev locales -y --allow-downgrades && \
+    \
+### Setup Distribution
+    echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections && \
     \
     mkdir -p /home/lool && \
     useradd lool -G sudo && \
     chown lool:lool /home/lool -R && \
-    echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections && \
     \
     ## Add Build Dependencies
     apt-get install -y \
@@ -48,6 +42,7 @@ RUN apt-get update && \
             libghc-zlib-dev \
             libpam0g-dev \
             libtool \
+            nasm \
             nodejs \
             python-polib \
             sudo \
@@ -59,6 +54,17 @@ RUN apt-get update && \
     apt-get build-dep -y \
             libreoffice \
             && \
+    \
+    ### Build and Install Poco Libraries
+    mkdir -p /usr/src/poco && \
+    curl -sSL https://pocoproject.org/releases/poco-${POCO_VERSION}/poco-${POCO_VERSION}-all.tar.gz | tar xvfz - --strip 1 -C /usr/src/poco && \
+    cd /usr/src/poco && \
+    ./configure \
+                --no-samples \
+                --no-tests \
+                --prefix=/opt/poco \
+                && \
+    make install && \
     \
 ### Build Fetch LibreOffice - This will take a while..
     git clone -b ${LIBREOFFICE_BRANCH} https://github.com/LibreOffice/core.git /usr/src/libreoffice-core && \
@@ -105,6 +111,7 @@ RUN apt-get update && \
 --with-system-dicts \n\
 --with-system-zlib \n\
 --with-theme=galaxy \n\
+#--with-system-xmlsec \n\
 --without-branding \n\
 --without-help \n\
 --without-java \n\
@@ -121,7 +128,8 @@ RUN apt-get update && \
 --prefix=/opt/libreoffice \n\
 " > /usr/src/libreoffice-core/distro-configs/LibreOfficeOnline.conf && \
     ./autogen.sh --with-distro="LibreOfficeOnline" && \
-    rm -rf /usr/src/libreoffice-core/translations /usr/src/lobreoffice-core/dictionaries && \
+    cd /usr/src/libreoffice-core && \
+    sed -i "s/export XMLSEC_TARBALL := xmlsec1-1.2.26.tar.gz/export XMLSEC_TARBALL := xmlsec1-1.2.25.tar.gz/g" download.lst && \
     chown -R lool /usr/src/libreoffice-core && \
     sudo -u lool make && \
     cd /usr/src/libreoffice-core && \
@@ -129,7 +137,6 @@ RUN apt-get update && \
     chown -R lool /opt/libreoffice && \
     sudo -u lool make install && \
     cp -R /usr/src/libreoffice-core/instdir/* /opt/libreoffice/ && \
-    cd /usr/src && \
     \
 ### Build LibreOffice Online (Not as long as above)
     git clone -b ${LOOL_BRANCH} https://github.com/LibreOffice/online.git /usr/src/libreoffice-online && \
@@ -148,13 +155,14 @@ RUN apt-get update && \
                 uglify-js \
                 && \
     \
-    cd /usr/src/libreoffice-online && \
     ./autogen.sh && \
     ./configure --enable-silent-rules \
                 --with-lokit-path=/usr/src/libreoffice-online/bundled/include \
                 --with-lo-path=/opt/libreoffice \
                 --with-max-connections=${MAX_CONNECTIONS} \
                 --with-max-documents=${MAX_DOCUMENTS} \
+                --with-poco-includes=/opt/poco/include \
+                --with-poco-libs=/opt/poco/lib \
                 --with-logfile=/var/log/lool/lool.log \
                 --prefix=/opt/lool \
                 --sysconfdir=/etc \
@@ -168,8 +176,7 @@ RUN apt-get update && \
     cp -R loolwsd.xml /opt/lool/ && \
     cp -R loolkitconfig.xcu /opt/lool && \
     make install && \
-    cd /usr/src && \
-    \
+    cd / && \
     apt-get autoremove -y && \
     apt-get clean && \
 ### Cleanup
@@ -180,7 +187,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /var/log/*
 
-FROM tiredofit/ubuntu:16.04
+FROM registry.selfdesign.org/docker/debian/stretch
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Set Defaults
@@ -195,11 +202,23 @@ ENV ADMIN_USER=admin \
 COPY --from=builder /opt/ /opt/
 
 ### Install Dependencies
-RUN adduser --quiet --system --group --home /opt/lool lool && \
+RUN set -x && \
+    adduser --quiet --system --group --home /opt/lool lool && \
     \
-    apt-get update && \
-    apt-get upgrade -y && \
+### Add Repositories
+    echo "deb http://ftp.us.debian.org/debian/ jessie-backports main" >>/etc/apt/sources.list && \
+    echo "deb-src http://ftp.us.debian.org/debian/ jessie-backports main" >>/etc/apt/sources.list && \
+    echo "deb http://deb.debian.org/debian stretch contrib" >> /etc/apt/sources.list && \
+    curl -sL https://deb.nodesource.com/setup_6.x | bash - && \
+    \
+### Downgrade LibSSL
+    echo "Package: openssl libssl1.0.0 libssl-dev libssl-doc" >> /etc/apt/preferences.d/00_ssl && \
+    echo "Pin: release a=jessie-backports" >> /etc/apt/preferences.d/00_ssl && \
+    echo "Pin-Priority: 1001" >> /etc/apt/preferences.d/00_ssl && \
+    apt-get install openssl libssl-dev locales -y --allow-downgrades && \
+    \
     echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections && \
+    apt-get upgrade -y && \
     apt-get install -y\
              adduser \
              apt-transport-https \
@@ -207,12 +226,17 @@ RUN adduser --quiet --system --group --home /opt/lool lool && \
              findutils \
              fonts-droid-fallback \
              fonts-noto-cjk \
+             hunspell \
+             hunspell-en-us \
+             hunspell-en-gb \
+	     libcap2-bin \
              libcups2 \
              libfontconfig1 \
              libfreetype6 \
              libgl1-mesa-glx \
              libpam0g \
-             libpng12-0 \
+             libpng16-16 \
+             libsm6 \
              libxcb-render0 \
              libxcb-shm0 \
              libxinerama1 \
@@ -224,22 +248,6 @@ RUN adduser --quiet --system --group --home /opt/lool lool && \
              ttf-mscorefonts-installer \
              && \
     \
-    echo "deb https://collaboraoffice.com/repos/Poco/ /" >> /etc/apt/sources.list.d/poco.list && \
-    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0C54D189F4BA284D && \
-    apt-get update && \
-    apt-get -y install \
-                libpocodata60 \
-                libpocofoundation60 \
-                libpocojson60 \
-                libpocodataodbc60 \
-                libpococrypto60 \
-                libpoconet60 \
-                libpoconetssl60 \
-                libpocoutil60 \
-                libpocoxml60 \
-                libpocozip60 \
-                && \
-    \
 ### Setup Directories and Permissions
     mkdir -p /etc/loolwsd && \
     mv /opt/lool/loolwsd.xml /etc/loolwsd/ && \
@@ -250,7 +258,7 @@ RUN adduser --quiet --system --group --home /opt/lool lool && \
     mkdir -p /var/cache/loolwsd && \
     chown -R lool /var/cache/loolwsd && \
     setcap cap_fowner,cap_mknod,cap_sys_chroot=ep /opt/lool/bin/loolforkit && \
-    setcap cap_sys_admin=ep /opt/lool/bin/loolmount && \
+#    setcap cap_sys_admin=ep /opt/lool/bin/loolmount && \
     mkdir -p /usr/share/hunspell && \
     mkdir -p /usr/share/hyphen && \
     mkdir -p /usr/share/mythes && \
@@ -266,8 +274,9 @@ RUN adduser --quiet --system --group --home /opt/lool lool && \
     rm -rf /usr/share/man && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /var/log/* && \
+    rm -rf /tmp/* && \
     mkdir -p /var/log/lool && \
-    touch /var/log/lool/lool.log && \
+    touch /var/log/lool/loolwsd.log && \
     chown -R lool /var/log/lool
 
 ### Networking Configuration
@@ -275,4 +284,3 @@ EXPOSE 9980
 
 ### Assets
 ADD install /
-
