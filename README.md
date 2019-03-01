@@ -1,6 +1,5 @@
 # hub.docker.com/r/tiredofit/libreoffice-online
 
-[![Build Status](https://img.shields.io/docker/build/tiredofit/libreoffice-online.svg)](https://hub.docker.com/r/tiredofit/libreoffice-online)
 [![Docker Pulls](https://img.shields.io/docker/pulls/tiredofit/libreoffice-online.svg)](https://hub.docker.com/r/tiredofit/libreoffice-online)
 [![Docker Stars](https://img.shields.io/docker/stars/tiredofit/libreoffice-online.svg)](https://hub.docker.com/r/tiredofit/libreoffice-online)
 [![Docker Layers](https://images.microbadger.com/badges/image/tiredofit/libreoffice-online.svg)](https://microbadger.com/images/tiredofit/libreoffice-online)
@@ -84,7 +83,7 @@ Along with the Environment Variables from the [Base image](https://hub.docker.co
 | `ADMIN_USER` | User for accessing Administration Console - Default `admin` |
 | `ADMIN_PASS` | Password for accessing Administration Console - Default `libreoffice` |
 | `ALLOWED_HOSTS` | Set which domains which can access service - Example: `^(.*)\.example\.org` |
-| `DICTIONARIES` | Spell Check Languages - Available `de_DE en_GB en_US es_ES fr_FR it nl pt_BR pt_PT ru` - Default `en_GB en_US` |
+| `DICTIONARIES` | Spell Check Languages - Available `en_GB en_US` - Default `en_GB en_US` |
 | `LOG_LEVEL` | Log Level - Available `none, fatal, critical, error, warning, notice, information, debug, trace` - Default `warning` |
 
 ### Networking
