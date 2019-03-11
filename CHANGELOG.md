@@ -1,3 +1,12 @@
+## 1.2 2019-03-11 < dave at tiredofit dot ca>
+
+* Collabora Office 6.0.25
+* Libreoffice Online 4.0.1.1
+
+## 1.1.1 2019-02-28 <dave at tiredofit dot ca>
+
+* Add Cron entry to cleanup cache for long running containers
+
 ## 1.1 2019-02-28 <dave at tiredofit dot ca>
 
 * Switch back to Debian Stretch

@@ -3,11 +3,11 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Set Environment Variables
 ENV LIBREOFFICE_BRANCH=master \
-    ## cp-5.3.61
-    LIBREOFFICE_COMMIT=cd2475c52a096b001a7e3179f02e11cbc8a5615f \
+    ## cp-6.0.25
+    LIBREOFFICE_COMMIT=a0323fef144292d88bace75b37183e2000360699 \
     LOOL_BRANCH=master \
-    ## 3.4.2.1
-    LOOL_COMMIT=d02d1983e164b322dc3f46753433bcb23c871ce6 \
+    ## 4.0.1.1
+    LOOL_COMMIT=e1b0096bd1ac83e10735601f0bf2a70c0f3b0bac \
     MAX_CONNECTIONS=5000 \
     ## Uses Approximately 20mb per document open
     MAX_DOCUMENTS=5000 \
