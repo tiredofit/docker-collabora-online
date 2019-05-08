@@ -1,4 +1,12 @@
-## 1.2 2019-03-11 < dave at tiredofit dot ca>
+## 1.3 2019-05-08 <dave at tiredofit dot ca>
+
+* Collabora Office 6.0.30
+* Libreoffice Online 4.0.4.1
+* Fix SSL Startup Errors
+* Stop pinning Debian Jessie libssl
+* Make Log Level information as default
+
+## 1.2 2019-03-11 <dave at tiredofit dot ca>
 
 * Collabora Office 6.0.25
 * Libreoffice Online 4.0.1.1

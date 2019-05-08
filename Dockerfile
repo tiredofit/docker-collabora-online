@@ -3,11 +3,11 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Set Environment Variables
 ENV LIBREOFFICE_BRANCH=master \
-    ## cp-6.0.25
-    LIBREOFFICE_COMMIT=a0323fef144292d88bace75b37183e2000360699 \
+    ## cp-6.0.30
+    LIBREOFFICE_COMMIT=3ef1164bc3a13af481102e0abef06929c53bad8b \
     LOOL_BRANCH=master \
-    ## 4.0.1.1
-    LOOL_COMMIT=e1b0096bd1ac83e10735601f0bf2a70c0f3b0bac \
+    ## 4.0.4.1
+    LOOL_COMMIT=a2132266584381c875fa707446417e259753e2f5 \
     MAX_CONNECTIONS=5000 \
     ## Uses Approximately 20mb per document open
     MAX_DOCUMENTS=5000 \
@@ -16,16 +16,9 @@ ENV LIBREOFFICE_BRANCH=master \
 ### Get Updates
 RUN set -x && \
 ### Add Repositories
-    echo "deb http://ftp.us.debian.org/debian/ jessie-backports main" >>/etc/apt/sources.list && \
-    echo "deb-src http://ftp.us.debian.org/debian/ jessie-backports main" >>/etc/apt/sources.list && \
+    echo "deb-src http://deb.debian.org/debian stretch main" >> /etc/apt/sources.list && \
     echo "deb http://deb.debian.org/debian stretch contrib" >> /etc/apt/sources.list && \
     curl -sL https://deb.nodesource.com/setup_6.x | bash - && \
-    \
-### Downgrade LibSSL
-    echo "Package: openssl libssl1.0.0 libssl-dev libssl-doc" >> /etc/apt/preferences.d/00_ssl && \
-    echo "Pin: release a=jessie-backports" >> /etc/apt/preferences.d/00_ssl && \
-    echo "Pin-Priority: 1001" >> /etc/apt/preferences.d/00_ssl && \
-    apt-get install openssl libssl-dev locales -y --allow-downgrades && \
     \
 ### Setup Distribution
     echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections && \
@@ -41,9 +34,11 @@ RUN set -x && \
             libcap-dev \
             libghc-zlib-dev \
             libpam0g-dev \
+            libssl-dev \
             libtool \
             nasm \
             nodejs \
+            openssl \
             python-polib \
             sudo \
             translate-toolkit \
@@ -206,16 +201,8 @@ RUN set -x && \
     adduser --quiet --system --group --home /opt/lool lool && \
     \
 ### Add Repositories
-    echo "deb http://ftp.us.debian.org/debian/ jessie-backports main" >>/etc/apt/sources.list && \
-    echo "deb-src http://ftp.us.debian.org/debian/ jessie-backports main" >>/etc/apt/sources.list && \
     echo "deb http://deb.debian.org/debian stretch contrib" >> /etc/apt/sources.list && \
     curl -sL https://deb.nodesource.com/setup_6.x | bash - && \
-    \
-### Downgrade LibSSL
-    echo "Package: openssl libssl1.0.0 libssl-dev libssl-doc" >> /etc/apt/preferences.d/00_ssl && \
-    echo "Pin: release a=jessie-backports" >> /etc/apt/preferences.d/00_ssl && \
-    echo "Pin-Priority: 1001" >> /etc/apt/preferences.d/00_ssl && \
-    apt-get install openssl libssl-dev locales -y --allow-downgrades && \
     \
     echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections && \
     apt-get upgrade -y && \
@@ -241,7 +228,9 @@ RUN set -x && \
              libxcb-shm0 \
              libxinerama1 \
              libxrender1 \
+             locales \
              locales-all \
+             openssl \ 
              python3-requests \
              python3-websocket \
              sudo \
