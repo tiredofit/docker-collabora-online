@@ -94,7 +94,7 @@ The following ports are exposed.
 
 | Port      | Description |
 |-----------|-------------|
-| `9880` | Libreoffice Web Services |
+| `9980` | Libreoffice Web Services |
 
 # Maintenance
 #### Shell Access
