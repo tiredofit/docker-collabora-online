@@ -28,6 +28,7 @@ RUN set -x && \
     chown lool:lool /home/lool -R && \
     \
     ## Add Build Dependencies
+    apt-get upgrade -y && \
     apt-get install -y \
             cpio \
             git \

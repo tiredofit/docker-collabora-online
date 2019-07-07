@@ -1,3 +1,7 @@
+## 1.3.1 2019-07-07 <dave at tiredofit dot ca>
+
+* Add `EXTRA_OPTIONS` variable
+
 ## 1.3 2019-05-08 <dave at tiredofit dot ca>
 
 * Collabora Office 6.0.30

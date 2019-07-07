@@ -87,6 +87,7 @@ Along with the Environment Variables from the [Base image](https://hub.docker.co
 | `ALLOWED_HOSTS` | Set which domains which can access service - Example: `^(.*)\.example\.org` |
 | `DICTIONARIES` | Spell Check Languages - Available `en_GB en_US` - Default `en_GB en_US` |
 | `LOG_LEVEL` | Log Level - Available `none, fatal, critical, error, warning, notice, information, debug, trace` - Default `warning` |
+| `EXTRA_OPTIONS` | If you want to pass additional arguments upon startup, add it here |
 
 ### Networking
 
