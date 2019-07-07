@@ -16,6 +16,8 @@ ENV LIBREOFFICE_BRANCH=master \
 ### Get Updates
 RUN set -x && \
 ### Add Repositories
+    apt-get update && \
+    apt-get -o Dpkg::Options::="--force-confold" upgrade -y && \
     echo "deb-src http://deb.debian.org/debian stretch main" >> /etc/apt/sources.list && \
     echo "deb http://deb.debian.org/debian stretch contrib" >> /etc/apt/sources.list && \
     curl -sL https://deb.nodesource.com/setup_6.x | bash - && \
@@ -28,7 +30,6 @@ RUN set -x && \
     chown lool:lool /home/lool -R && \
     \
     ## Add Build Dependencies
-    apt-get upgrade -y && \
     apt-get install -y \
             cpio \
             git \
