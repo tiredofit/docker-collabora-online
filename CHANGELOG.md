@@ -1,3 +1,7 @@
+## 1.3.3 2019-07-07 <dave at tiredofit dot ca>
+
+* Final Fixup for failing upgraded packages
+
 ## 1.3.2 2019-07-07 <dave at tiredofit dot ca>
 
 * Fixup for failing upgraded packages

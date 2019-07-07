@@ -207,7 +207,7 @@ RUN set -x && \
     curl -sL https://deb.nodesource.com/setup_6.x | bash - && \
     \
     echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections && \
-    apt-get upgrade -y && \
+    apt-get -o Dpkg::Options::="--force-confold" upgrade -y && \
     apt-get install -y\
              adduser \
              apt-transport-https \
