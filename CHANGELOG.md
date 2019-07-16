@@ -1,3 +1,14 @@
+## 1.4 2019-07-16 <dave at tiredofit dot ca>
+
+* Added new Environment Variables
+  - `ENABLE_TLS` (Default: `TRUE`)
+  - `ENABLE_TLS_CERT_GENERATE` (Default: `TRUE`)
+  - `ENABLE_TLS_REVERSE_PROXY` (Default: `FALSE`)
+  - `TLS_CERT_PATH` (Default: `/etc/loolwsd/certs`)
+  - `TLS_CA_FILENAME` (Default: `ca-chain-cert.pem`)
+  - `TLS_CERT_FILENAME` (Default: `cert.pem`)
+  - `TLS_KEY_FILENAME` (Default: `key.pem`)
+
 ## 1.3.3 2019-07-07 <dave at tiredofit dot ca>
 
 * Final Fixup for failing upgraded packages

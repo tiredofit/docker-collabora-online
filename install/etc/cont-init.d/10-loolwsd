@@ -6,6 +6,13 @@ if [ "$DEBUG_MODE" = "TRUE" ] || [ "$DEBUG_MODE" = "true" ]; then
 fi
 
 LOG_LEVEL=${LOG_LEVEL:-"information"}
+ENABLE_TLS=${ENABLE_SSL:-"TRUE"}
+ENABLE_TLS_CERT_GENERATE=${ENABLE_SSL_CERT_GENERATE:-"TRUE"}
+ENABLE_TLS_REVERSE_PROXY=${ENABLE_SSL_REVERSE_PROXY:-"FALSE"}
+TLS_CERT_PATH=${TLS_CERT_PATH:-"/etc/loolwsd/certs"}
+TLS_CA_FILENAME=${TLS_CA_FILENAME:-"ca-chain.cert.pem"}
+TLS_CERT_FILENAME=${TLS_CERT_FILENAME:-"cert.pem"}
+TLS_KEY_FILENAME=${TLS_KEY_FILENAME:-"key.pem"}
 
 echo "** [libreoffice-online] Setting configuration"
 
@@ -17,35 +24,42 @@ rm /opt/lool/systemplate/etc/resolv.conf
 ln -s /etc/resolv.conf /opt/lool/systemplate/etc/resolv.conf
 
 ### Custom File Support
-  if [ -d /assets/custom ] ; then
-     echo "** [libreoffice-online] Custom Files Found, Copying over top of Master.."
-     cp -R /assets/custom/* /opt/lool/share/
-     chown -R lool. /opt/lool/share/
-  fi
-
-if test "${DONT_GEN_SSL_CERT-set}" == set; then
-
-# Generate new SSL certificate instead of using the default
-mkdir -p /tmp/ssl/
-cd /tmp/ssl/
-mkdir -p certs/ca
-openssl genrsa -out certs/ca/root.key.pem 2048
-openssl req -x509 -new -nodes -key certs/ca/root.key.pem -days 9131 -out certs/ca/root.crt.pem -subj "/C=XX/ST=XX/L=XX/O=Dummy 
-Authority/CN=Dummy Authority"
-mkdir -p certs/{servers,tmp}
-mkdir -p "certs/servers/localhost"
-openssl genrsa -out "certs/servers/localhost/privkey.pem" 2048 
-if test "${cert_domain-set}" == set; then
-	openssl req -key "certs/servers/localhost/privkey.pem" -new -sha256 -out "certs/tmp/localhost.csr.pem" -subj "/C=XX/ST=XX/L=XX/O=Dummy Authority/CN=localhost"
-else
-	openssl req -key "certs/servers/localhost/privkey.pem" -new -sha256 -out "certs/tmp/localhost.csr.pem" -subj "/C=XX/ST=XX/L=XX/O=Dummy Authority/CN=${cert_domain}"
+if [ -d /assets/custom ] ; then
+	echo "** [libreoffice-online] Custom Files Found, Copying over top of Master.."
+	cp -R /assets/custom/* /opt/lool/share/
+	chown -R lool. /opt/lool/share/
 fi
-openssl x509 -req -in certs/tmp/localhost.csr.pem -CA certs/ca/root.crt.pem -CAkey certs/ca/root.key.pem -CAcreateserial -out certs/servers/localhost/cert.pem -days 9131
-mv certs/servers/localhost/privkey.pem /etc/loolwsd/key.pem
-mv certs/servers/localhost/cert.pem /etc/loolwsd/cert.pem
-mv certs/ca/root.crt.pem /etc/loolwsd/ca-chain.cert.pem
-rm -rf /tmp/ssl
-chown lool /etc/loolwsd/*.pem
+
+if [ "$ENABLE_SSL" = "TRUE" ]; 
+	if [ "$ENABLE_SSL_CERT_GENERATE" = "TRUE" ]
+		mkdir -p $TLS_CERT_PATH
+		# Generate new SSL certificate instead of using the default
+		echo "** [libreoffice-online] Auto Generating Self Signed Certificates"
+		mkdir -p /tmp/ssl/
+		cd /tmp/ssl/
+		mkdir -p certs/ca
+		openssl genrsa -out certs/ca/root.key.pem 2048
+		openssl req -x509 -new -nodes -key certs/ca/root.key.pem -days 9131 -out certs/ca/root.crt.pem -subj "/C=XX/ST=XX/L=XX/O=Dummy 
+		Authority/CN=Dummy Authority"
+		mkdir -p certs/{servers,tmp}
+		mkdir -p "certs/servers/localhost"
+		openssl genrsa -out "certs/servers/localhost/privkey.pem" 2048 
+		if test "${cert_domain-set}" == set; then
+			openssl req -key "certs/servers/localhost/privkey.pem" -new -sha256 -out "certs/tmp/localhost.csr.pem" -subj "/C=XX/ST=XX/L=XX/O=Dummy Authority/CN=localhost"
+		else
+			openssl req -key "certs/servers/localhost/privkey.pem" -new -sha256 -out "certs/tmp/localhost.csr.pem" -subj "/C=XX/ST=XX/L=XX/O=Dummy Authority/CN=${cert_domain}"
+		fi
+		openssl x509 -req -in certs/tmp/localhost.csr.pem -CA certs/ca/root.crt.pem -CAkey certs/ca/root.key.pem -CAcreateserial -out certs/servers/localhost/cert.pem -days 9131
+		mv certs/servers/localhost/privkey.pem ${TLS_CERT_PATH}/${TLS_KEY_FILENAME}
+		mv certs/servers/localhost/cert.pem ${TLS_CERT_PATH}/${TLS_KEY_FILENAME}
+		mv certs/ca/root.crt.pem ${TLS_CERT_PATH}/${TLS_CA_FILENAME}
+		rm -rf /tmp/ssl
+		chown -R lool ${TLS_CERT_PATH}
+	else
+		if [ ! -f "${TLS_CERT_PATH}/${TLS_KEY_FILENAME}" ] ||  [ ! -f "${TLS_CERT_PATH}/${TLS_CA_FILENAME}" ] ||  [ ! -f "${TLS_CERT_PATH}/${TLS_CERT_FILENAME}" ] ||  
+	    	echo ** [libreoffice-online] *** ERROR *** TLS Certificates missing. Please switch to autogenerate mode, or place your certifcates in the correct location.
+	 	fi
+	fi
 fi
 
 # Replace Configureation directives
@@ -56,6 +70,18 @@ perl -pi -e "s/localhost<\/host>/${ALLOWED_HOSTS}<\/host>/g" /etc/loolwsd/loolws
 perl -pi -e "s/<username (.*)>.*<\/username>/<username \1>${ADMIN_USER}<\/username>/" /etc/loolwsd/loolwsd.xml
 perl -pi -e "s/<password (.*)>.*<\/password>/<password \1>${ADMIN_PASS}<\/password>/" /etc/loolwsd/loolwsd.xml
 perl -pi -e "s/<server_name (.*)>.*<\/server_name>/<server_name \1>${HOSTNAME}<\/server_name>/" /etc/loolwsd/loolwsd.xml
+perl -pi -e "s/<cert_file_path (.*)>.*<\/cert_file_path>/<cert_file_path \1>${TLS_CERT_PATH}/${TLS_CERT_FILENAME}<\/cert_file_path>/" /etc/loolwsd/loolwsd.xml
+perl -pi -e "s/<key_file_path (.*)>.*<\/key_file_path>/<key_file_path \1>${TLS_CERT_PATH}/${TLS_KEY_FILENAME}<\/key_file_path>/" /etc/loolwsd/loolwsd.xml
+perl -pi -e "s/<ca_file_path (.*)>.*<\/ca_file_path>/<ca_file_path \1>${TLS_CERT_PATH}/${TLS_CA_FILENAME}<\/key_file_path>/" /etc/loolwsd/loolwsd.xml
+
+if [ "$ENABLE_SSL" != "TRUE" ]; 
+	perl -pi -e "s/<enable (.*)>.*<\/enable>/<enable \1>false<\/enable>/" /etc/loolwsd/loolwsd.xml
+fi
+
+if [ "$ENABLE_SSL_REVERSE_PROXY" != "FALSE" ]; 
+	perl -pi -e "s/<termination (.*)>.*<\/termination>/<termination \1>true<\/termination>/" /etc/loolwsd/loolwsd.xml
+fi
+
 
 mkdir -p /tmp/state
 echo 'Initialization Complete' >/tmp/state/10-loolwsd-init

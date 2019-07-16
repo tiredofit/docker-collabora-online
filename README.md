@@ -11,6 +11,8 @@ This will build a container for [LibreOffice Online](https://libreoffice.org/) f
 * This Container uses a [customized Debian Linux base](https://hub.docker.com/r/tiredofit/debian) which includes [s6 overlay](https://github.com/just-containers/s6-overlay) enabled for PID 1 Init capabilities, [zabbix-agent](https://zabbix.org) for individual container monitoring, Cron also installed along with other tools (bash,curl, less, logrotate, nano, vim) for easier management.
 
 * Configurable Concurrent User and Document Limit (set to generarous values by default)
+* Set features to support autogeneration of TLS certificates/activate reverse proxy support, others..
+* 
 * Zabbix Monitoring of Active Documents, Users, Memory Consumed
 
 [Changelog](CHANGELOG.md)
@@ -55,7 +57,7 @@ docker pull tiredofit/libreoffice-online
 The following image tags are available:
 
 * `latest` - See most recent versioned tag
-* `1.3.3` - Collabora Libreoffice 6.0.30 with Collabora Office Online 4.0.4-1
+* `1.4` - Collabora Libreoffice 6.0.30 with Collabora Office Online 4.0.4-1
 * `1.1` - Collabora Libreoffice 5.3.61 with Collabora Office Online 3.4.2.1
 
 # Quick Start
@@ -87,6 +89,13 @@ Along with the Environment Variables from the [Base image](https://hub.docker.co
 | `ALLOWED_HOSTS` | Set which domains which can access service - Example: `^(.*)\.example\.org` |
 | `DICTIONARIES` | Spell Check Languages - Available `en_GB en_US` - Default `en_GB en_US` |
 | `LOG_LEVEL` | Log Level - Available `none, fatal, critical, error, warning, notice, information, debug, trace` - Default `warning` |
+| `ENABLE_TLS` | Enable TLS - Default: `TRUE`
+| `ENABLE_TLS_CERT_GENERATE` | Enable Self Signed Certificate Generation (Default: `TRUE`)
+| `ENABLE_TLS_REVERSE_PROXY` | If using a Reverse SSL terminating proxy in front of this container (Default: `FALSE`)
+| `TLS_CERT_PATH` | TLS certificates path - Default: `/etc/loolwsd/certs`
+| `TLS_CA_FILENAME` | TLS CA Cert filename with extension - Default: `ca-chain-cert.pem` |
+| `TLS_CERT_FILENAME` | TLS Certificate filename with extension - Default: `cert.pem` |
+|`TLS_KEY_FILENAME` | TLS Private Key filename with extension - Default: `key.pem` |
 | `EXTRA_OPTIONS` | If you want to pass additional arguments upon startup, add it here |
 
 ### Networking
