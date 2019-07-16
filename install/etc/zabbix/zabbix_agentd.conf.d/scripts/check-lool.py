@@ -2,7 +2,6 @@
 
 import requests
 from websocket import create_connection,WebSocket
-import ssl
 import sys
 import os
 
@@ -15,7 +14,7 @@ def get_token_value(url,username,password):
 
 def get_doc_info(socket_url,token_value):
 	data = {}
-	ws = create_connection(socket_url,sslopt={"cert_reqs": ssl.CERT_NONE})
+	ws = create_connection(socket_url)
 	"""Authenticating with Server  """
 	ws.send('auth '+'jwt='+token_value)
 	"""Now fetching information """
@@ -29,11 +28,11 @@ def get_doc_info(socket_url,token_value):
 	return data
 
 if __name__ == '__main__':
-	url = "https://localhost:9980/loleaflet/dist/admin/admin.html"
+	url = "http://localhost:9980/loleaflet/dist/admin/admin.html"
 	username = os.getenv('ADMIN_USER')
 	password = os.getenv('ADMIN_PASS')
 	token_value = get_token_value(url,username,password)
-	socket_url = "wss://localhost:9980/lool/adminws"
+	socket_url = "ws://localhost:9980/lool/adminws"
 	data = get_doc_info(socket_url,token_value)
 	for key,value in data.items() :
                 print("lool."+key , value)
