@@ -38,12 +38,12 @@ This will build a container for [LibreOffice Online](https://libreoffice.org/) f
 
 # Prerequisites
 
-This image assumes that you are using a reverse proxy such as [jwilder/nginx-proxy](https://github.com/jwilder/nginx-proxy) and optionally the [Let's Encrypt Proxy Companion @ https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion](https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion) in order to serve your pages. However, it will run just fine on it's own if you map appropriate ports.
+This image assumes that you are using a reverse proxy such as [jwilder/nginx-proxy](https://github.com/jwilder/nginx-proxy) and optionally the [Let's Encrypt Proxy Companion @ https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion](https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion), or [Traefik](https://github.com/tiredofit/docker-traefik) in order to serve your pages. However, it will run just fine on it's own if you map appropriate ports.
 
 
 # Installation
 
-Automated builds of the image are available on [Docker Hub](https://hub.docker.com/tiredofit/libreoffice-online) and is the 
+Builds of the image are available on [Docker Hub](https://hub.docker.com/tiredofit/libreoffice-online) and is the 
 recommended method of installation.
 
 If you decide to compile this, it will take quite a few hours.
