@@ -1,0 +1,44 @@
+version: '3.7'
+services:
+  
+  libreoffice-online-app:
+    image: tiredofit/libreoffice-online
+    container_name: libreoffice-online-app
+    hostname: libreoffice
+    domainname: example.com
+    expose:
+      - 9980
+    cap_add:
+      - MKNOD
+      - NET_ADMIN
+    privileged: true
+    labels: 
+      - traefik.enable=true
+      - traefik.frontend.rule=Host:libreoffice.example.com
+      - traefik.port=9980
+      - traefik.protocol=http
+      - traefik.docker.network=proxy
+      - traefik.backend=libreoffice-online-app
+    volumes:
+      - ./logs:/var/log/lool
+    environment:
+      - ZABBIX_HOSTNAME=libreoffice-online-app
+
+      - ADMIN_USER=admin
+      - ADMIN_PASS=libreoffice
+
+      - ALLOWED_HOSTS=^(.*)\.example\.org
+
+      - ENABLE_TLS=FALSE
+      - ENABLE_TLS_REVERSE_PROXY=TRUE
+    networks:
+      - proxy
+      - services
+    restart: always
+
+networks:
+  proxy:
+    external: true
+  services:
+    external: true
+

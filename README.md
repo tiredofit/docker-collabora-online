@@ -12,7 +12,6 @@ This will build a container for [LibreOffice Online](https://libreoffice.org/) f
 
 * Configurable Concurrent User and Document Limit (set to generarous values by default)
 * Set features to support autogeneration of TLS certificates/activate reverse proxy support, others..
-* 
 * Zabbix Monitoring of Active Documents, Users, Memory Consumed
 
 [Changelog](CHANGELOG.md)
@@ -78,6 +77,8 @@ The following directories should be mapped for persistent storage in order to ut
 |-----------|-------------|
 | `/var/log/loolwsd` | Log files
 | `/assets/custom` | If you want to update the theme of LibreOffice online, dropping files in here will overwrite /opt/lool/share on startup |
+| `/etc/loolwsd/certs` | (Optional) If you would like to use your own certificates, map this volume and set appropriate variables |
+
 ### Environment Variables
 
 Along with the Environment Variables from the [Base image](https://hub.docker.com/r/tiredofit/debian),  below is the complete list of available options that can be used to customize your installation.
@@ -92,7 +93,7 @@ Along with the Environment Variables from the [Base image](https://hub.docker.co
 | `ENABLE_TLS` | Enable TLS - Default: `TRUE`
 | `ENABLE_TLS_CERT_GENERATE` | Enable Self Signed Certificate Generation (Default: `TRUE`)
 | `ENABLE_TLS_REVERSE_PROXY` | If using a Reverse SSL terminating proxy in front of this container (Default: `FALSE`)
-| `TLS_CERT_PATH` | TLS certificates path - Default: `/etc/loolwsd/certs`
+| `TLS_CERT_PATH` | TLS certificates path - Default: `/etc/loolwsd/certs` |
 | `TLS_CA_FILENAME` | TLS CA Cert filename with extension - Default: `ca-chain-cert.pem` |
 | `TLS_CERT_FILENAME` | TLS Certificate filename with extension - Default: `cert.pem` |
 |`TLS_KEY_FILENAME` | TLS Private Key filename with extension - Default: `key.pem` |
