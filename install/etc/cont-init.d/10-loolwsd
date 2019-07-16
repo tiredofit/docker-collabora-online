@@ -73,7 +73,7 @@ if [ "$ENABLE_SSL" = "TRUE" ]; then
 		rm -rf /tmp/ssl
 		chown -R lool ${TLS_CERT_PATH}
 	else
-		if [ ! -f "${TLS_CERT_PATH}/${TLS_KEY_FILENAME}" ] ||  [ ! -f "${TLS_CERT_PATH}/${TLS_CA_FILENAME}" ] ||  [ ! -f "${TLS_CERT_PATH}/${TLS_CERT_FILENAME}" ] ||  
+		if [ ! -f "${TLS_CERT_PATH}/${TLS_KEY_FILENAME}" ] ||  [ ! -f "${TLS_CERT_PATH}/${TLS_CA_FILENAME}" ] ||  [ ! -f "${TLS_CERT_PATH}/${TLS_CERT_FILENAME}" ] ; then
 	    	echo ** [libreoffice-online] *** ERROR *** TLS Certificates missing. Please switch to autogenerate mode, or place your certifcates in the correct location.
 	 	fi
 	fi
