@@ -85,19 +85,37 @@ Along with the Environment Variables from the [Base image](https://hub.docker.co
 
 | Parameter | Description |
 |-----------|-------------|
-| `ADMIN_USER` | User for accessing Administration Console - Default `admin` |
 | `ADMIN_PASS` | Password for accessing Administration Console - Default `libreoffice` |
+| `ADMIN_USER` | User for accessing Administration Console - Default `admin` |
 | `ALLOWED_HOSTS` | Set which domains which can access service - Example: `^(.*)\.example\.org` |
+| `AUTO_SAVE` | The number of seconds after which document, if modified, should be saved - Default `300` |
 | `DICTIONARIES` | Spell Check Languages - Available `en_GB en_US` - Default `en_GB en_US` |
-| `LOG_LEVEL` | Log Level - Available `none, fatal, critical, error, warning, notice, information, debug, trace` - Default `warning` |
+| `ENABLE_ADMIN_CONSOLE` | Enable Administration Console - Default `TRUE` |
+| `ENABLE_TLS_CERT_GENERATE` | Enable Self Signed Certificate Generation | Default: `TRUE` |
+| `ENABLE_TLS_REVERSE_PROXY` | If using a Reverse SSL terminating proxy in front of this container Default: `FALSE` |
 | `ENABLE_TLS` | Enable TLS - Default: `TRUE`
-| `ENABLE_TLS_CERT_GENERATE` | Enable Self Signed Certificate Generation (Default: `TRUE`)
-| `ENABLE_TLS_REVERSE_PROXY` | If using a Reverse SSL terminating proxy in front of this container (Default: `FALSE`)
-| `TLS_CERT_PATH` | TLS certificates path - Default: `/etc/loolwsd/certs` |
+| `EXTRA_OPTIONS` | If you want to pass additional arguments upon startup, add it here |
+| `FILE_SIZE_LIMIT` | The maximum file size allowed to each document process to write - Default `0` (unlimited) | 
+| `IDLE_SAVE` | The number of idle seconds after which document, if modified, should be saved - Default `30` |
+| `IDLE_UNLOAD_TIMEOUT` | The maximum number of seconds before unloading an idle documen - Default `3600` |
+| `LOG_ANONYMIZE_FILES` | Anonymize File information in Logs `TRUE` or `FALSE` - Default - `FALSE`
+| `LOG_ANONYMIZE_USERS` | Anonymize User information in Logs `TRUE` or `FALSE` - Default - `FALSE`
+| `LOG_LEVEL` | Log Level - Available `none, fatal, critical, error, warning, notice, information, debug, trace` - Default `warning` |
+| `LOG_TYPE` | Write Logs to `CONSOLE` or to `FILE` - Default `CONSOLE` |
+| `MAX_FILE_LOAD_LIMIT` | Maximum number of seconds to wait for a document load to succeed - Default `100` |
+| `MAX_OPEN_FILES` | The maximum number of files allowed to each document process to open - Default `0` (unlimited) |
+| `MAX_THREADS_DOCUMENT` | How many threads to use when opening a document - Default `4` |
+| `MEMORY_DATA_LIMIT` | The maximum memory data segment allowed to each document process - Default `0` (unlimited) |
+| `MEMORY_STACK_LIMIT` | The maximum stack size allowed to each document process - Default `0` (unlimited) |
+| `MEMORY_USAGE_MAX` | Maximum percentage of system memory to be used - Default `80.0` |
+| `PRESPAWN_CHILD_PROCESSES` | Amount of Child processes to start upon container init - Default `1` |
+| `SETUP_TYPE` | Automatically generate configuration with defaults. Set to `FALSE` and map the configuration file to use your own - Default `TRUE` |
 | `TLS_CA_FILENAME` | TLS CA Cert filename with extension - Default: `ca-chain-cert.pem` |
 | `TLS_CERT_FILENAME` | TLS Certificate filename with extension - Default: `cert.pem` |
-|`TLS_KEY_FILENAME` | TLS Private Key filename with extension - Default: `key.pem` |
-| `EXTRA_OPTIONS` | If you want to pass additional arguments upon startup, add it here |
+| `TLS_CERT_PATH` | TLS certificates path - Default: `/etc/loolwsd/certs` |
+| `TLS_KEY_FILENAME` | TLS Private Key filename with extension - Default: `key.pem` |
+| `USER_IDLE_TIMEOUT` | The maximum number of seconds before dimming and stopping updates when the user is no longer active (even if the browser is in focus) - Default `900` |
+| `USER_OUT_OF_FOCUS_TIMEOUT` | The maximum number of seconds before dimming and stopping updates when the browser tab is no longer in focus - Default `60` |
 
 ### Networking
 

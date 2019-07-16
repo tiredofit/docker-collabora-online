@@ -1,3 +1,26 @@
+## 1.5 2019-07-16 <dave at tiredofit dot ca>
+
+* Added more environment variables
+  -`AUTO_SAVE` (Default `300`}
+  - `ENABLE_ADMIN_CONSOLE` (Default `TRUE`)
+  - `FILE_SIZE_LIMIT` (Default `0`}
+  - `IDLE_SAVE` (Default `30`}
+  - `IDLE_UNLOAD_TIMEOUT` (Default `3600`}
+  - `LOG_ANONYMIZE_FILES` (Default `FALSE`)
+  - `LOG_ANONYMIZE_USERS` (Default `FALSE`)
+  - `LOG_TYPE` (Default `CONSOLE`)
+  - `MAX_FILE_LOAD_LIMIT` (Default `100`}
+  - `MAX_OPEN_FILES` (Default `0`}
+  - `MAX_THREADS_DOCUMENT` (Default `4`}
+  - `MEMORY_DATA_LIMIT` (Default `0`}
+  - `MEMORY_STACK_LIMIT` (Default `8000`}
+  - `MEMORY_USAGE_MAX` (Default `80.0`}
+  - `PRESPAWN_CHILD_PROCESSES` (Default `1`}
+  - `SETUP_TYPE` (Default `AUTO`)
+  - `USER_IDLE_TIMEOUT` (Default `900`}
+  - `USER_OUT_OF_FOCUS_TIMEOUT` (Default `60`}
+* Included traefik example docker-compose
+
 ## 1.4 2019-07-16 <dave at tiredofit dot ca>
 
 * Added new Environment Variables
