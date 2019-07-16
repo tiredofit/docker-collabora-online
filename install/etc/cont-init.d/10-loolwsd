@@ -114,7 +114,7 @@ if [ "$SETUP_TYPE" = "AUTO" ]; then
 	fi
 
 	if [ "$ENABLE_SSL" != "TRUE" ]; then
-		perl -pi -e "s/<enable type=\"bool\" desc=\"Controls(.*)>.*<\/enable>/<enable \1>false<\/enable>/" /etc/loolwsd/loolwsd.xml
+		perl -pi -e "s/<enable type=\"bool\" desc=\"Controls(.*)>.*<\/enable>/<enable type=\"bool\" desc=\"Controls\1>false<\/enable>/" /etc/loolwsd/loolwsd.xml
 	fi
 
 	if [ "$ENABLE_SSL_REVERSE_PROXY" != "FALSE" ]; then
