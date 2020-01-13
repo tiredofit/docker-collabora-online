@@ -1,37 +1,7 @@
 #!/usr/bin/with-contenv bash
 
-### Set Debug Mode
-if [ "$DEBUG_MODE" = "TRUE" ] || [ "$DEBUG_MODE" = "true" ]; then
-    set -x
-fi
-
-### Set Defaults
-AUTO_SAVE=${AUTO_SAVE:-300}
-ENABLE_ADMIN_CONSOLE=${ENABLE_ADMIN_CONSOLE:-"TRUE"}
-ENABLE_TLS=${ENABLE_SSL:-"TRUE"}
-ENABLE_TLS_CERT_GENERATE=${ENABLE_SSL_CERT_GENERATE:-"TRUE"}
-ENABLE_TLS_REVERSE_PROXY=${ENABLE_SSL_REVERSE_PROXY:-"FALSE"}
-FILE_SIZE_LIMIT=${FILE_SIZE_LIMIT:-0}
-IDLE_SAVE=${IDLE_SAVE:-30}
-IDLE_UNLOAD_TIMEOUT=${IDLE_UNLOAD_TIMEOUT:-3600}
-LOG_ANONYMIZE_FILES=${LOG_ANONYMIZE_FILES:-"FALSE"}
-LOG_ANONYMIZE_USERS=${LOG_ANONYMIZE_USERS:-"FALSE"}
-LOG_LEVEL=${LOG_LEVEL:-"information"}
-LOG_TYPE=${LOG_TYPE:-"CONSOLE"}
-MAX_FILE_LOAD_LIMIT=${MAX_FILE_LOAD_LIMIT:-100}
-MAX_OPEN_FILES=${MAX_OPEN_FILES:-0}
-MAX_THREADS_DOCUMENT=${MAX_THREADS_DOCUMENT:-4}
-MEMORY_DATA_LIMIT=${MEMORY_DATA_LIMIT:-0}
-MEMORY_STACK_LIMIT=${MEMORY_STACK_LIMIT:-8000}
-MEMORY_USAGE_MAX=${MEMORY_USAGE_MAX:-"80.0"}
-PRESPAWN_CHILD_PROCESSES=${PRESPAWN_CHILD_PROCESSES:-1}
-SETUP_TYPE=${SETUP_TYPE:-"AUTO"}
-TLS_CA_FILENAME=${TLS_CA_FILENAME:-"ca-chain.cert.pem"}
-TLS_CERT_FILENAME=${TLS_CERT_FILENAME:-"cert.pem"}
-TLS_CERT_PATH=${TLS_CERT_PATH:-"/etc/loolwsd/certs"}
-TLS_KEY_FILENAME=${TLS_KEY_FILENAME:-"key.pem"}
-USER_IDLE_TIMEOUT=${USER_IDLE_TIMEOUT:-900}
-USER_OUT_OF_FOCUS_TIMEOUT=${USER_OUT_OF_FOCUS_TIMEOUT:-60}
+for s in /assets/functions/*; do source $s; done
+PROCESS_NAME="libreoffice-online"
 
 mkdir -p /var/log/lool
 touch /var/log/lool/loolwsd.log
@@ -42,7 +12,7 @@ ln -s /etc/resolv.conf /opt/lool/systemplate/etc/resolv.conf
 
 ### Custom File Support
 if [ -d /assets/custom ] ; then
-	echo "** [libreoffice-online] Custom Files Found, Copying over top of Master.."
+	print_warn "Custom Files Found, Copying over top of Master.."
 	cp -R /assets/custom/* /opt/lool/share/
 	chown -R lool. /opt/lool/share/
 fi
@@ -51,7 +21,7 @@ if [ "$ENABLE_SSL" = "TRUE" ]; then
 	if [ "$ENABLE_SSL_CERT_GENERATE" = "TRUE" ]; then
 		mkdir -p $TLS_CERT_PATH
 		# Generate new SSL certificate instead of using the default
-		echo "** [libreoffice-online] Auto Generating Self Signed Certificates"
+		print_notice "Auto Generating Self Signed Certificates"
 		mkdir -p /tmp/ssl/
 		cd /tmp/ssl/
 		mkdir -p certs/ca
@@ -80,7 +50,7 @@ if [ "$ENABLE_SSL" = "TRUE" ]; then
 fi
 
 if [ "$SETUP_TYPE" = "AUTO" ]; then
-    echo '** [libreoffice-online] Autogenerating Configuration File'
+    print_notice "Autogenerating Configuration File"
 	### Replace Configuration directives
 	perl -pi -e "s/<allowed_languages (.*)>.*<\/allowed_languages>/<allowed_languages \1>${DICTIONARIES}<\/allowed_languages>/" /etc/loolwsd/loolwsd.xml
 	perl -pi -e "s/<autosave_duration_secs (.*)>.*<\/autosave_duration_secs>/<autosave_duration_secs \1>${AUTO_SAVE}<\/autosave_duration_secs>/" /etc/loolwsd/loolwsd.xml
@@ -134,5 +104,4 @@ if [ "$SETUP_TYPE" = "AUTO" ]; then
 	fi
 fi
 
-mkdir -p /tmp/state
-echo 'Initialization Complete' >/tmp/state/10-loolwsd-init
+liftoff

@@ -1,3 +1,9 @@
+## 1.6.0 2020-01-12 <dave at tiredofit dot ca>
+
+   ### Added
+      - Update to support new tiredofit/debian base image
+
+
 ## 1.5 2019-07-16 <dave at tiredofit dot ca>
 
 * Added more environment variables
