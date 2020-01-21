@@ -1,3 +1,8 @@
+## 1.6.1 2020-01-21 <joergmschulz at github>
+
+   ### Fixed
+      - Misquote in the startup script 
+
 ## 1.6.0 2020-01-12 <dave at tiredofit dot ca>
 
    ### Added
