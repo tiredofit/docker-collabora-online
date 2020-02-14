@@ -1,13 +1,13 @@
-FROM tiredofit/debian:stretch as builder
+FROM tiredofit/debian:buster as builder
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Set Environment Variables
 ENV LIBREOFFICE_BRANCH=master \
-    ## cp-6.0.30
-    LIBREOFFICE_COMMIT=3ef1164bc3a13af481102e0abef06929c53bad8b \
+    ## cp-6.2.4
+    LIBREOFFICE_COMMIT=14e306efae35f01fa63237ce005ad4067ca16909 \
     LOOL_BRANCH=master \
-    ## 4.0.4.1
-    LOOL_COMMIT=a2132266584381c875fa707446417e259753e2f5 \
+    ## cp-4.2.0-4
+    LOOL_COMMIT=e423755c5280b8f3d2dcebc7dba6151556b7c55d \
     MAX_CONNECTIONS=5000 \
     ## Uses Approximately 20mb per document open
     MAX_DOCUMENTS=5000 \
@@ -18,9 +18,9 @@ RUN set -x && \
 ### Add Repositories
     apt-get update && \
     apt-get -o Dpkg::Options::="--force-confold" upgrade -y && \
-    echo "deb-src http://deb.debian.org/debian stretch main" >> /etc/apt/sources.list && \
-    echo "deb http://deb.debian.org/debian stretch contrib" >> /etc/apt/sources.list && \
-    curl -sL https://deb.nodesource.com/setup_6.x | bash - && \
+    echo "deb-src http://deb.debian.org/debian buster main" >> /etc/apt/sources.list && \
+    echo "deb http://deb.debian.org/debian buster contrib" >> /etc/apt/sources.list && \
+    curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
     \
 ### Setup Distribution
     echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections && \
@@ -42,6 +42,7 @@ RUN set -x && \
             nodejs \
             openssl \
             python-polib \
+            python3-polib \
             sudo \
             translate-toolkit \
             ttf-mscorefonts-installer \
@@ -105,9 +106,10 @@ RUN set -x && \
 --with-galleries=no \n\
 --with-lang=en-GB en-US\n\
 --with-linker-hash-style=both \n\
+--with-parallelism \n\
 --with-system-dicts \n\
 --with-system-zlib \n\
---with-theme=galaxy \n\
+--with-theme=tango \n\
 #--with-system-xmlsec \n\
 --without-branding \n\
 --without-help \n\
@@ -131,10 +133,10 @@ RUN set -x && \
     sudo -u lool make && \
     cd /usr/src/libreoffice-core && \
     mkdir -p /opt/libreoffice && \
-    chown -R lool /opt/libreoffice && \
+    chown -R lool /opt/libreoffice && \ 
     sudo -u lool make install && \
     cp -R /usr/src/libreoffice-core/instdir/* /opt/libreoffice/ && \
-    \
+    \    
 ### Build LibreOffice Online (Not as long as above)
     git clone -b ${LOOL_BRANCH} https://github.com/LibreOffice/online.git /usr/src/libreoffice-online && \
     cd /usr/src/libreoffice-online && \
@@ -151,10 +153,10 @@ RUN set -x && \
                 npm \
                 uglify-js \
                 && \
-    \
+    \                
     ./autogen.sh && \
     ./configure --enable-silent-rules \
-                --with-lokit-path=/usr/src/libreoffice-online/bundled/include \
+                --with-lokit-path=/usr/src/libreoffice-core/include \
                 --with-lo-path=/opt/libreoffice \
                 --with-max-connections=${MAX_CONNECTIONS} \
                 --with-max-documents=${MAX_DOCUMENTS} \
@@ -163,10 +165,11 @@ RUN set -x && \
                 --with-logfile=/var/log/lool/lool.log \
                 --prefix=/opt/lool \
                 --sysconfdir=/etc \
-                --localstatedir=/var && \
-    ( cd loleaflet/po && ../../scripts/downloadpootle.sh ) && \
-    ( cd loleaflet && make l10n) || exit 1 && \
+                --localstatedir=/var
+RUN cd /usr/src/libreoffice-online && \
     ( scripts/locorestrings.py /usr/src/libreoffice-online /usr/src/libreoffice-core/translations ) && \
+    ( scripts/unocommands.py --update /usr/src/libreoffice-online /usr/src/libreoffice-core ) && \
+    ( scripts/unocommands.py --translate /usr/src/libreoffice-online /usr/src/libreoffice-core/translations ) && \
     make -j`nproc` && \
     mkdir -p /opt/lool && \
     chown -R lool /opt/lool && \
@@ -184,7 +187,7 @@ RUN set -x && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /var/log/*
 
-FROM tiredofit/debian:stretch
+FROM tiredofit/debian:buster
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Set Defaults
@@ -203,8 +206,8 @@ RUN set -x && \
     adduser --quiet --system --group --home /opt/lool lool && \
     \
 ### Add Repositories
-    echo "deb http://deb.debian.org/debian stretch contrib" >> /etc/apt/sources.list && \
-    curl -sL https://deb.nodesource.com/setup_6.x | bash - && \
+    echo "deb http://deb.debian.org/debian buster contrib" >> /etc/apt/sources.list && \
+    curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
     \
     echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections && \
     apt-get -o Dpkg::Options::="--force-confold" upgrade -y && \
@@ -233,6 +236,7 @@ RUN set -x && \
              locales \
              locales-all \
              openssl \ 
+             python3-polib \             
              python3-requests \
              python3-websocket \
              sudo \
