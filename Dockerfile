@@ -1,13 +1,22 @@
 FROM tiredofit/debian:buster as builder
-LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
+LABEL maintainer="Dave Conroy (dave at tiredofit dot ca) - some changes by joerg dot schulz at elternserver dot de"
+# changes stretch->buster. nodejs from debian repo. parameters for lool repositories (to be finalized)
+
+ARG lo_src_commit
+ARG lool_src_branch
+ARG lo_src_branch
+ARG lo_src_repo
 
 ### Set Environment Variables
-ENV LIBREOFFICE_BRANCH=master \
-    ## cp-6.2.4
-    LIBREOFFICE_COMMIT=14e306efae35f01fa63237ce005ad4067ca16909 \
+ENV LIBREOFFICE_BRANCH=$lo_src_branch \
+    LO_REPOSITORY=$lo_src_repo \
+    ## cp-6.0.30
+    LIBREOFFICE_COMMIT=$lo_src_commit \
+    # LIBREOFFICE_COMMIT=3ef1164bc3a13af481102e0abef06929c53bad8b \
     LOOL_BRANCH=master \
-    ## cp-4.2.0-4
-    LOOL_COMMIT=e423755c5280b8f3d2dcebc7dba6151556b7c55d \
+    ## 4.0.4.1
+    # LOOL_COMMIT=a2132266584381c875fa707446417e259753e2f5 \
+    LOOL_COMMIT=$lool_src_commit \
     MAX_CONNECTIONS=5000 \
     ## Uses Approximately 20mb per document open
     MAX_DOCUMENTS=5000 \
@@ -16,14 +25,16 @@ ENV LIBREOFFICE_BRANCH=master \
 ### Get Updates
 RUN set -x && \
 ### Add Repositories
-    apt-get update && \
+    find /var/lib/apt/lists/ -mtime -1 |grep -q partial || apt-get update && apt-get upgrade -y && \
+    # apt-get update && \
     apt-get -o Dpkg::Options::="--force-confold" upgrade -y && \
     echo "deb-src http://deb.debian.org/debian buster main" >> /etc/apt/sources.list && \
     echo "deb http://deb.debian.org/debian buster contrib" >> /etc/apt/sources.list && \
-    curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
+    # curl -sL https://deb.nodesource.com/setup_6.x | bash - && \
     \
 ### Setup Distribution
     echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections && \
+    apt-get update && \
     \
     mkdir -p /home/lool && \
     useradd lool -G sudo && \
@@ -42,12 +53,18 @@ RUN set -x && \
             nodejs \
             openssl \
             python-polib \
-            python3-polib \
             sudo \
+            make \
             translate-toolkit \
             ttf-mscorefonts-installer \
             wget \
-            && \
+            ## stolen from husisusi
+              wget zip make procps automake bison ccache \
+              flex g++ git gperf graphviz junit4 libcap-dev libcppunit-dev build-essential \
+              libcppunit-doc libcunit1 libcunit1-dev libegl1-mesa-dev libfontconfig1-dev libgl1-mesa-dev \
+              libgtk-3-dev libgtk2.0-dev libkrb5-dev libpcap0.8 libpcap0.8-dev libtool libpam0g-dev \
+              libxml2-utils libxrandr-dev libxrender-dev libxslt1-dev libxt-dev m4 nasm openssl libssl-dev \
+              pkg-config python-dev python-polib python3-dev uuid-runtime xsltproc libcap2-bin python-lxml  openjdk-11-jdk libpng-dev libpng16.16 && \
     \
     apt-get build-dep -y \
             libreoffice \
@@ -62,16 +79,23 @@ RUN set -x && \
                 --no-tests \
                 --prefix=/opt/poco \
                 && \
-    make install && \
-    \
+    make install
+# --- continue here
+
+
+RUN set -x && \
 ### Build Fetch LibreOffice - This will take a while..
-    git clone -b ${LIBREOFFICE_BRANCH} https://github.com/LibreOffice/core.git /usr/src/libreoffice-core && \
+    git clone -b ${LIBREOFFICE_BRANCH}  ${LO_REPOSITORY}  /usr/src/libreoffice-core && \
     cd /usr/src/libreoffice-core && \
     echo "lo_sources_ver="`env | grep LIBREOFFICE_VERSION | cut -d'-' -f2` > sources.ver && \
     git reset --hard ${LIBREOFFICE_COMMIT} && \
     git submodule init && \
     git submodule update translations && \
-    git submodule update dictionaries && \
+    git submodule update dictionaries
+### --- continue here
+
+
+RUN set -x && \
     cd /usr/src/libreoffice-core && \
     echo "--disable-dbus \n\
 --disable-dconf \n\
@@ -85,7 +109,7 @@ RUN set -x && \
 --disable-gstreamer-1-0 \n\
 --disable-gtk \n\
 --disable-gtk3 \n\
---disable-kde4 \n\
+# --disable-kde4 \n\
 --disable-odk \n\
 --disable-online-update \n\
 --disable-pdfimport \n\
@@ -104,12 +128,11 @@ RUN set -x && \
 --with-external-thes-dir=/usr/share/mythes \n\
 --with-fonts \n\
 --with-galleries=no \n\
---with-lang=en-GB en-US\n\
+--with-lang=en-GB en-US de\n\
 --with-linker-hash-style=both \n\
---with-parallelism \n\
 --with-system-dicts \n\
 --with-system-zlib \n\
---with-theme=tango \n\
+#--with-theme=galaxy \n\
 #--with-system-xmlsec \n\
 --without-branding \n\
 --without-help \n\
@@ -133,14 +156,16 @@ RUN set -x && \
     sudo -u lool make && \
     cd /usr/src/libreoffice-core && \
     mkdir -p /opt/libreoffice && \
-    chown -R lool /opt/libreoffice && \ 
+    chown -R lool /opt/libreoffice && \
     sudo -u lool make install && \
     cp -R /usr/src/libreoffice-core/instdir/* /opt/libreoffice/ && \
-    \    
+    \
 ### Build LibreOffice Online (Not as long as above)
     git clone -b ${LOOL_BRANCH} https://github.com/LibreOffice/online.git /usr/src/libreoffice-online && \
     cd /usr/src/libreoffice-online && \
-    git reset --hard ${LOOL_COMMIT} && \
+    git reset --hard ${LOOL_COMMIT}  && \
+    apt-get install -y npm && \
+    npm i npm@latest -g && \
     npm install -g \
                 bootstrap \
                 browserify-css \
@@ -151,41 +176,46 @@ RUN set -x && \
                 exorcist \
                 jake \
                 npm \
-                uglify-js \
-                && \
-    \                
+                uglify-js && \
+    cd /usr/src/libreoffice-online &&   \
     ./autogen.sh && \
     ./configure --enable-silent-rules \
-                --with-lokit-path=/usr/src/libreoffice-core/include \
-                --with-lo-path=/opt/libreoffice \
-                --with-max-connections=${MAX_CONNECTIONS} \
-                --with-max-documents=${MAX_DOCUMENTS} \
-                --with-poco-includes=/opt/poco/include \
-                --with-poco-libs=/opt/poco/lib \
-                --with-logfile=/var/log/lool/lool.log \
-                --prefix=/opt/lool \
-                --sysconfdir=/etc \
-                --localstatedir=/var
-RUN cd /usr/src/libreoffice-online && \
+                                    --with-lokit-path=/usr/src/libreoffice-online/bundled/include \
+                                    --with-lo-path=/opt/libreoffice \
+                                    --with-max-connections=${MAX_CONNECTIONS} \
+                                    --with-max-documents=${MAX_DOCUMENTS} \
+                                    --with-poco-includes=/opt/poco/include \
+                                    --with-poco-libs=/opt/poco/lib \
+                                    --with-logfile=/var/log/lool/lool.log \
+                                    --prefix=/opt/lool \
+                                    --sysconfdir=/etc \
+                                    --disable-werror \
+                                    --localstatedir=/var && \
+    ( cd loleaflet/po && ../../scripts/downloadpootle.sh ) && \
+    ( cd loleaflet && make l10n) || exit 1 && \
     ( scripts/locorestrings.py /usr/src/libreoffice-online /usr/src/libreoffice-core/translations ) && \
-    ( scripts/unocommands.py --update /usr/src/libreoffice-online /usr/src/libreoffice-core ) && \
-    ( scripts/unocommands.py --translate /usr/src/libreoffice-online /usr/src/libreoffice-core/translations ) && \
     make -j`nproc` && \
     mkdir -p /opt/lool && \
     chown -R lool /opt/lool && \
+    mkdir /var/cache/loolwsd && \
+    chown -R lool /var/cache/loolwsd && \
     cp -R loolwsd.xml /opt/lool/ && \
     cp -R loolkitconfig.xcu /opt/lool && \
     make install && \
     cd / && \
+    setcap cap_fowner,cap_mknod,cap_sys_chroot=ep /opt/lool/bin/loolforkit && \
     apt-get autoremove -y && \
     apt-get clean && \
-### Cleanup
+    ### Cleanup
     rm -rf /usr/src/* && \
     rm -rf /usr/share/doc && \
     rm -rf /usr/share/man && \
     rm -rf /usr/share/locale && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /var/log/*
+
+
+
 
 FROM tiredofit/debian:buster
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
@@ -200,6 +230,7 @@ ENV ADMIN_USER=admin \
 
 ### Grab Compiled Assets from builder image
 COPY --from=builder /opt/ /opt/
+COPY fonts/local /usr/share/fonts/truetype/
 
 ### Install Dependencies
 RUN set -x && \
@@ -235,8 +266,8 @@ RUN set -x && \
              libxrender1 \
              locales \
              locales-all \
-             openssl \ 
-             python3-polib \             
+             openssl \
+             python3-polib \
              python3-requests \
              python3-websocket \
              sudo \
