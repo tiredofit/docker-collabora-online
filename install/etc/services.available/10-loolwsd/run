@@ -1,0 +1,22 @@
+#!/usr/bin/with-contenv bash
+
+source /assets/functions/00-container
+prepare_service defaults single
+PROCESS_NAME="libreoffice-online"
+
+check_container_initialized
+check_service_initialized init
+liftoff
+
+export LC_CTYPE=en_US.UTF-8
+
+print_info "Starting Libreoffice Online Web Services daemon"
+exec sudo -u lool /opt/lool/bin/loolwsd \
+                  --version \
+                  --o:sys_template_path=/opt/lool/systemplate \
+                  --o:lo_template_path=/opt/libreoffice \
+                  --o:child_root_path=/opt/lool/child-roots \
+                  --o:file_server_root_path=/opt/lool/share/loolwsd storage.filesystem[@allow]=true \
+                  --o:admin_console.username=${ADMIN_USER} \
+                  --o:admin_console.password=${ADMIN_PASS} \
+                  ${EXTRA_OPTIONS} >> /var/log/lool/loolwsd.log

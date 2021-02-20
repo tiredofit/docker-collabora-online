@@ -1,26 +1,42 @@
-FROM tiredofit/debian:stretch as builder
+FROM tiredofit/debian:buster as builder
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
-### Set Environment Variables
-ENV LIBREOFFICE_BRANCH=master \
-    ## cp-6.0.30
-    LIBREOFFICE_COMMIT=3ef1164bc3a13af481102e0abef06929c53bad8b \
-    LOOL_BRANCH=master \
-    ## 4.0.4.1
-    LOOL_COMMIT=a2132266584381c875fa707446417e259753e2f5 \
-    MAX_CONNECTIONS=5000 \
+### Buildtime arguments
+ARG LIBREOFFICE_BRANCH
+ARG LIBREOFFICE_VERSION
+ARG LIBREOFFICE_REPO_URL
+ARG LOOL_BRANCH
+ARG LOOL_VERSION
+ARG LOOL_REPO_URL
+ARG MAX_CONNECTIONS
+ARG MAX_DOCUMENTS
+
+### Environment Variables
+ENV LIBREOFFICE_BRANCH=${LIBREOFFICE_BRANCH:-"master"} \
+    LIBREOFFICE_VERSION=${LIBREOFFICE_VERSION:-"cp-6.4-23"} \
+    LIBREOFFICE_REPO_URL=${LIBREOFFICE_REPO_URL:-"https://github.com/LibreOffice/core"} \
+    #
+    LOOL_BRANCH=${LOOL_BRANCH:-"master"} \
+    LOOL_VERSION=${LOOL_VERSION:-"cp-6.4.6-2"} \
+    LOOL_REPO_URL=${LOOL_REPO_URL:-"https://github.com/CollaboraOnline/online"} \
+    #
+    POCO_VERSION=${POCO_VERSION:-"poco-1.10.1-release.tar.gz"} \
+    POCO_URL=${POCO_URL:-"https://github.com/pocoproject/poco/archive/"} \
+    #
+    MAX_CONNECTIONS=${MAX_CONNECTIONS:-"5000"} \
     ## Uses Approximately 20mb per document open
-    MAX_DOCUMENTS=5000 \
-    POCO_VERSION=1.9.0
+    MAX_DOCUMENTS=${MAX_DOCUMENTS:-"5000"}
+
+ADD build-assets /build-assets
 
 ### Get Updates
 RUN set -x && \
 ### Add Repositories
     apt-get update && \
     apt-get -o Dpkg::Options::="--force-confold" upgrade -y && \
-    echo "deb-src http://deb.debian.org/debian stretch main" >> /etc/apt/sources.list && \
-    echo "deb http://deb.debian.org/debian stretch contrib" >> /etc/apt/sources.list && \
-    curl -sL https://deb.nodesource.com/setup_6.x | bash - && \
+    echo "deb-src http://deb.debian.org/debian buster main" >> /etc/apt/sources.list && \
+    echo "deb http://deb.debian.org/debian buster contrib" >> /etc/apt/sources.list && \
+    curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
     \
 ### Setup Distribution
     echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections && \
@@ -29,154 +45,121 @@ RUN set -x && \
     useradd lool -G sudo && \
     chown lool:lool /home/lool -R && \
     \
-    ## Add Build Dependencies
-    apt-get install -y \
+    BUILD_DEPS=' \
+            adduser \
+            automake \
+            build-essential \
             cpio \
+            default-jre \
+            devscripts \
+            fontconfig \
+            g++ \
             git \
+            inotify-tools \
             libcap-dev \
+            libcap2-bin \
+            libcppunit-dev \
             libghc-zlib-dev \
+            libkrb5-dev \
+            libpam-dev \
             libpam0g-dev \
+            libpng16-16 \
             libssl-dev \
             libtool \
+            libubsan1 \
+            locales-all \
+            m4 \
             nasm \
             nodejs \
             openssl \
+            pkg-config \
+            procps \
+            python3-lxml \
+            python3-polib \
             python-polib \
             sudo \
             translate-toolkit \
             ttf-mscorefonts-installer \
             wget \
+    ' && \
+    ## Add Build Dependencies
+    apt-get install -y \
+            ${BUILD_DEPS} \
             && \
     \
     apt-get build-dep -y \
             libreoffice \
             && \
     \
-    ### Build and Install Poco Libraries
+### Build Poco
     mkdir -p /usr/src/poco && \
-    curl -sSL https://pocoproject.org/releases/poco-${POCO_VERSION}/poco-${POCO_VERSION}-all.tar.gz | tar xvfz - --strip 1 -C /usr/src/poco && \
+    curl -sSL ${POCO_URL}${POCO_VERSION} | tar xvfz - --strip 1 -C /usr/src/poco && \
     cd /usr/src/poco && \
     ./configure \
-                --no-samples \
-                --no-tests \
-                --prefix=/opt/poco \
-                && \
+            --static \
+            --no-tests \
+            --no-samples \
+            --no-sharedlibs \
+            --cflags="-fPIC" \
+            --omit=Zip,Data,Data/SQLite,Data/ODBC,Data/MySQL,MongoDB,PDF,CppParser,PageCompiler,Redis,Encodings \
+            --prefix=/opt/poco \
+            && \
+    make -j$(nproc) && \
     make install && \
     \
-### Build Fetch LibreOffice - This will take a while..
-    git clone -b ${LIBREOFFICE_BRANCH} https://github.com/LibreOffice/core.git /usr/src/libreoffice-core && \
+    ### Build Fetch LibreOffice - This will take a while..
+    git clone -b ${LIBREOFFICE_BRANCH} ${LIBREOFFICE_REPO_URL} /usr/src/libreoffice-core && \
     cd /usr/src/libreoffice-core && \
-    echo "lo_sources_ver="`env | grep LIBREOFFICE_VERSION | cut -d'-' -f2` > sources.ver && \
-    git reset --hard ${LIBREOFFICE_COMMIT} && \
-    git submodule init && \
-    git submodule update translations && \
-    git submodule update dictionaries && \
-    cd /usr/src/libreoffice-core && \
-    echo "--disable-dbus \n\
---disable-dconf \n\
---disable-epm \n\
---disable-evolution2 \n\
---disable-ext-nlpsolver \n\
---disable-ext-wiki-publisher \n\
---disable-firebird-sdbc \n\
---disable-gio \n\
---disable-gstreamer-0-10 \n\
---disable-gstreamer-1-0 \n\
---disable-gtk \n\
---disable-gtk3 \n\
---disable-kde4 \n\
---disable-odk \n\
---disable-online-update \n\
---disable-pdfimport \n\
---disable-postgresql-sdbc \n\
---disable-report-builder \n\
---disable-scripting-beanshell \n\
---disable-scripting-javascript \n\
---disable-sdremote \n\
---disable-sdremote-bluetooth \n\
---enable-extension-integration \n\
---enable-mergelibs \n\
---enable-python=internal \n\
---enable-release-build \n\
---with-external-dict-dir=/usr/share/hunspell \n\
---with-external-hyph-dir=/usr/share/hyphen \n\
---with-external-thes-dir=/usr/share/mythes \n\
---with-fonts \n\
---with-galleries=no \n\
---with-lang=en-GB en-US\n\
---with-linker-hash-style=both \n\
---with-system-dicts \n\
---with-system-zlib \n\
---with-theme=galaxy \n\
-#--with-system-xmlsec \n\
---without-branding \n\
---without-help \n\
---without-java \n\
---without-junit \n\
---without-myspell-dicts \n\
---without-package-format \n\
---without-system-jars \n\
---without-system-jpeg \n\
---without-system-libpng \n\
---without-system-libxml \n\
---without-system-openssl \n\
---without-system-poppler \n\
---without-system-postgresql \n\
---prefix=/opt/libreoffice \n\
-" > /usr/src/libreoffice-core/distro-configs/LibreOfficeOnline.conf && \
-    ./autogen.sh --with-distro="LibreOfficeOnline" && \
-    cd /usr/src/libreoffice-core && \
-    sed -i "s/export XMLSEC_TARBALL := xmlsec1-1.2.26.tar.gz/export XMLSEC_TARBALL := xmlsec1-1.2.25.tar.gz/g" download.lst && \
+    git checkout ${LIBREOFFICE_VERSION} && \
+    if [ -d "/build-assets/core/src" ] ; then cp -R /build-assets/core/src/* /usr/src/libreoffice-core ; fi; \
+    if [ -d "/build-assets/core/scripts" ] ; then for script in /build-assets/core/scripts/*.sh; do echo "** Applying $script"; bash $script; done && \ ; fi ; \
+    \
+    echo "--prefix=/opt/libreoffice" >> /usr/src/libreoffice-core/distro-configs/CPLinux-LOKit.conf  && \
+    ./autogen.sh \
+            --with-distro="CPLinux-LOKit" \
+            --disable-epm \
+            --without-package-format && \
     chown -R lool /usr/src/libreoffice-core && \
-    sudo -u lool make && \
-    cd /usr/src/libreoffice-core && \
+    sudo -u lool make fetch && \
+    sudo -u lool make -j$(nproc) build-nocheck && \
     mkdir -p /opt/libreoffice && \
     chown -R lool /opt/libreoffice && \
-    sudo -u lool make install && \
     cp -R /usr/src/libreoffice-core/instdir/* /opt/libreoffice/ && \
     \
-### Build LibreOffice Online (Not as long as above)
-    git clone -b ${LOOL_BRANCH} https://github.com/LibreOffice/online.git /usr/src/libreoffice-online && \
+    ### Build LibreOffice Online (Not as long as above)
+    git clone -b ${LOOL_BRANCH} ${LOOL_REPO_URL} /usr/src/libreoffice-online && \
     cd /usr/src/libreoffice-online && \
-    git reset --hard ${LOOL_COMMIT} && \
-    npm install -g \
-                bootstrap \
-                browserify-css \
-                d3 \
-                d3 \
-                eslint \
-                evol-colorpicker \
-                exorcist \
-                jake \
-                npm \
-                uglify-js \
-                && \
-    \
+    git checkout ${LOOL_VERSION} && \
+    if [ -d "/build-assets/online/src" ] ; then cp -R /build-assets/online/src/* /usr/src/libreoffice-online ; fi; \
+    if [ -d "/build-assets/online/scripts" ] ; then for script in /build-assets/online/scripts/*.sh; do echo "** Applying $script"; bash $script; done && \ ; fi ; \
     ./autogen.sh && \
     ./configure --enable-silent-rules \
-                --with-lokit-path=/usr/src/libreoffice-online/bundled/include \
+                --with-lokit-path="/usr/src/libreoffice-core/include" \
                 --with-lo-path=/opt/libreoffice \
                 --with-max-connections=${MAX_CONNECTIONS} \
                 --with-max-documents=${MAX_DOCUMENTS} \
-                --with-poco-includes=/opt/poco/include \
-                --with-poco-libs=/opt/poco/lib \
                 --with-logfile=/var/log/lool/lool.log \
                 --prefix=/opt/lool \
                 --sysconfdir=/etc \
-                --localstatedir=/var && \
-    ( cd loleaflet/po && ../../scripts/downloadpootle.sh ) && \
-    ( cd loleaflet && make l10n) || exit 1 && \
+                --localstatedir=/var \
+                --with-poco-includes=/opt/poco/include \
+                --with-poco-libs=/opt/poco/lib \
+                && \
+    \
     ( scripts/locorestrings.py /usr/src/libreoffice-online /usr/src/libreoffice-core/translations ) && \
-    make -j`nproc` && \
+    ( scripts/unocommands.py --update /usr/src/libreoffice-online /usr/src/libreoffice-core ) && \
+    ( scripts/unocommands.py --translate /usr/src/libreoffice-online /usr/src/libreoffice-core/translations ) && \
+    make -j$(nproc) && \
     mkdir -p /opt/lool && \
     chown -R lool /opt/lool && \
     cp -R loolwsd.xml /opt/lool/ && \
     cp -R loolkitconfig.xcu /opt/lool && \
     make install && \
+    \
+    ### Cleanup
     cd / && \
     apt-get autoremove -y && \
     apt-get clean && \
-### Cleanup
     rm -rf /usr/src/* && \
     rm -rf /usr/share/doc && \
     rm -rf /usr/share/man && \
@@ -184,41 +167,49 @@ RUN set -x && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /var/log/*
 
-FROM tiredofit/debian:stretch
+FROM tiredofit/debian:buster
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Set Defaults
 ENV ADMIN_USER=admin \
     ADMIN_PASS=libreoffice \
-    LOG_LEVEL=warning \
-    DICTIONARIES="en_GB en_US" \
-    ENABLE_SMTP=false \
-    PYTHONWARNINGS=ignore
+    ENABLE_SMTP=false
 
 ### Grab Compiled Assets from builder image
 COPY --from=builder /opt/ /opt/
+
+ADD build-assets /build-assets
 
 ### Install Dependencies
 RUN set -x && \
     adduser --quiet --system --group --home /opt/lool lool && \
     \
 ### Add Repositories
-    echo "deb http://deb.debian.org/debian stretch contrib" >> /etc/apt/sources.list && \
-    curl -sL https://deb.nodesource.com/setup_6.x | bash - && \
+    echo "deb http://deb.debian.org/debian buster contrib" >> /etc/apt/sources.list && \
+    curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
     \
     echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections && \
     apt-get -o Dpkg::Options::="--force-confold" upgrade -y && \
     apt-get install -y\
-             adduser \
              apt-transport-https \
              cpio \
              findutils \
+             fontconfig \
              fonts-droid-fallback \
+             fonts-hack \
+             fonts-liberation \
              fonts-noto-cjk \
+             fonts-wqy-microhei \
+             fonts-wqy-zenhei \
+             fonts-ocr-a \
+             fonts-ocr-b \
+             fonts-open-sans \
              hunspell \
-             hunspell-en-us \
+             hunspell-en-ca \
              hunspell-en-gb \
-	     libcap2-bin \
+             hunspell-en-us \
+             inotify-tools \
+             libcap2-bin \
              libcups2 \
              libfontconfig1 \
              libfreetype6 \
@@ -226,16 +217,19 @@ RUN set -x && \
              libpam0g \
              libpng16-16 \
              libsm6 \
+             libubsan0 \
+             libubsan1 \
              libxcb-render0 \
              libxcb-shm0 \
              libxinerama1 \
              libxrender1 \
              locales \
              locales-all \
-             openssl \ 
+             openssl \
+             openssh-client \
+             procps \
              python3-requests \
              python3-websocket \
-             sudo \
              ttf-mscorefonts-installer \
              && \
     \
@@ -244,19 +238,26 @@ RUN set -x && \
     mv /opt/lool/loolwsd.xml /etc/loolwsd/ && \
     mv /opt/lool/loolkitconfig.xcu /etc/loolwsd/ && \
     chown -R lool /etc/loolwsd && \
-    mkdir -p /opt/lool/jails && \
+    mkdir -p /opt/lool/child-roots && \
     chown -R lool /opt/* && \
     mkdir -p /var/cache/loolwsd && \
     chown -R lool /var/cache/loolwsd && \
-    setcap cap_fowner,cap_mknod,cap_sys_chroot=ep /opt/lool/bin/loolforkit && \
-#    setcap cap_sys_admin=ep /opt/lool/bin/loolmount && \
+    setcap cap_fowner,cap_chown,cap_mknod,cap_sys_chroot=ep /opt/lool/bin/loolforkit && \
+    setcap cap_sys_admin=ep /opt/lool/bin/loolmount && \
     mkdir -p /usr/share/hunspell && \
     mkdir -p /usr/share/hyphen && \
     mkdir -p /usr/share/mythes && \
+    mkdir -p /var/cache/loolwsd && \
+    chown -R lool /var/cache/loolwsd && \
+    mkdir -p /var/log/lool && \
+    touch /var/log/lool/loolwsd.log && \
+    chown -R lool /var/log/lool && \
     \
 ### Setup LibreOffice Online Jails
     sudo -u lool /opt/lool/bin/loolwsd-systemplate-setup /opt/lool/systemplate /opt/libreoffice && \
     \
+    if [ -d "/build-assets/container/src" ] ; then cp -R /build-assets/container/src/* /usr/src/libreoffice-container ; fi; \
+    if [ -d "/build-assets/container/scripts" ] ; then for script in /build-assets/container/scripts/*.sh; do echo "** Applying $script"; bash $script; done && \ ; fi ; \
     apt-get autoremove -y && \
     apt-get clean && \
     \
@@ -265,10 +266,8 @@ RUN set -x && \
     rm -rf /usr/share/man && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /var/log/* && \
-    rm -rf /tmp/* && \
-    mkdir -p /var/log/lool && \
-    touch /var/log/lool/loolwsd.log && \
-    chown -R lool /var/log/lool
+    rm -rf /build-assets && \
+    rm -rf /tmp/*
 
 ### Networking Configuration
 EXPOSE 9980

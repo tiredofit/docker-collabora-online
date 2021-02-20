@@ -1,0 +1,6 @@
+/build-assets/container/*
+!/build-assets/container/.empty
+/build-assets/core/*
+!/build-assets/core/.empty
+/build-assets/online/*
+!/build-assets/online/.empty

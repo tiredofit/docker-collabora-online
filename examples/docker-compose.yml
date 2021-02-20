@@ -2,7 +2,7 @@ version: '3.7'
 services:
 
   libreoffice-app:
-    image: tiredofit/libreoffice-online
+    image: tiredofit/libreoffice-online:latest
     container_name: libreoffice-app
     expose:
       - 9980

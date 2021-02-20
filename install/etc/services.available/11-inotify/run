@@ -1,0 +1,16 @@
+#!/usr/bin/with-contenv bash
+
+source /assets/functions/00-container
+prepare_service defaults single
+PROCESS_NAME="config-reloader"
+
+check_container_initialized
+check_service_initialized init 10-loolwsd
+liftoff
+
+while inotifywait -q -e create,delete,modify,attrib /etc/loolwsd/loolwsd.xml
+ do
+  print_info "Reloading loolwsd configuration do to a detected certificate change"
+  pkill -f --signal 1 loolwsd
+  exit 0
+done

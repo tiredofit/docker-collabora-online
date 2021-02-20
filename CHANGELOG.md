@@ -1,7 +1,18 @@
+## 2.0.0 2021-02-20 <dave at tiredofit dot ca>
+
+   ### Added
+      - Refreshed Image = Lots more environment variables (See README)
+      - Debian Buster base
+      - Libreoffice 6.4-23
+      - Libreoffice Online 6.4.6-4
+
+   ### Fixed
+      - TLS Issues
+
 ## 1.6.1 2020-01-21 <joergmschulz at github>
 
    ### Fixed
-      - Misquote in the startup script 
+      - Misquote in the startup script
 
 ## 1.6.0 2020-01-12 <dave at tiredofit dot ca>
 

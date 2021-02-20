@@ -1,4 +1,4 @@
-/var/log/lool/*.log {
+<LOG_PATH>/*.log {
     daily
     ifempty
     rotate 7
