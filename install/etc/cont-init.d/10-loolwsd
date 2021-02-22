@@ -133,7 +133,9 @@ if [ "$SETUP_TYPE" = "AUTO" ]; then
 	fi
 
 	if var_true "${ENABLE_TLS_REVERSE_PROXY}" ; then
-		sed -i -E "s|<termination \(.*\)>.*<\/termination>|<termination \1>true<\/termination>|" /etc/loolwsd/loolwsd.xml
+		sed -i -e "s|<termination \(.*\)>.*<\/termination>|<termination \1>true<\/termination>|" /etc/loolwsd/loolwsd.xml
+	else
+		sed -i -e "s|<termination \(.*\)>.*<\/termination>|<termination \1>false<\/termination>|" /etc/loolwsd/loolwsd.xml
 	fi
 
 	if var_true "${LOG_ANONYMIZE}"; then

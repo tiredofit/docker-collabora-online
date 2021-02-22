@@ -1,3 +1,9 @@
+## 2.0.1 2021-02-21 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix for ENABLE_TLS_REVERSE_PROXY flag
+
+
 ## 2.0.0 2021-02-20 <dave at tiredofit dot ca>
 
    ### Added
