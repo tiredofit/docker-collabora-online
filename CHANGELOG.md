@@ -1,3 +1,10 @@
+## 2.0.2 2021-03-24 <dave at tiredofit dot ca>
+
+   ### Added
+      - Collabora Office 6.4-31
+      - Collabora Online 6.4.7
+
+
 ## 2.0.1 2021-02-21 <dave at tiredofit dot ca>
 
    ### Changed

@@ -13,11 +13,11 @@ ARG MAX_DOCUMENTS
 
 ### Environment Variables
 ENV LIBREOFFICE_BRANCH=${LIBREOFFICE_BRANCH:-"master"} \
-    LIBREOFFICE_VERSION=${LIBREOFFICE_VERSION:-"cp-6.4-23"} \
+    LIBREOFFICE_VERSION=${LIBREOFFICE_VERSION:-"cp-6.4-31"} \
     LIBREOFFICE_REPO_URL=${LIBREOFFICE_REPO_URL:-"https://github.com/LibreOffice/core"} \
     #
     LOOL_BRANCH=${LOOL_BRANCH:-"master"} \
-    LOOL_VERSION=${LOOL_VERSION:-"cp-6.4.6-2"} \
+    LOOL_VERSION=${LOOL_VERSION:-"cp-6.4.7-3"} \
     LOOL_REPO_URL=${LOOL_REPO_URL:-"https://github.com/CollaboraOnline/online"} \
     #
     POCO_VERSION=${POCO_VERSION:-"poco-1.10.1-release.tar.gz"} \
@@ -113,6 +113,7 @@ RUN set -x && \
     git checkout ${LIBREOFFICE_VERSION} && \
     if [ -d "/build-assets/core/src" ] ; then cp -R /build-assets/core/src/* /usr/src/libreoffice-core ; fi; \
     if [ -d "/build-assets/core/scripts" ] ; then for script in /build-assets/core/scripts/*.sh; do echo "** Applying $script"; bash $script; done && \ ; fi ; \
+    sed -i "s|--enable-symbols|--disable-symbols|g" /usr/src/libreoffice-core/distro-configs/CPLinux-LOKit.conf && \
     \
     echo "--prefix=/opt/libreoffice" >> /usr/src/libreoffice-core/distro-configs/CPLinux-LOKit.conf  && \
     ./autogen.sh \
