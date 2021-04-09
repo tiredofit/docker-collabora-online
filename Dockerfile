@@ -10,22 +10,25 @@ ARG LOOL_VERSION
 ARG LOOL_REPO_URL
 ARG MAX_CONNECTIONS
 ARG MAX_DOCUMENTS
+ARG APP_NAME
 
 ### Environment Variables
 ENV LIBREOFFICE_BRANCH=${LIBREOFFICE_BRANCH:-"master"} \
-    LIBREOFFICE_VERSION=${LIBREOFFICE_VERSION:-"cp-6.4-31"} \
+    LIBREOFFICE_VERSION=${LIBREOFFICE_VERSION:-"cp-6.4-34"} \
     LIBREOFFICE_REPO_URL=${LIBREOFFICE_REPO_URL:-"https://github.com/LibreOffice/core"} \
     #
     LOOL_BRANCH=${LOOL_BRANCH:-"master"} \
-    LOOL_VERSION=${LOOL_VERSION:-"cp-6.4.7-3"} \
+    LOOL_VERSION=${LOOL_VERSION:-"cp-6.4.7-6"} \
     LOOL_REPO_URL=${LOOL_REPO_URL:-"https://github.com/CollaboraOnline/online"} \
+    #
+    APP_NAME=${APP_NAME:-"Document Editor"} \
     #
     POCO_VERSION=${POCO_VERSION:-"poco-1.10.1-release.tar.gz"} \
     POCO_URL=${POCO_URL:-"https://github.com/pocoproject/poco/archive/"} \
     #
-    MAX_CONNECTIONS=${MAX_CONNECTIONS:-"5000"} \
+    MAX_CONNECTIONS=${MAX_CONNECTIONS:-"100000"} \
     ## Uses Approximately 20mb per document open
-    MAX_DOCUMENTS=${MAX_DOCUMENTS:-"5000"}
+    MAX_DOCUMENTS=${MAX_DOCUMENTS:-"100000"}
 
 ADD build-assets /build-assets
 
@@ -133,6 +136,13 @@ RUN set -x && \
     git checkout ${LOOL_VERSION} && \
     if [ -d "/build-assets/online/src" ] ; then cp -R /build-assets/online/src/* /usr/src/libreoffice-online ; fi; \
     if [ -d "/build-assets/online/scripts" ] ; then for script in /build-assets/online/scripts/*.sh; do echo "** Applying $script"; bash $script; done && \ ; fi ; \
+    sed -i "s|Collabora Online Development Edition|${APP_NAME}|g" /usr/src/libreoffice-online/configure.ac && \
+    sed -i "s|Collabora Online Development Edition|${APP_NAME}|g" /usr/src/libreoffice-online/loleaflet/admin/admin.strings.js && \
+    sed -i "s|Collabora Online Development Edition|${APP_NAME}|g" /usr/src/libreoffice-online/loleaflet/src/control/Toolbar.js && \
+    sed -i "s|Collabora Online Development Edition|${APP_NAME}|g" /usr/src/libreoffice-online/loleaflet/src/core/Socket.js && \
+    sed -i "s|Collabora Online Development Edition|${APP_NAME}|g" /usr/src/libreoffice-online/loleaflet/src/layer/marker/ProgressOverlay.js && \
+    sed -i "s|Collabora Online Development Edition|${APP_NAME}|g" /usr/src/libreoffice-online/loleaflet/src/map/Clipboard.js && \
+    sed -i "s|Collabora Online Development Edition|${APP_NAME}|g" /usr/src/libreoffice-online/loleaflet/welcome/*.html && \
     ./autogen.sh && \
     ./configure --enable-silent-rules \
                 --with-lokit-path="/usr/src/libreoffice-core/include" \
@@ -145,8 +155,9 @@ RUN set -x && \
                 --localstatedir=/var \
                 --with-poco-includes=/opt/poco/include \
                 --with-poco-libs=/opt/poco/lib \
+                --with-app-name="${APP_NAME}" \
+                --with-vendor="tiredofit@github" \
                 && \
-    \
     ( scripts/locorestrings.py /usr/src/libreoffice-online /usr/src/libreoffice-core/translations ) && \
     ( scripts/unocommands.py --update /usr/src/libreoffice-online /usr/src/libreoffice-core ) && \
     ( scripts/unocommands.py --translate /usr/src/libreoffice-online /usr/src/libreoffice-core/translations ) && \
@@ -199,11 +210,11 @@ RUN set -x && \
              fonts-droid-fallback \
              fonts-hack \
              fonts-liberation \
-             fonts-noto-cjk \
-             fonts-wqy-microhei \
-             fonts-wqy-zenhei \
-             fonts-ocr-a \
-             fonts-ocr-b \
+             #fonts-noto-cjk \
+             #fonts-wqy-microhei \
+             #fonts-wqy-zenhei \
+             #fonts-ocr-a \
+             #fonts-ocr-b \
              fonts-open-sans \
              hunspell \
              hunspell-en-ca \

@@ -1,3 +1,22 @@
+## 2.0.4 2021-04-09 <dave at tiredofit dot ca>
+
+   ### Added
+      - Collabora Office 6.4-33
+      - Collabora Online 6.4.7-5
+
+
+## 2.0.3 2021-04-06 <dave at tiredofit dot ca>
+
+   ### Added
+      - Collabora Office 6.4-33
+      - Collabora Online 6.4.7-5
+      - APP_NAME build argumment: Changed from Collabora Online Development Envionment to 'Document Editor'
+
+   ### Changed
+      - Max Open Documents to 100000 (from 5000)
+      - Max Users to 100000 (from 5000)
+      
+
 ## 2.0.2 2021-03-24 <dave at tiredofit dot ca>
 
    ### Added
