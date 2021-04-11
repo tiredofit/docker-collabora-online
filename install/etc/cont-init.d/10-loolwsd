@@ -36,8 +36,12 @@ fi
 
 ### Load Custom Fonts
 if [ -d /assets/custom-fonts/ ] ; then
-  print_warn "Found Custom Fonts to insert Execute"
+  print_warn "Found Custom Fonts to insert"
+  chown -R lool /assets/custom-fonts
+  chmod +rx /assets/custom-fonts
   ln -s /assets/custom-fonts /usr/share/fonts/truetype/custom
+  fc-cache -f -v > /dev/null 2&>1
+  sudo -u lool /opt/lool/bin/loolwsd-systemplate-setup /opt/lool/systemplate /opt/libreoffice > /dev/null 2&>1
 fi
 
 if var_true "${ENABLE_TLS}" ; then
