@@ -197,6 +197,7 @@ RUN set -x && \
     adduser --quiet --system --group --home /opt/lool lool && \
     \
 ### Add Repositories
+    echo "deb http://deb.debian.org/debian buster contrib" >> /etc/apt/sources.list && \
     echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections && \
     apt-get update && \
     apt-get -o Dpkg::Options::="--force-confold" upgrade -y && \
