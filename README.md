@@ -11,6 +11,7 @@ This will build a container for [LibreOffice Online](https://libreoffice.org/) f
 * This Container uses a [customized Debian Linux base](https://hub.docker.com/r/tiredofit/debian) which includes [s6 overlay](https://github.com/just-containers/s6-overlay) enabled for PID 1 Init capabilities, [zabbix-agent](https://zabbix.org) for individual container monitoring, Cron also installed along with other tools (bash,curl, less, logrotate, nano, vim) for easier management.
 
 * Configurable Concurrent User and Document Limit (set to generarous values by default)
+* Custom Font Support
 * Set features to support autogeneration of TLS certificates/activate reverse proxy support, others..
 * Zabbix Monitoring of Active Documents, Users, Memory Consumed
 
@@ -56,6 +57,7 @@ docker pull tiredofit/libreoffice-online
 The following image tags are available:
 
 * `latest` - See most recent versioned tag
+* `2.1` - Collabora Office 6.4.x and Collabora Office Online 6.4.x
 * `2.0` - Collabora Libreoffice 6.4-23 with Collabora Office Online 6.4.6-2
 * `1.6` - Collabora Libreoffice 6.0.30 with Collabora Office Online 4.0.4-1
 * `1.1` - Collabora Libreoffice 5.3.61 with Collabora Office Online 3.4.2.1
@@ -74,11 +76,13 @@ The following image tags are available:
 
 The following directories should be mapped for persistent storage in order to utilize the container effectively.
 
-| Folder               | Description                                                                                                             |
-| -------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `/var/log/loolwsd`   | Log files                                                                                                               |
-| `/assets/custom`     | If you want to update the theme of LibreOffice online, dropping files in here will overwrite /opt/lool/share on startup |
-| `/etc/loolwsd/certs` | (Optional) If you would like to use your own certificates, map this volume and set appropriate variables                |
+| Folder                   | Description                                                                                                             |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| `/var/log/loolwsd`       | Log files                                                                                                               |
+| `/assets/custom`         | If you want to update the theme of LibreOffice online, dropping files in here will overwrite /opt/lool/share on startup |
+| `/assets/custom-fonts`   | (Optional) If you want to include custom truetype fonts, place them in this folder                                      |
+| `/assets/custom-scripts` | (Optional) If you want to execute a bash script before the application starts, drop your files here                     |
+| `/etc/loolwsd/certs`     | (Optional) If you would like to use your own certificates, map this volume and set appropriate variables                |
 
 ### Environment Variables
 
@@ -91,7 +95,7 @@ Along with the Environment Variables from the [Base image](https://hub.docker.co
 | `ALLOWED_HOSTS`                                | Set which domains which can access service Seperate Multiple with `,` - Example: `^(.*)\.example\.org`             |
 | `DICTIONARIES`                                 | Spell Check Languages - Available `en_GB en_US`                                                                    | `en_GB en_US` |
 | `EXTRA_OPTIONS`                                | If you want to pass additional arguments upon startup, add it here                                                 |
-| `INTERFACE`                                    | Web interface type `classic` or `notebookbar`                                                                      | `classic`      |
+| `INTERFACE`                                    | Web interface type `classic` or `notebookbar`                                                                      | `classic`     |
 | `WATERMARK_OPACITY | Watermark Opacity | `0.2` |
 | `WATERMARK_TEXT`                               | Text to display for watermark                                                                                      | ``            |
 
@@ -120,9 +124,9 @@ Along with the Environment Variables from the [Base image](https://hub.docker.co
 #### TLS Settings
 | Parameter                  | Description                                                         | Default              |
 | -------------------------- | ------------------------------------------------------------------- | -------------------- |
-| `ENABLE_TLS`               | Enable TLS                                                          | `FALSE`               |
+| `ENABLE_TLS`               | Enable TLS                                                          | `FALSE`              |
 | `ENABLE_TLS_CERT_GENERATE` | Enable Self Signed Certificate Generation                           | `TRUE`               |
-| `ENABLE_TLS_REVERSE_PROXY` | If using a Reverse SSL terminating proxy in front of this container | `TRUE`              |
+| `ENABLE_TLS_REVERSE_PROXY` | If using a Reverse SSL terminating proxy in front of this container | `TRUE`               |
 | `TLS_CA_FILENAME`          | TLS CA Cert filename with extension                                 | `ca-chain-cert.pem`  |
 | `TLS_CERT_FILENAME`        | TLS Certificate filename with extension                             | `cert.pem`           |
 | `TLS_CERT_PATH`            | TLS certificates path                                               | `/etc/loolwsd/certs` |
@@ -177,6 +181,9 @@ Along with the Environment Variables from the [Base image](https://hub.docker.co
 | `CHILD_ROOT_PATH`       | Child root path                                         | `child-roots`   |
 | `SYS_TEMPLATE_PATH`     | System Template Path                                    | `systemplate`   |
 
+
+#### Adding Custom Fonts
+This image comes with some highly opninionated default fonts by the LibreOffice team, and also includes the Microsoft TTF fonts from the late 90s. To add custom fonts into this image, cxport a volume and place them in `/assets/custom-fonts` and they will be inserted upon next container restart.
 
 ### Networking
 

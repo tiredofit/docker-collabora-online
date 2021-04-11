@@ -197,25 +197,14 @@ RUN set -x && \
     adduser --quiet --system --group --home /opt/lool lool && \
     \
 ### Add Repositories
-    echo "deb http://deb.debian.org/debian buster contrib" >> /etc/apt/sources.list && \
-    curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
-    \
     echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections && \
+    apt-get update && \
     apt-get -o Dpkg::Options::="--force-confold" upgrade -y && \
     apt-get install -y\
              apt-transport-https \
              cpio \
              findutils \
              fontconfig \
-             fonts-droid-fallback \
-             fonts-hack \
-             fonts-liberation \
-             #fonts-noto-cjk \
-             #fonts-wqy-microhei \
-             #fonts-wqy-zenhei \
-             #fonts-ocr-a \
-             #fonts-ocr-b \
-             fonts-open-sans \
              hunspell \
              hunspell-en-ca \
              hunspell-en-gb \

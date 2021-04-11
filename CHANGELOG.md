@@ -1,8 +1,16 @@
+## 2.1.0 2021-04-11 <dave at tiredofit dot ca>
+
+   ### Added
+      - Custom Font insertion Support
+
+   ### Removed
+      - My opinionated required font list
+
 ## 2.0.4 2021-04-09 <dave at tiredofit dot ca>
 
    ### Added
-      - Collabora Office 6.4-33
-      - Collabora Online 6.4.7-5
+      - Collabora Office 6.4-34
+      - Collabora Online 6.4.7-6
 
 
 ## 2.0.3 2021-04-06 <dave at tiredofit dot ca>

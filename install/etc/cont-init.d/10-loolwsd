@@ -34,6 +34,12 @@ if [ -d /assets/custom-scripts/ ] ; then
   done
 fi
 
+### Load Custom Fonts
+if [ -d /assets/custom-fonts/ ] ; then
+  print_warn "Found Custom Fonts to insert Execute"
+  ln -s /assets/custom-fonts /usr/share/fonts/truetype/custom
+fi
+
 if var_true "${ENABLE_TLS}" ; then
 	print_debug "TLS Enabled"
 	if [ ! -d "${TLS_CERT_PATH}" ] || [ ! -f "${TLS_KEY_FILENAME}" ] || [ ! -f "${TLS_CA_FILENAME}" ] || [ ! -f "${TLS_CERT_FILENAME}" ] ; then
