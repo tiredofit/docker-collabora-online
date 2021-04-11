@@ -1,4 +1,4 @@
-## 2.1.1 2021-04-11 <dave at tiredofit dot ca>
+## 2.1.2 2021-04-11 <dave at tiredofit dot ca>
 
    ### Fixed
       - Safety net to enforce custom fonts to be included
