@@ -14,11 +14,11 @@ ARG APP_NAME
 
 ### Environment Variables
 ENV LIBREOFFICE_BRANCH=${LIBREOFFICE_BRANCH:-"master"} \
-    LIBREOFFICE_VERSION=${LIBREOFFICE_VERSION:-"cp-6.4-34"} \
+    LIBREOFFICE_VERSION=${LIBREOFFICE_VERSION:-"cp-6.4-37"} \
     LIBREOFFICE_REPO_URL=${LIBREOFFICE_REPO_URL:-"https://github.com/LibreOffice/core"} \
     #
     LOOL_BRANCH=${LOOL_BRANCH:-"master"} \
-    LOOL_VERSION=${LOOL_VERSION:-"cp-6.4.7-6"} \
+    LOOL_VERSION=${LOOL_VERSION:-"cp-6.4.8-2"} \
     LOOL_REPO_URL=${LOOL_REPO_URL:-"https://github.com/CollaboraOnline/online"} \
     #
     APP_NAME=${APP_NAME:-"Document Editor"} \
