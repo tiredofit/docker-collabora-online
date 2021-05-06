@@ -18,7 +18,7 @@ ENV LIBREOFFICE_BRANCH=${LIBREOFFICE_BRANCH:-"master"} \
     LIBREOFFICE_REPO_URL=${LIBREOFFICE_REPO_URL:-"https://github.com/LibreOffice/core"} \
     #
     LOOL_BRANCH=${LOOL_BRANCH:-"master"} \
-    LOOL_VERSION=${LOOL_VERSION:-"cp-6.4.8-2"} \
+    LOOL_VERSION=${LOOL_VERSION:-"cp-6.4.8-4"} \
     LOOL_REPO_URL=${LOOL_REPO_URL:-"https://github.com/CollaboraOnline/online"} \
     #
     APP_NAME=${APP_NAME:-"Document Editor"} \

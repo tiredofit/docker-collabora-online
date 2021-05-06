@@ -1,3 +1,9 @@
+## 2.1.4 2021-05-06 <dave at tiredofit dot ca>
+
+   ### Added
+      - Collabora Online 6.4.8-4
+
+
 ## 2.1.3 2021-04-26 <dave at tiredofit dot ca>
 
    ### Added
