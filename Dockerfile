@@ -2,24 +2,24 @@ FROM tiredofit/debian:buster as builder
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Buildtime arguments
+ARG COLLABORA_ONLINE_BRANCH
+ARG COLLABORA_ONLINE_VERSION
+ARG COLLABORA_ONLINE_REPO_URL
 ARG LIBREOFFICE_BRANCH
 ARG LIBREOFFICE_VERSION
 ARG LIBREOFFICE_REPO_URL
-ARG LOOL_BRANCH
-ARG LOOL_VERSION
-ARG LOOL_REPO_URL
 ARG MAX_CONNECTIONS
 ARG MAX_DOCUMENTS
 ARG APP_NAME
 
 ### Environment Variables
-ENV LIBREOFFICE_BRANCH=${LIBREOFFICE_BRANCH:-"master"} \
-    LIBREOFFICE_VERSION=${LIBREOFFICE_VERSION:-"cp-6.4-37"} \
+ENV COLLABORA_ONLINE_BRANCH=${COLLABORA_ONLINE_BRANCH:-"master"} \
+    COLLABORA_ONLINE_VERSION=${COLLABORA_ONLINE_VERSION:-"cp-6.4.8-6"} \
+    COLLABORA_ONLINE_REPO_URL=${COLLABORA_ONLINE_REPO_URL:-"https://github.com/CollaboraOnline/online"} \
+    # 
+    LIBREOFFICE_BRANCH=${LIBREOFFICE_BRANCH:-"master"} \
+    LIBREOFFICE_VERSION=${LIBREOFFICE_VERSION:-"cp-6.4-38"} \
     LIBREOFFICE_REPO_URL=${LIBREOFFICE_REPO_URL:-"https://github.com/LibreOffice/core"} \
-    #
-    LOOL_BRANCH=${LOOL_BRANCH:-"master"} \
-    LOOL_VERSION=${LOOL_VERSION:-"cp-6.4.8-4"} \
-    LOOL_REPO_URL=${LOOL_REPO_URL:-"https://github.com/CollaboraOnline/online"} \
     #
     APP_NAME=${APP_NAME:-"Document Editor"} \
     #
@@ -131,9 +131,9 @@ RUN set -x && \
     cp -R /usr/src/libreoffice-core/instdir/* /opt/libreoffice/ && \
     \
     ### Build LibreOffice Online (Not as long as above)
-    git clone -b ${LOOL_BRANCH} ${LOOL_REPO_URL} /usr/src/libreoffice-online && \
+    git clone -b ${COLLABORA_ONLINE_BRANCH} ${COLLABORA_ONLINE_REPO_URL} /usr/src/libreoffice-online && \
     cd /usr/src/libreoffice-online && \
-    git checkout ${LOOL_VERSION} && \
+    git checkout ${COLLABORA_ONLINE_VERSION} && \
     if [ -d "/build-assets/online/src" ] ; then cp -R /build-assets/online/src/* /usr/src/libreoffice-online ; fi; \
     if [ -d "/build-assets/online/scripts" ] ; then for script in /build-assets/online/scripts/*.sh; do echo "** Applying $script"; bash $script; done && \ ; fi ; \
     sed -i "s|Collabora Online Development Edition|${APP_NAME}|g" /usr/src/libreoffice-online/configure.ac && \

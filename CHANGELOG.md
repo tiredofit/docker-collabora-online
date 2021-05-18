@@ -1,3 +1,12 @@
+## 2.1.5 2021-05-17 <dave at tiredofit dot ca>
+
+   ### Added
+      - Libreoffice 6.4-38
+      - Collabora Online 6.4.8-6
+
+   ### Added
+      - Changd LOOL_* variables to COLLABORA_ONLINE_*
+
 ## 2.1.4 2021-05-06 <dave at tiredofit dot ca>
 
    ### Added
