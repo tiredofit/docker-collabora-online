@@ -1,5 +1,6 @@
   libreoffice-app:
     image: tiredofit/libreoffice-online
+    hostname: libreoffice.example.com
     container_name: libreoffice-app
     expose:
       - 9980
