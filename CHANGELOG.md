@@ -1,3 +1,11 @@
+## 2.1.7 2021-07-03 <dave at tiredofit dot ca>
+
+   ### Added
+      - Poco 1.11.0
+      - LibreOffice Core 6.4-42
+      - Collabora Online 6.4.10.1
+
+
 ## 2.1.6 2021-05-27 <dave at tiredofit dot ca>
 
    ### Added
