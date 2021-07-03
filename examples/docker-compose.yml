@@ -3,6 +3,7 @@ services:
 
   libreoffice-app:
     image: tiredofit/libreoffice-online:latest
+    hostname: libreoffice.example.com
     container_name: libreoffice-app
     expose:
       - 9980

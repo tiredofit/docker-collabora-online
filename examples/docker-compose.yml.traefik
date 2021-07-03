@@ -4,8 +4,7 @@ services:
   libreoffice-online-app:
     image: tiredofit/libreoffice-online
     container_name: libreoffice-online-app
-    hostname: libreoffice
-    domainname: example.com
+    hostname: libreoffice.example.com
     expose:
       - 9980
     cap_add:
