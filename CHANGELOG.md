@@ -1,3 +1,12 @@
+## 2.2.0 2021-07-11 <dave at tiredofit dot ca>
+
+   ### Added
+      - Additional Dictionaries now supported upon container startup
+
+   ### Changed
+      - Libreoffice 6.4-44
+
+
 ## 2.1.7 2021-07-03 <dave at tiredofit dot ca>
 
    ### Added

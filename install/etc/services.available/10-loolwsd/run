@@ -10,7 +10,7 @@ liftoff
 
 export LC_CTYPE=en_US.UTF-8
 
-print_info "Starting Libreoffice Online Web Services daemon"
+print_start "Starting Libreoffice Online Web Services daemon"
 exec sudo -u lool /opt/lool/bin/loolwsd \
                   --version \
                   --o:sys_template_path=/opt/lool/systemplate \

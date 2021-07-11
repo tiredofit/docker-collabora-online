@@ -16,9 +16,9 @@ ARG APP_NAME
 ENV COLLABORA_ONLINE_BRANCH=${COLLABORA_ONLINE_BRANCH:-"master"} \
     COLLABORA_ONLINE_VERSION=${COLLABORA_ONLINE_VERSION:-"cp-6.4.10-1"} \
     COLLABORA_ONLINE_REPO_URL=${COLLABORA_ONLINE_REPO_URL:-"https://github.com/CollaboraOnline/online"} \
-    # 
+    #
     LIBREOFFICE_BRANCH=${LIBREOFFICE_BRANCH:-"master"} \
-    LIBREOFFICE_VERSION=${LIBREOFFICE_VERSION:-"cp-6.4-42"} \
+    LIBREOFFICE_VERSION=${LIBREOFFICE_VERSION:-"cp-6.4-44"} \
     LIBREOFFICE_REPO_URL=${LIBREOFFICE_REPO_URL:-"https://github.com/LibreOffice/core"} \
     #
     APP_NAME=${APP_NAME:-"Document Editor"} \
@@ -185,7 +185,7 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 ### Set Defaults
 ENV ADMIN_USER=admin \
     ADMIN_PASS=libreoffice \
-    ENABLE_SMTP=false
+    CONTAINER_ENABLE_MESSAGING=FALSE
 
 ### Grab Compiled Assets from builder image
 COPY --from=builder /opt/ /opt/

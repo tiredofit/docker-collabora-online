@@ -16,6 +16,46 @@ rm /opt/lool/systemplate/etc/resolv.conf
 cp /etc/hosts /opt/lool/systemplate/etc/
 cp /etc/resolv.conf /opt/lool/systemplate/etc/
 
+## Custom Dictionary Support
+if [ -n "${DICTIONARIES}" ]; then
+	langs=$(echo "${DICTIONARIES}" | tr "," "\n")
+	print_notice "Setting up custom dictionary support - Please wait.."
+	silent apt-get update
+	for lang in $langs
+	do
+		print_notice "Adding dictionary for '{lang}' - Please wait.."
+		case "${lang}" in
+			"de" )
+				silent apt-get install -y hunspell-de-de
+				cp -R /usr/share/hunspell/de*.{aff,dic} /opt/libreoffice/share/extensions/dict-de/
+			;;
+			"en-au" )
+				silent apt-get install -y hunspell-en-au
+				cp -R /usr/share/hunspell/en*.{aff,dic} /opt/libreoffice/share/extensions/dict-en/
+			;;
+			"en-za" )
+				silent apt-get install -y hunspell-en-za
+				cp -R /usr/share/hunspell/en*.{aff,dic} /opt/libreoffice/share/extensions/dict-en/
+			;;
+			"pt-br" )
+				silent apt-get install -y hunspell-pt-br
+				cp -R /usr/share/hunspell/pt*.{aff,dic} /opt/libreoffice/share/extensions/dict-pt-BR/
+			;;
+			"pt-pt" )
+				silent apt-get install -y hunspell-pt-pt
+				cp -R /usr/share/hunspell/pt*.{aff,dic} /opt/libreoffice/share/extensions/dict-pt-PT/
+			;;
+			* )
+				silent apt-get install -y hunspell-"${lang}"
+				cp -R /usr/share/hunspell/"${lang}"*.{aff,dic} /opt/libreoffice/share/extensions/dict-"${lang}"/
+			;;
+		esac
+	done
+
+	silent apt-get clean
+	rm -rf /var/lib/apt/lists/*
+	chown -R lool. /opt/libreoffice/share/extensions/*
+fi
 
 ### Custom File Support
 if [ -d /assets/custom ] ; then
@@ -85,7 +125,7 @@ fi
 if [ "$SETUP_TYPE" = "AUTO" ]; then
     print_notice "Autogenerating Configuration File"
 	### Replace Configuration directives
-	sed -i -e "s|<allowed_languages \(.*\)>.*</allowed_languages>|<allowed_languages \1>${DICTIONARIES}</allowed_languages>|g" /etc/loolwsd/loolwsd.xml
+	sed -i -e "s|<allowed_languages \(.*\)>.*</allowed_languages>|<allowed_languages \1>${LANGUAGE}</allowed_languages>|g" /etc/loolwsd/loolwsd.xml
 	sed -i -e "s|<sys_template_path \(.*\)>.*</sys_template_path>|<sys_template_path \1>${SYS_TEMPLATE_PATH}</sys_template_path>|g" /etc/loolwsd/loolwsd.xml
 	sed -i -e "s|<child_root_path \(.*\)>.*</child_root_path>|<child_root_path \1>${CHILD_ROOT_PATH}</child_root_path>|g" /etc/loolwsd/loolwsd.xml
 	sed -i -e "s|<mount_jail_tree \(.*\)>.*</mount_jail_tree>|<mount_jail_tree \1>${ENABLE_MOUNT_JAIL}</mount_jail_tree>|g" /etc/loolwsd/loolwsd.xml

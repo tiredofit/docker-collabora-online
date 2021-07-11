@@ -41,6 +41,7 @@ This will build a Docker image for [LibreOffice Online](https://libreoffice.org/
     - [General Usage](#general-usage)
     - [Administration](#administration)
     - [Logging](#logging)
+    - [Spell Check](#spell-check)
     - [TLS Settings](#tls-settings)
     - [Performance and Limits](#performance-and-limits)
     - [Cleanup](#cleanup)
@@ -123,15 +124,14 @@ Be sure to view the following repositories to understand all the customizable op
 | [OS Base](https://github.com/tiredofit/docker-debian/) | Customized Image based on Debian Linux |
 
 #### General Usage
-| Parameter           | Description                                                                                                        | Default       |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------ | ------------- |
-| `SETUP_TYPE`        | Automatically generate configuration with defaults. Set to `MANUAL` and map the configuration file to use your own | `AUTO`        |
-| `ALLOWED_HOSTS`     | Set which domains which can access service Seperate Multiple with `,` - Example: `^(.*)\.example\.org`             | |
-| `DICTIONARIES`      | Spell Check Languages - Available `en_GB en_US`                                                                    | `en_GB en_US` |
-| `EXTRA_OPTIONS`     | If you want to pass additional arguments upon startup, add it here                                                 | |
-| `INTERFACE`         | Web interface type `classic` or `notebookbar`                                                                      | `classic`     |
-| `WATERMARK_OPACITY` | Watermark Opacity                                                                                                  | `0.2`         |
-| `WATERMARK_TEXT`    | Text to display for watermark                                                                                      | ``            |
+| Parameter           | Description                                                                                                        | Default   |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------ | --------- |
+| `SETUP_TYPE`        | Automatically generate configuration with defaults. Set to `MANUAL` and map the configuration file to use your own | `AUTO`    |
+| `ALLOWED_HOSTS`     | Set which domains which can access service Seperate Multiple with `,` - Example: `^(.*)\.example\.org`             | ``        |
+| `EXTRA_OPTIONS`     | If you want to pass additional arguments upon startup, add it here                                                 | ``        |
+| `INTERFACE`         | Web interface type `classic` or `notebookbar`                                                                      | `classic` |
+| `WATERMARK_OPACITY` | Watermark Opacity                                                                                                  | `0.2`     |
+| `WATERMARK_TEXT`    | Text to display for watermark                                                                                      | ``        |
 
 #### Administration
 | Parameter              | Description                                   | Default       |
@@ -154,7 +154,56 @@ Be sure to view the following repositories to understand all the customizable op
 | `LOG_LIBREOFFICE`    | Log filter what Libreoffice entries                                                              | `-INFO-WARN`    |
 | `LOG_FILE_FLUSH`     | Flush Entries on each line to log file                                                           | `false`         |
 
+#### Spell Check
 
+The image comes with English (US, GB, Canada variants) baked into the image, however upon container startup you can add more spell check variants via environment variables. Add multiple dictionaries by seperating with a comma.
+
+| Parameter      | Value       | Description            |
+| -------------- | ----------- | ---------------------- |
+| `DICTIONARIES` | `af`        | Afrikaans              |
+|                | `an`        | Aragonese              |
+|                | `ar`        | Arabic                 |
+|                | `be`        | Belarusian             |
+|                | `bg`        | Bulgarian              |
+|                | `bn`        | Bengali                |
+|                | `br`        | Breton                 |
+|                | `bs`        | Bosnian                |
+|                | `ca`        | Catalan                |
+|                | `cs`        | Czech                  |
+|                | `da`        | Danish                 |
+|                | `de`     | German                 |
+|                | `el`        | Greek                  |
+|                | `en-au`     | English (Australia)    |
+|                | `en-za`     | English (South Africa) |
+|                | `es`        | Spanish                |
+|                | `fr` | French                 |
+|                | `gd`        | Gaelic                 |
+|                | `he`        | Hebrew                 |
+|                | `hi`        | Hindi                  |
+|                | `hu`        | Hungarian              |
+|                | `id`        | Indonesian             |
+|                | `is`        | Icelandic              |
+|                | `it`        | Italian                |
+|                | `ko`        | Korean                 |
+|                | `lo`        | Laotian                |
+|                | `lt`        | Lithuanian             |
+|                | `lv`        | Latvian                |
+|                | `ne`        | Nepalese               |
+|                | `nl`        | Dutch                  |
+|                | `no`        | Norwegian              |
+|                | `pl`        | Polish                 |
+|                | `pt-br`     | Portugese (Brazil)     |
+|                | `pt-pt`     | Portugese              |
+|                | `ro`        | Romanian               |
+|                | `ru`        | Russian                |
+|                | `sk`        | Slovak                 |
+|                | `sr`        | Serbian                |
+|                | `sv`        | Swedish                |
+|                | `sw`        | Kiswahili              |
+|                | `th`        | Thai                   |
+|                | `tr`        | Turkish                |
+|                | `uk`        | Ukranian               |
+|                | `vi`        | Vietnamese             |
 #### TLS Settings
 | Parameter                  | Description                                                         | Default              |
 | -------------------------- | ------------------------------------------------------------------- | -------------------- |
