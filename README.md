@@ -158,52 +158,52 @@ Be sure to view the following repositories to understand all the customizable op
 
 The image comes with English (US, GB, Canada variants) baked into the image, however upon container startup you can add more spell check variants via environment variables. Add multiple dictionaries by seperating with a comma.
 
-| Parameter      | Value       | Description            |
-| -------------- | ----------- | ---------------------- |
-| `DICTIONARIES` | `af`        | Afrikaans              |
-|                | `an`        | Aragonese              |
-|                | `ar`        | Arabic                 |
-|                | `be`        | Belarusian             |
-|                | `bg`        | Bulgarian              |
-|                | `bn`        | Bengali                |
-|                | `br`        | Breton                 |
-|                | `bs`        | Bosnian                |
-|                | `ca`        | Catalan                |
-|                | `cs`        | Czech                  |
-|                | `da`        | Danish                 |
-|                | `de`     | German                 |
-|                | `el`        | Greek                  |
-|                | `en-au`     | English (Australia)    |
-|                | `en-za`     | English (South Africa) |
-|                | `es`        | Spanish                |
-|                | `fr` | French                 |
-|                | `gd`        | Gaelic                 |
-|                | `he`        | Hebrew                 |
-|                | `hi`        | Hindi                  |
-|                | `hu`        | Hungarian              |
-|                | `id`        | Indonesian             |
-|                | `is`        | Icelandic              |
-|                | `it`        | Italian                |
-|                | `ko`        | Korean                 |
-|                | `lo`        | Laotian                |
-|                | `lt`        | Lithuanian             |
-|                | `lv`        | Latvian                |
-|                | `ne`        | Nepalese               |
-|                | `nl`        | Dutch                  |
-|                | `no`        | Norwegian              |
-|                | `pl`        | Polish                 |
-|                | `pt-br`     | Portugese (Brazil)     |
-|                | `pt-pt`     | Portugese              |
-|                | `ro`        | Romanian               |
-|                | `ru`        | Russian                |
-|                | `sk`        | Slovak                 |
-|                | `sr`        | Serbian                |
-|                | `sv`        | Swedish                |
-|                | `sw`        | Kiswahili              |
-|                | `th`        | Thai                   |
-|                | `tr`        | Turkish                |
-|                | `uk`        | Ukranian               |
-|                | `vi`        | Vietnamese             |
+| Parameter      | Value   | Description            |
+| -------------- | ------- | ---------------------- |
+| `DICTIONARIES` | `af`    | Afrikaans              |
+|                | `an`    | Aragonese              |
+|                | `ar`    | Arabic                 |
+|                | `be`    | Belarusian             |
+|                | `bg`    | Bulgarian              |
+|                | `bn`    | Bengali                |
+|                | `br`    | Breton                 |
+|                | `bs`    | Bosnian                |
+|                | `ca`    | Catalan                |
+|                | `cs`    | Czech                  |
+|                | `da`    | Danish                 |
+|                | `de`    | German                 |
+|                | `el`    | Greek                  |
+|                | `en-au` | English (Australia)    |
+|                | `en-za` | English (South Africa) |
+|                | `es`    | Spanish                |
+|                | `fr`    | French                 |
+|                | `gd`    | Gaelic                 |
+|                | `he`    | Hebrew                 |
+|                | `hi`    | Hindi                  |
+|                | `hu`    | Hungarian              |
+|                | `id`    | Indonesian             |
+|                | `is`    | Icelandic              |
+|                | `it`    | Italian                |
+|                | `ko`    | Korean                 |
+|                | `lo`    | Laotian                |
+|                | `lt`    | Lithuanian             |
+|                | `lv`    | Latvian                |
+|                | `ne`    | Nepalese               |
+|                | `nl`    | Dutch                  |
+|                | `no`    | Norwegian              |
+|                | `pl`    | Polish                 |
+|                | `pt-br` | Portugese (Brazil)     |
+|                | `pt-pt` | Portugese              |
+|                | `ro`    | Romanian               |
+|                | `ru`    | Russian                |
+|                | `sk`    | Slovak                 |
+|                | `sr`    | Serbian                |
+|                | `sv`    | Swedish                |
+|                | `sw`    | Kiswahili              |
+|                | `th`    | Thai                   |
+|                | `tr`    | Turkish                |
+|                | `uk`    | Ukranian               |
+|                | `vi`    | Vietnamese             |
 #### TLS Settings
 | Parameter                  | Description                                                         | Default              |
 | -------------------------- | ------------------------------------------------------------------- | -------------------- |

@@ -1,3 +1,13 @@
+## 2.2.1 2021-07-26 <dave at tiredofit dot ca>
+
+   ### Added
+      - Libreoffice Core 6.4.45
+      - Collabora Online 6.4.10-5
+
+   ### Changed
+      - Bugfix for console output when adding new languages
+
+
 ## 2.2.0 2021-07-11 <dave at tiredofit dot ca>
 
    ### Added

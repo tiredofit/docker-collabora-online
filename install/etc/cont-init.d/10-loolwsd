@@ -23,7 +23,7 @@ if [ -n "${DICTIONARIES}" ]; then
 	silent apt-get update
 	for lang in $langs
 	do
-		print_notice "Adding dictionary for '{lang}' - Please wait.."
+		print_notice "Adding dictionary for '${lang}' - Please wait.."
 		case "${lang}" in
 			"de" )
 				silent apt-get install -y hunspell-de-de
