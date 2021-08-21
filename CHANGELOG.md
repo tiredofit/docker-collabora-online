@@ -1,3 +1,10 @@
+## 2.2.2 2021-08-21 <dave at tiredofit dot ca>
+
+   ### Added
+      - Collabora Online 6.4.10-10
+      - LibreOffice 6.4-46
+
+
 ## 2.2.1 2021-07-26 <dave at tiredofit dot ca>
 
    ### Added
