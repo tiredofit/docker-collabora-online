@@ -21,7 +21,7 @@ services:
     volumes:
       - ./logs:/var/log/lool
     environment:
-      - ZABBIX_HOSTNAME=libreoffice-online-app
+      - CONTAINER_NAME=libreoffice-online-app
 
       - ADMIN_USER=admin
       - ADMIN_PASS=libreoffice

@@ -24,7 +24,7 @@ services:
       - LETSENCRYPT_HOST=libreoffice.example.com
       - LETSENCRYPT_EMAIL=techsupport@example.com
  
-      - ZABBIX_HOSTNAME=libreoffice-app
+      - CONTAINER_NAME=libreoffice-app
       
       - ADMIN_USER=admin
       - ADMIN_PASS=libreoffice
