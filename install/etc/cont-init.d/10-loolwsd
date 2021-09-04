@@ -10,6 +10,7 @@ print_debug "Creating directories and setting up logging"
 mkdir -p "${LOG_PATH}"
 touch "${LOG_PATH}"/"${LOG_FILE}"
 chown -R lool "${LOG_PATH}"
+create_logrotate lool ${LOG_PATH}/${LOG_FILE} none lool lool
 
 print_debug "Setting up DNS Resolution"
 rm /opt/lool/systemplate/etc/resolv.conf
