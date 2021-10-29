@@ -32,7 +32,7 @@ This will build a Docker image for [LibreOffice Online](https://libreoffice.org/
 - [Installation](#installation)
   - [Build from Source](#build-from-source)
   - [Prebuilt Images](#prebuilt-images)
-    - [Multi Archictecture](#multi-archictecture)
+    - [Multi Architecture](#multi-archictecture)
 - [Configuration](#configuration)
   - [Quick Start](#quick-start)
   - [Persistent Storage](#persistent-storage)
@@ -88,7 +88,7 @@ The following image tags are available along with their taged release based on w
 | `6.0.x`             | `4.0.x`                    | `1.6`    |
 | `5.3.x`             | `3.4.x`                    | 1.1      |
 
-#### Multi Archictecture
+#### Multi Architecture
 Images are built primarily for `amd64` architecture, and may also include builds for `arm/v6`, `arm/v7`, `arm64` and others. These variants are all unsupported. Consider [sponsoring](https://github.com/sponsors/tiredofit) my work so that I can work with various hardware. To see if this image supports multiple architecures, type `docker manifest (image):(tag)`
 
 ## Configuration

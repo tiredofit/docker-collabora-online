@@ -1,4 +1,4 @@
-FROM tiredofit/debian:buster as builder
+FROM docker.io/tiredofit/debian:buster as builder
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Buildtime arguments
@@ -14,11 +14,11 @@ ARG APP_NAME
 
 ### Environment Variables
 ENV COLLABORA_ONLINE_BRANCH=${COLLABORA_ONLINE_BRANCH:-"master"} \
-    COLLABORA_ONLINE_VERSION=${COLLABORA_ONLINE_VERSION:-"cp-6.4.11-1"} \
+    COLLABORA_ONLINE_VERSION=${COLLABORA_ONLINE_VERSION:-"cp-6.4.13-3"} \
     COLLABORA_ONLINE_REPO_URL=${COLLABORA_ONLINE_REPO_URL:-"https://github.com/CollaboraOnline/online"} \
     #
     LIBREOFFICE_BRANCH=${LIBREOFFICE_BRANCH:-"master"} \
-    LIBREOFFICE_VERSION=${LIBREOFFICE_VERSION:-"cp-6.4-47"} \
+    LIBREOFFICE_VERSION=${LIBREOFFICE_VERSION:-"cp-6.4-49"} \
     LIBREOFFICE_REPO_URL=${LIBREOFFICE_REPO_URL:-"https://github.com/LibreOffice/core"} \
     #
     APP_NAME=${APP_NAME:-"Document Editor"} \
@@ -179,7 +179,7 @@ RUN set -x && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /var/log/*
 
-FROM tiredofit/debian:buster
+FROM docker.io/tiredofit/debian:buster
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Set Defaults
