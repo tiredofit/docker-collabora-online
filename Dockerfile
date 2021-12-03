@@ -127,7 +127,7 @@ RUN set -x && \
     sudo -u cool make -j$(nproc) build-nocheck && \
     mkdir -p /opt/libreoffice && \
     chown -R cool /opt/libreoffice && \
-    cp -R /usr/src/libreoffice-core/instdir/* /opt/libreoffice/
+    cp -R /usr/src/libreoffice-core/instdir/* /opt/libreoffice/ && \
     \
     ### Build LibreOffice Online (Not as long as above)
     git clone -b ${COLLABORA_ONLINE_BRANCH} ${COLLABORA_ONLINE_REPO_URL} /usr/src/collabora-online && \
