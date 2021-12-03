@@ -1,30 +1,30 @@
 version: '3.7'
 services:
-  
-  libreoffice-online-app:
-    image: tiredofit/libreoffice-online
-    container_name: libreoffice-online-app
-    hostname: libreoffice.example.com
+
+  collabora-online-app:
+    image: tiredofit/collabora-online
+    container_name: collabora-online-app
+    hostname: collabora-online.example.com
     expose:
       - 9980
     cap_add:
       - MKNOD
       - NET_ADMIN
     privileged: true
-    labels: 
+    labels:
       - traefik.enable=true
-      - traefik.frontend.rule=Host:libreoffice.example.com
+      - traefik.frontend.rule=Host:collabora-online.example.com
       - traefik.port=9980
       - traefik.protocol=http
       - traefik.docker.network=proxy
-      - traefik.backend=libreoffice-online-app
+      - traefik.backend=collabora-online-app
     volumes:
-      - ./logs:/var/log/lool
+      - ./logs:/logs
     environment:
-      - CONTAINER_NAME=libreoffice-online-app
+      - CONTAINER_NAME=collabora-online-app
 
       - ADMIN_USER=admin
-      - ADMIN_PASS=libreoffice
+      - ADMIN_PASS=collabora-online
 
       - ALLOWED_HOSTS=^(.*)\.example\.org
 

@@ -9,8 +9,8 @@
     </groups>
     <templates>
         <template>
-            <template>APP - Libreoffice Online</template>
-            <name>APP - Libreoffice Online</name>
+            <template>APP - Collabora Online</template>
+            <name>APP - Collabora Online</name>
             <description/>
             <groups>
                 <group>
@@ -28,7 +28,7 @@
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>lool.active_docs</key>
+                    <key>cool.active_docs</key>
                     <delay>1m</delay>
                     <history>7d</history>
                     <trends>365d</trends>
@@ -69,7 +69,7 @@
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>lool.active_users</key>
+                    <key>cool.active_users</key>
                     <delay>1m</delay>
                     <history>7d</history>
                     <trends>365d</trends>
@@ -110,7 +110,7 @@
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>lool.bytes_received</key>
+                    <key>cool.bytes_received</key>
                     <delay>1m</delay>
                     <history>7d</history>
                     <trends>365d</trends>
@@ -151,7 +151,7 @@
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>lool.bytes_sent</key>
+                    <key>cool.bytes_sent</key>
                     <delay>1m</delay>
                     <history>7d</history>
                     <trends>365d</trends>
@@ -192,7 +192,7 @@
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>lool.mem_consumed</key>
+                    <key>cool.mem_consumed</key>
                     <delay>1m</delay>
                     <history>7d</history>
                     <trends>365d</trends>
@@ -233,7 +233,7 @@
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>proc.num[loolwsd]</key>
+                    <key>proc.num[coolwsd]</key>
                     <delay>1m</delay>
                     <history>7d</history>
                     <trends>365d</trends>
@@ -279,7 +279,7 @@
     </templates>
     <triggers>
         <trigger>
-            <expression>{APP - Libreoffice Online:proc.num[loolwsd].sum(#3)}=0</expression>
+            <expression>{APP - Libreoffice Online:proc.num[coolwsd].sum(#3)}=0</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>Libreoffice Online Service is down</name>
@@ -323,7 +323,7 @@
                     <type>0</type>
                     <item>
                         <host>APP - Libreoffice Online</host>
-                        <key>lool.active_docs</key>
+                        <key>cool.active_docs</key>
                     </item>
                 </graph_item>
             </graph_items>
@@ -355,7 +355,7 @@
                     <type>0</type>
                     <item>
                         <host>APP - Libreoffice Online</host>
-                        <key>lool.active_users</key>
+                        <key>cool.active_users</key>
                     </item>
                 </graph_item>
             </graph_items>
@@ -387,7 +387,7 @@
                     <type>0</type>
                     <item>
                         <host>APP - Libreoffice Online</host>
-                        <key>lool.active_docs</key>
+                        <key>cool.active_docs</key>
                     </item>
                 </graph_item>
                 <graph_item>
@@ -399,7 +399,7 @@
                     <type>0</type>
                     <item>
                         <host>APP - Libreoffice Online</host>
-                        <key>lool.active_users</key>
+                        <key>cool.active_users</key>
                     </item>
                 </graph_item>
                 <graph_item>
@@ -411,7 +411,7 @@
                     <type>0</type>
                     <item>
                         <host>APP - Libreoffice Online</host>
-                        <key>lool.mem_consumed</key>
+                        <key>cool.mem_consumed</key>
                     </item>
                 </graph_item>
             </graph_items>
@@ -443,7 +443,7 @@
                     <type>0</type>
                     <item>
                         <host>APP - Libreoffice Online</host>
-                        <key>lool.mem_consumed</key>
+                        <key>cool.mem_consumed</key>
                     </item>
                 </graph_item>
             </graph_items>

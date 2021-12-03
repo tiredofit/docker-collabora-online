@@ -2,5 +2,5 @@
 
 set_config() {
     print_debug "Setting: '${1}' with value: '${2}'"
-    /opt/lool/bin/loolconfig set ${1} ""${2}""
+    /opt/cool/bin/coolconfig set ${1} ""${2}""
 }

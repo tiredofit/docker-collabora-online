@@ -1,4 +1,4 @@
-FROM docker.io/tiredofit/debian:buster as builder
+FROM docker.io/tiredofit/debian:bullseye as builder
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Buildtime arguments
@@ -14,16 +14,16 @@ ARG APP_NAME
 
 ### Environment Variables
 ENV COLLABORA_ONLINE_BRANCH=${COLLABORA_ONLINE_BRANCH:-"master"} \
-    COLLABORA_ONLINE_VERSION=${COLLABORA_ONLINE_VERSION:-"cp-6.4.13-3"} \
+    COLLABORA_ONLINE_VERSION=${COLLABORA_ONLINE_VERSION:-"cp-21.11.0-3 "} \
     COLLABORA_ONLINE_REPO_URL=${COLLABORA_ONLINE_REPO_URL:-"https://github.com/CollaboraOnline/online"} \
     #
     LIBREOFFICE_BRANCH=${LIBREOFFICE_BRANCH:-"master"} \
-    LIBREOFFICE_VERSION=${LIBREOFFICE_VERSION:-"cp-6.4-49"} \
+    LIBREOFFICE_VERSION=${LIBREOFFICE_VERSION:-"distro/collabora/co-2021"} \
     LIBREOFFICE_REPO_URL=${LIBREOFFICE_REPO_URL:-"https://github.com/LibreOffice/core"} \
     #
     APP_NAME=${APP_NAME:-"Document Editor"} \
     #
-    POCO_VERSION=${POCO_VERSION:-"poco-1.11.0-release.tar.gz"} \
+    POCO_VERSION=${POCO_VERSION:-"poco-1.11.1-release.tar.gz"} \
     POCO_URL=${POCO_URL:-"https://github.com/pocoproject/poco/archive/"} \
     #
     MAX_CONNECTIONS=${MAX_CONNECTIONS:-"100000"} \
@@ -37,16 +37,16 @@ RUN set -x && \
 ### Add Repositories
     apt-get update && \
     apt-get -o Dpkg::Options::="--force-confold" upgrade -y && \
-    echo "deb-src http://deb.debian.org/debian buster main" >> /etc/apt/sources.list && \
-    echo "deb http://deb.debian.org/debian buster contrib" >> /etc/apt/sources.list && \
+    echo "deb-src http://deb.debian.org/debian $(cat /etc/os-release |grep "VERSION=" | awk 'NR>1{print $1}' RS='(' FS=')') main" >> /etc/apt/sources.list && \
+    echo "deb http://deb.debian.org/debian $(cat /etc/os-release |grep "VERSION=" | awk 'NR>1{print $1}' RS='(' FS=')') contrib" >> /etc/apt/sources.list && \
     curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
     \
 ### Setup Distribution
     echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections && \
     \
-    mkdir -p /home/lool && \
-    useradd lool -G sudo && \
-    chown lool:lool /home/lool -R && \
+    mkdir -p /home/cool && \
+    useradd cool -G sudo && \
+    chown cool:cool /home/cool -R && \
     \
     BUILD_DEPS=' \
             adduser \
@@ -79,7 +79,6 @@ RUN set -x && \
             procps \
             python3-lxml \
             python3-polib \
-            python-polib \
             sudo \
             translate-toolkit \
             ttf-mscorefonts-installer \
@@ -123,34 +122,34 @@ RUN set -x && \
             --with-distro="CPLinux-LOKit" \
             --disable-epm \
             --without-package-format && \
-    chown -R lool /usr/src/libreoffice-core && \
-    sudo -u lool make fetch && \
-    sudo -u lool make -j$(nproc) build-nocheck && \
+    chown -R cool /usr/src/libreoffice-core && \
+    sudo -u cool make fetch && \
+    sudo -u cool make -j$(nproc) build-nocheck && \
     mkdir -p /opt/libreoffice && \
-    chown -R lool /opt/libreoffice && \
-    cp -R /usr/src/libreoffice-core/instdir/* /opt/libreoffice/ && \
+    chown -R cool /opt/libreoffice && \
+    cp -R /usr/src/libreoffice-core/instdir/* /opt/libreoffice/
     \
     ### Build LibreOffice Online (Not as long as above)
-    git clone -b ${COLLABORA_ONLINE_BRANCH} ${COLLABORA_ONLINE_REPO_URL} /usr/src/libreoffice-online && \
-    cd /usr/src/libreoffice-online && \
+    git clone -b ${COLLABORA_ONLINE_BRANCH} ${COLLABORA_ONLINE_REPO_URL} /usr/src/collabora-online && \
+    cd /usr/src/collabora-online && \
     git checkout ${COLLABORA_ONLINE_VERSION} && \
-    if [ -d "/build-assets/online/src" ] ; then cp -R /build-assets/online/src/* /usr/src/libreoffice-online ; fi; \
+    if [ -d "/build-assets/online/src" ] ; then cp -R /build-assets/online/src/* /usr/src/collabora-online ; fi; \
     if [ -d "/build-assets/online/scripts" ] ; then for script in /build-assets/online/scripts/*.sh; do echo "** Applying $script"; bash $script; done && \ ; fi ; \
-    sed -i "s|Collabora Online Development Edition|${APP_NAME}|g" /usr/src/libreoffice-online/configure.ac && \
-    sed -i "s|Collabora Online Development Edition|${APP_NAME}|g" /usr/src/libreoffice-online/loleaflet/admin/admin.strings.js && \
-    sed -i "s|Collabora Online Development Edition|${APP_NAME}|g" /usr/src/libreoffice-online/loleaflet/src/control/Toolbar.js && \
-    sed -i "s|Collabora Online Development Edition|${APP_NAME}|g" /usr/src/libreoffice-online/loleaflet/src/core/Socket.js && \
-    sed -i "s|Collabora Online Development Edition|${APP_NAME}|g" /usr/src/libreoffice-online/loleaflet/src/layer/marker/ProgressOverlay.js && \
-    sed -i "s|Collabora Online Development Edition|${APP_NAME}|g" /usr/src/libreoffice-online/loleaflet/src/map/Clipboard.js && \
-    sed -i "s|Collabora Online Development Edition|${APP_NAME}|g" /usr/src/libreoffice-online/loleaflet/welcome/*.html && \
+    sed -i "s|Collabora Online Development Edition|${APP_NAME}|g" /usr/src/collabora-online/configure.ac && \
+    sed -i "s|Collabora Online Development Edition|${APP_NAME}|g" /usr/src/collabora-online/browser/admin/admin.strings.js && \
+    sed -i "s|Collabora Online Development Edition|${APP_NAME}|g" /usr/src/collabora-online/browser/src/control/Toolbar.js && \
+    sed -i "s|Collabora Online Development Edition|${APP_NAME}|g" /usr/src/collabora-online/browser/src/core/Socket.js && \
+    sed -i "s|Collabora Online Development Edition|${APP_NAME}|g" /usr/src/collabora-online/browser/src/layer/marker/ProgressOverlay.js && \
+    sed -i "s|Collabora Online Development Edition|${APP_NAME}|g" /usr/src/collabora-online/browser/src/map/Clipboard.js && \
+    sed -i "s|Collabora Online Development Edition|${APP_NAME}|g" /usr/src/collabora-online/browser/welcome/*.html && \
     ./autogen.sh && \
     ./configure --enable-silent-rules \
                 --with-lokit-path="/usr/src/libreoffice-core/include" \
                 --with-lo-path=/opt/libreoffice \
                 --with-max-connections=${MAX_CONNECTIONS} \
                 --with-max-documents=${MAX_DOCUMENTS} \
-                --with-logfile=/var/log/lool/lool.log \
-                --prefix=/opt/lool \
+                --with-logfile=/var/log/cool/cool.log \
+                --prefix=/opt/cool \
                 --sysconfdir=/etc \
                 --localstatedir=/var \
                 --with-poco-includes=/opt/poco/include \
@@ -158,14 +157,12 @@ RUN set -x && \
                 --with-app-name="${APP_NAME}" \
                 --with-vendor="tiredofit@github" \
                 && \
-    ( scripts/locorestrings.py /usr/src/libreoffice-online /usr/src/libreoffice-core/translations ) && \
-    ( scripts/unocommands.py --update /usr/src/libreoffice-online /usr/src/libreoffice-core ) && \
-    ( scripts/unocommands.py --translate /usr/src/libreoffice-online /usr/src/libreoffice-core/translations ) && \
+    #( scripts/locorestrings.py /usr/src/collabora-online /usr/src/libreoffice-core/translations ) && \
     make -j$(nproc) && \
-    mkdir -p /opt/lool && \
-    chown -R lool /opt/lool && \
-    cp -R loolwsd.xml /opt/lool/ && \
-    cp -R loolkitconfig.xcu /opt/lool && \
+    mkdir -p /opt/cool && \
+    chown -R cool /opt/cool && \
+    cp -R coolwsd.xml /opt/cool/ && \
+    cp -R coolkitconfig.xcu /opt/cool && \
     make install && \
     \
     ### Cleanup
@@ -179,12 +176,12 @@ RUN set -x && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /var/log/*
 
-FROM docker.io/tiredofit/debian:buster
+FROM docker.io/tiredofit/debian:bullseye
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Set Defaults
 ENV ADMIN_USER=admin \
-    ADMIN_PASS=libreoffice \
+    ADMIN_PASS=collaboraonline \
     CONTAINER_ENABLE_MESSAGING=FALSE
 
 ### Grab Compiled Assets from builder image
@@ -194,10 +191,10 @@ ADD build-assets /build-assets
 
 ### Install Dependencies
 RUN set -x && \
-    adduser --quiet --system --group --home /opt/lool lool && \
+    adduser --quiet --system --group --home /opt/cool cool && \
     \
 ### Add Repositories
-    echo "deb http://deb.debian.org/debian buster contrib" >> /etc/apt/sources.list && \
+    echo "deb http://deb.debian.org/debian $(cat /etc/os-release |grep "VERSION=" | awk 'NR>1{print $1}' RS='(' FS=')') contrib" >> /etc/apt/sources.list && \
     echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections && \
     apt-get update && \
     apt-get -o Dpkg::Options::="--force-confold" upgrade -y && \
@@ -219,7 +216,6 @@ RUN set -x && \
              libpam0g \
              libpng16-16 \
              libsm6 \
-             libubsan0 \
              libubsan1 \
              libxcb-render0 \
              libxcb-shm0 \
@@ -236,27 +232,27 @@ RUN set -x && \
              && \
     \
 ### Setup Directories and Permissions
-    mkdir -p /etc/loolwsd && \
-    mv /opt/lool/loolwsd.xml /etc/loolwsd/ && \
-    mv /opt/lool/loolkitconfig.xcu /etc/loolwsd/ && \
-    chown -R lool /etc/loolwsd && \
-    mkdir -p /opt/lool/child-roots && \
-    chown -R lool /opt/* && \
-    mkdir -p /var/cache/loolwsd && \
-    chown -R lool /var/cache/loolwsd && \
-    setcap cap_fowner,cap_chown,cap_mknod,cap_sys_chroot=ep /opt/lool/bin/loolforkit && \
-    setcap cap_sys_admin=ep /opt/lool/bin/loolmount && \
+    mkdir -p /etc/coolwsd && \
+    mv /opt/cool/coolwsd.xml /etc/coolwsd/ && \
+    mv /opt/cool/coolkitconfig.xcu /etc/coolwsd/ && \
+    chown -R cool /etc/coolwsd && \
+    mkdir -p /opt/cool/child-roots && \
+    chown -R cool /opt/* && \
+    mkdir -p /var/cache/coolwsd && \
+    chown -R cool /var/cache/coolwsd && \
+    setcap cap_fowner,cap_chown,cap_mknod,cap_sys_chroot=ep /opt/cool/bin/coolforkit && \
+    setcap cap_sys_admin=ep /opt/cool/bin/coolmount && \
     mkdir -p /usr/share/hunspell && \
     mkdir -p /usr/share/hyphen && \
     mkdir -p /usr/share/mythes && \
-    mkdir -p /var/cache/loolwsd && \
-    chown -R lool /var/cache/loolwsd && \
-    mkdir -p /var/log/lool && \
-    touch /var/log/lool/loolwsd.log && \
-    chown -R lool /var/log/lool && \
+    mkdir -p /var/cache/coolwsd && \
+    chown -R cool /var/cache/coolwsd && \
+    mkdir -p /var/log/cool && \
+    touch /var/log/cool/coolwsd.log && \
+    chown -R cool /var/log/cool && \
     \
 ### Setup LibreOffice Online Jails
-    sudo -u lool /opt/lool/bin/loolwsd-systemplate-setup /opt/lool/systemplate /opt/libreoffice && \
+    sudo -u cool /opt/cool/bin/coolwsd-systemplate-setup /opt/cool/systemplate /opt/libreoffice && \
     \
     if [ -d "/build-assets/container/src" ] ; then cp -R /build-assets/container/src/* /usr/src/libreoffice-container ; fi; \
     if [ -d "/build-assets/container/scripts" ] ; then for script in /build-assets/container/scripts/*.sh; do echo "** Applying $script"; bash $script; done && \ ; fi ; \

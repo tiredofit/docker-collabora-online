@@ -1,9 +1,9 @@
-# github.com/tiredofit/docker-libreoffice-online
+# github.com/tiredofit/docker-collabora-online
 
-[![GitHub release](https://img.shields.io/github/v/tag/tiredofit/docker-libreoffice-online?style=flat-square)](https://github.com/tiredofit/docker-libreoffice-online/releases/latest)
-[![Build Status](https://img.shields.io/github/workflow/status/tiredofit/docker-libreoffice-online/build?style=flat-square)](https://github.com/tiredofit/docker-libreoffice-online/actions?query=workflow%3Abuild)
-[![Docker Stars](https://img.shields.io/docker/stars/tiredofit/libreoffice-online.svg?style=flat-square&logo=docker)](https://hub.docker.com/r/tiredofit/libreoffice-online/)
-[![Docker Pulls](https://img.shields.io/docker/pulls/tiredofit/libreoffice-online.svg?style=flat-square&logo=docker)](https://hub.docker.com/r/tiredofit/libreoffice-online/)
+[![GitHub release](https://img.shields.io/github/v/tag/tiredofit/docker-collabora-online?style=flat-square)](https://github.com/tiredofit/docker-collabora-online/releases/latest)
+[![Build Status](https://img.shields.io/github/workflow/status/tiredofit/docker-collabora-online/build?style=flat-square)](https://github.com/tiredofit/docker-collabora-online/actions?query=workflow%3Abuild)
+[![Docker Stars](https://img.shields.io/docker/stars/tiredofit/collabora-online.svg?style=flat-square&logo=docker)](https://hub.docker.com/r/tiredofit/collabora-online/)
+[![Docker Pulls](https://img.shields.io/docker/pulls/tiredofit/collabora-online.svg?style=flat-square&logo=docker)](https://hub.docker.com/r/tiredofit/collabora-online/)
 [![Become a sponsor](https://img.shields.io/badge/sponsor-tiredofit-181717.svg?logo=github&style=flat-square)](https://github.com/sponsors/tiredofit)
 [![Paypal Donate](https://img.shields.io/badge/donate-paypal-00457c.svg?logo=paypal&style=flat-square)](https://www.paypal.me/tiredofit)
 
@@ -12,7 +12,7 @@
 
 ## About
 
-This will build a Docker image for [LibreOffice Online](https://libreoffice.org/) for editing documents in a browser from supported applications.
+This will build a Docker image for [Collabora Online](https://www.collaboraoffice.com/collabora-online//) for editing documents in a browser from supported applications.
 
 * Configurable Concurrent User and Document Limit (set to generarous values by default)
 * Custom Font Support
@@ -72,21 +72,22 @@ This will build a Docker image for [LibreOffice Online](https://libreoffice.org/
 
 
 ### Prebuilt Images
-Builds of the image are available on [Docker Hub](https://hub.docker.com/r/tiredofit/libreoffice-online) and is the recommended method of installation.
+Builds of the image are available on [Docker Hub](https://hub.docker.com/r/tiredofit/collabora-online) and is the recommended method of installation.
 
 ```bash
-docker pull tiredofit/libreoffice-online:(imagetag)
+docker pull tiredofit/collabora-online:(imagetag)
 ```
 
 The following image tags are available along with their taged release based on what's written in the [Changelog](CHANGELOG.md):
 
-| LibreOffice version | LibreOffice Online version | Tag      |
-| ------------------- | -------------------------- | -------- |
-| `6.4.x`             | `6.4.x`                    | `latest` |
-| `6.4.x`             | `6.4.x`                    | `2.1`    |
-| `6.4.x`             | `6.4.x`                    | `2.0`    |
-| `6.0.x`             | `4.0.x`                    | `1.6`    |
-| `5.3.x`             | `3.4.x`                    | 1.1      |
+| LibreOffice version | Collabora Online version  | Tag      |
+| ------------------- | ------------------------- | -------- |
+| `2021`              | `21.11.0`                 | `latest` |
+| `2021`              | `21.11.0`                 | `2.3.0`  |
+| `6.4.x`             | `6.4.x`                   | `2.1`    |
+| `6.4.x`             | `6.4.x`                   | `2.0`    |
+| `6.0.x`             | `4.0.x`                   | `1.6`    |
+| `5.3.x`             | `3.4.x`                   | `1.1`    |
 
 #### Multi Architecture
 Images are built primarily for `amd64` architecture, and may also include builds for `arm/v6`, `arm/v7`, `arm64` and others. These variants are all unsupported. Consider [sponsoring](https://github.com/sponsors/tiredofit) my work so that I can work with various hardware. To see if this image supports multiple architecures, type `docker manifest (image):(tag)`
@@ -105,17 +106,17 @@ The following directories should be mapped for persistent storage in order to ut
 
 | Folder                   | Description                                                                                                             |
 | ------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
-| `/var/log/loolwsd`       | Log files                                                                                                               |
-| `/assets/custom`         | If you want to update the theme of LibreOffice online, dropping files in here will overwrite /opt/lool/share on startup |
+| `/logs/`                 | Log files                                                                                                               |
+| `/assets/custom`         | If you want to update the theme of Collabora online, dropping files in here will overwrite /opt/cool/share on startup |
 | `/assets/custom-fonts`   | (Optional) If you want to include custom truetype fonts, place them in this folder                                      |
 | `/assets/custom-scripts` | (Optional) If you want to execute a bash script before the application starts, drop your files here                     |
-| `/etc/loolwsd/certs`     | (Optional) If you would like to use your own certificates, map this volume and set appropriate variables                |
+| `/etc/coolwsd/certs`     | (Optional) If you would like to use your own certificates, map this volume and set appropriate variables                |
 
 ### Environment Variables
 
 #### Base Images used
 
-This image relies on an [Alpine Linux](https://hub.docker.com/r/tiredofit/debian) base image that relies on an [init system](https://github.com/just-containers/s6-overlay) for added capabilities. Outgoing SMTP capabilities are handlded via `msmtp`. Individual container performance monitoring is performed by [zabbix-agent](https://zabbix.org). Additional tools include: `bash`,`curl`,`less`,`logrotate`,`nano`,`vim`.
+This image relies on a [Debian Linux](https://hub.docker.com/r/tiredofit/debian) base image that relies on an [init system](https://github.com/just-containers/s6-overlay) for added capabilities. Outgoing SMTP capabilities are handlded via `msmtp`. Individual container performance monitoring is performed by [zabbix-agent](https://zabbix.org). Additional tools include: `bash`,`curl`,`less`,`logrotate`,`nano`,`vim`.
 
 Be sure to view the following repositories to understand all the customizable options:
 
@@ -134,19 +135,19 @@ Be sure to view the following repositories to understand all the customizable op
 | `WATERMARK_TEXT`    | Text to display for watermark                                                                                      | ``        |
 
 #### Administration
-| Parameter              | Description                                   | Default       |
-| ---------------------- | --------------------------------------------- | ------------- |
-| `ENABLE_ADMIN_CONSOLE` | Enable Administration Console                 | `TRUE`        |
-| `ADMIN_USER`           | User for accessing Administration Console     | `admin`       |
-| `ADMIN_PASS`           | Password for accessing Administration Console | `libreoffice` |
+| Parameter              | Description                                   | Default           |
+| ---------------------- | --------------------------------------------- | ----------------- |
+| `ENABLE_ADMIN_CONSOLE` | Enable Administration Console                 | `TRUE`            |
+| `ADMIN_USER`           | User for accessing Administration Console     | `admin`           |
+| `ADMIN_PASS`           | Password for accessing Administration Console | `collaboraonline` |
 
 #### Logging
 | Parameter            | Description                                                                                      | Default         |
 | -------------------- | ------------------------------------------------------------------------------------------------ | --------------- |
 | `LOG_TYPE`           | Write Logs to `CONSOLE` or to `FILE`                                                             | `CONSOLE`       |
 | `LOG_LEVEL`          | Log Level - Available `none, fatal, critical, error, warning, notice, information, debug, trace` | `warning`       |
-| `LOG_PATH`           | Log Path                                                                                         | `/var/log/lool` |
-| `LOG_FILE`           | Log File                                                                                         | `lool.log`      |
+| `LOG_PATH`           | Log Path                                                                                         | `/var/log/cool` |
+| `LOG_FILE`           | Log File                                                                                         | `cool.log`      |
 | `LOG_ANONYMIZE`      | Anonymize File+User information in Logs `TRUE` or `FALSE`                                        | `FALSE`         |
 | `LOG_ANONYMIZE_SALT` | Salt for anonymizing log data                                                                    | 8 char random   |
 | `LOG_CLIENT_CONSOLE` | Log in users browser console                                                                     | `false`         |
@@ -212,7 +213,7 @@ The image comes with English (US, GB, Canada variants) baked into the image, how
 | `ENABLE_TLS_REVERSE_PROXY` | If using a Reverse SSL terminating proxy in front of this container | `TRUE`               |
 | `TLS_CA_FILENAME`          | TLS CA Cert filename with extension                                 | `ca-chain-cert.pem`  |
 | `TLS_CERT_FILENAME`        | TLS Certificate filename with extension                             | `cert.pem`           |
-| `TLS_CERT_PATH`            | TLS certificates path                                               | `/etc/loolwsd/certs` |
+| `TLS_CERT_PATH`            | TLS certificates path                                               | `/etc/coolwsd/certs` |
 | `TLS_KEY_FILENAME`         | TLS Private Key filename with extension                             | `key.pem`            |
 
 #### Performance and Limits
@@ -220,7 +221,7 @@ The image comes with English (US, GB, Canada variants) baked into the image, how
 | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
 | `AUTO_SAVE`                 | The number of seconds after which document, if modified, should be saved                                                              | `300`           |
 | `BATCH_PRIORITY`            | A (lower) priority for use by batch convert to processes to avoid starving interactive ones                                           | `5`             |
-| `CONNECTION_TIMEOUT`        | Connection, Send, Receeive timeout in seconds for connections initiated by loolwsd                                                    | `30`            |
+| `CONNECTION_TIMEOUT`        | Connection, Send, Receeive timeout in seconds for connections initiated by coolwsd                                                    | `30`            |
 | `FILE_SIZE_LIMIT`           | The maximum file size allowed to each document process to write                                                                       | `0` (unlimited) |
 | `IDLE_SAVE`                 | The number of idle seconds after which document, if modified, should be saved                                                         | `30`            |
 | `IDLE_UNLOAD_TIMEOUT`       | The maximum number of seconds before unloading an idle documen                                                                        | `3600`          |
@@ -251,14 +252,14 @@ The image comes with English (US, GB, Canada variants) baked into the image, how
 | ----------------------- | ------------------------------------------------------- | --------------- |
 | `ALLOW_172_XX_SUBNET`   | Allow 172.16.0.0/12 Subnet                              | `TRUE`          |
 | `ENABLE_CAPABILITIES`   | Enable Capabilities                                     | `TRUE`          |
-| `ENABLE_CONFIG_RELOAD`  | Enable Reload of loolwsd if config changed in container | `TRUE`          |
+| `ENABLE_CONFIG_RELOAD`  | Enable Reload of coolwsd if config changed in container | `TRUE`          |
 | `ENABLE_SECCOMP`        | Enable Seccomp                                          | `TRUE`          |
-| `LOLEAFLET_HTML`        | Name of loleaflet.html to use                           | `loleafet.html` |
+| `LOLEAFLET_HTML`        | Name of browser.html to use                           | `loleafet.html` |
 | `REDLINING_AS_COMMENTS` | Show red-lines as comments                              | `false`         |
 | `DOCUMENT_SIGNING_URL`  | Endpoint URL of signing server                          | ``              |
 | `NETWORK_PROTOCOL`      | Network Protocol `ipv4` `ipv6` `all`                    | `ipv4`          |
 | `ENABLE_WEBDAV`         | Enable WebDav Storage                                   | `FALSE`         |
-| `FILE_SERVER_ROOT_PATH` | Path to directory considered as root                    | `loleaflet/../` |
+| `FILE_SERVER_ROOT_PATH` | Path to directory considered as root                    | `browser/../` |
 | `FRAME_ANCESTORS`       | Hosts where interface van be hosted in Iframe           | ``              |
 | `ENABLE_MOUNT_JAIL`     | Enable mounting jails                                   | `true`          |
 | `CHILD_ROOT_PATH`       | Child root path                                         | `child-roots`   |
@@ -274,7 +275,7 @@ The following ports are exposed.
 
 | Port   | Description              |
 | ------ | ------------------------ |
-| `9980` | Libreoffice Web Services |
+| `9980` | Collabora Web Services   |
 
 * * *
 ## Maintenance
@@ -307,6 +308,6 @@ These images were built to serve a specific need in a production environment and
 MIT. See [LICENSE](LICENSE) for more details.
 # References
 
-* https://libreoffice.org
+* https://www.collaboraoffice.com/collabora-online/
 
 

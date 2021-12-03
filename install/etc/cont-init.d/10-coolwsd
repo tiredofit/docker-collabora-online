@@ -1,0 +1,236 @@
+#!/usr/bin/with-contenv bash
+
+source /assets/functions/00-container
+prepare_service single
+PROCESS_NAME="collabora-online"
+
+sanity_var "ALLOWED_HOSTS" "Allowed Hostnames"
+
+print_debug "Creating directories and setting up logging"
+mkdir -p "${LOG_PATH}"
+touch "${LOG_PATH}"/"${LOG_FILE}"
+chown -R cool "${LOG_PATH}"
+create_logrotate cool ${LOG_PATH}/${LOG_FILE} none cool cool
+
+print_debug "Setting up DNS Resolution"
+rm /opt/cool/systemplate/etc/resolv.conf
+cp /etc/hosts /opt/cool/systemplate/etc/
+cp /etc/resolv.conf /opt/cool/systemplate/etc/
+
+## Custom Dictionary Support
+if [ -n "${DICTIONARIES}" ]; then
+	langs=$(echo "${DICTIONARIES}" | tr "," "\n")
+	print_notice "Setting up custom dictionary support - Please wait.."
+	silent apt-get update
+	for lang in $langs
+	do
+		print_notice "Adding dictionary for '${lang}' - Please wait.."
+		case "${lang}" in
+			"de" )
+				silent apt-get install -y hunspell-de-de
+				cp -R /usr/share/hunspell/de*.{aff,dic} /opt/libreoffice/share/extensions/dict-de/
+			;;
+			"en-au" )
+				silent apt-get install -y hunspell-en-au
+				cp -R /usr/share/hunspell/en*.{aff,dic} /opt/libreoffice/share/extensions/dict-en/
+			;;
+			"en-za" )
+				silent apt-get install -y hunspell-en-za
+				cp -R /usr/share/hunspell/en*.{aff,dic} /opt/libreoffice/share/extensions/dict-en/
+			;;
+			"pt-br" )
+				silent apt-get install -y hunspell-pt-br
+				cp -R /usr/share/hunspell/pt*.{aff,dic} /opt/libreoffice/share/extensions/dict-pt-BR/
+			;;
+			"pt-pt" )
+				silent apt-get install -y hunspell-pt-pt
+				cp -R /usr/share/hunspell/pt*.{aff,dic} /opt/libreoffice/share/extensions/dict-pt-PT/
+			;;
+			* )
+				silent apt-get install -y hunspell-"${lang}"
+				cp -R /usr/share/hunspell/"${lang}"*.{aff,dic} /opt/libreoffice/share/extensions/dict-"${lang}"/
+			;;
+		esac
+	done
+
+	silent apt-get clean
+	rm -rf /var/lib/apt/lists/*
+	chown -R cool. /opt/libreoffice/share/extensions/*
+fi
+
+### Custom File Support
+if [ -d /assets/custom ] ; then
+	print_warn "Custom Files Found, Copying over top of Master.."
+	cp -R /assets/custom/* /opt/cool/share/
+	chown -R cool. /opt/cool/share/
+fi
+
+### Execute Custom Scripts if exist to modify parts of the system
+if [ -d /assets/custom-scripts/ ] ; then
+  print_warn "Found Custom Scripts to Execute"
+  for f in $(find /assets/custom-scripts/ -name \*.sh -type f); do
+    print_warn "Running Script ${f}"
+    chmod +x "${f}"
+    ${f}
+  done
+fi
+
+### Load Custom Fonts
+if [ -d /assets/custom-fonts/ ] ; then
+  print_warn "Found Custom Fonts to insert"
+  chown -R cool /assets/custom-fonts
+  chmod +rx /assets/custom-fonts
+  ln -s /assets/custom-fonts /usr/share/fonts/truetype/custom
+  silent fc-cache -f -v
+  rm -rf /opt/cool/systemplate
+  silent sudo -u cool /opt/cool/bin/coolwsd-systemplate-setup /opt/cool/systemplate /opt/libreoffice
+fi
+
+if var_true "${ENABLE_TLS}" ; then
+	print_debug "TLS Enabled"
+	if [ ! -d "${TLS_CERT_PATH}" ] || [ ! -f "${TLS_KEY_FILENAME}" ] || [ ! -f "${TLS_CA_FILENAME}" ] || [ ! -f "${TLS_CERT_FILENAME}" ] ; then
+		print_debug "No TLS Certificates found"
+		if var_true "${ENABLE_TLS_CERT_GENERATE}" ; then
+			print_debug "TLS Certificate Autogeneration"
+			mkdir -p "$TLS_CERT_PATH"
+			# Generate new SSL certificate instead of using the default
+			print_notice "Auto Generating Self Signed Certificates"
+			mkdir -p /tmp/ssl/
+			cd /tmp/ssl/
+			mkdir -p certs/ca
+			silent openssl genrsa -out certs/ca/root.key.pem 2048
+			silent openssl req -x509 -new -nodes -key certs/ca/root.key.pem -days 9131 -out certs/ca/root.crt.pem -subj "/C=XX/ST=XX/L=XX/O=Dummy
+			Authority/CN=Dummy Authority"
+			mkdir -p certs/{servers,tmp}
+			mkdir -p "certs/servers/localhost"
+			silent openssl genrsa -out "certs/servers/localhost/privkey.pem" 2048
+			if test "${cert_domain-set}" == set; then
+				silent openssl req -key "certs/servers/localhost/privkey.pem" -new -sha256 -out "certs/tmp/localhost.csr.pem" -subj "/C=XX/ST=XX/L=XX/O=Dummy Authority/CN=localhost"
+			else
+				silent openssl req -key "certs/servers/localhost/privkey.pem" -new -sha256 -out "certs/tmp/localhost.csr.pem" -subj "/C=XX/ST=XX/L=XX/O=Dummy Authority/CN=${cert_domain}"
+			fi
+			silent openssl x509 -req -in "certs/tmp/localhost.csr.pem" -CA "certs/ca/root.crt.pem" -CAkey "certs/ca/root.key.pem" -CAcreateserial -out "certs/servers/localhost/cert.pem" -days 9131
+			cp -R certs/servers/localhost/privkey.pem "${TLS_CERT_PATH}"/"${TLS_KEY_FILENAME}"
+			cp -R certs/servers/localhost/cert.pem "${TLS_CERT_PATH}"/"${TLS_CERT_FILENAME}"
+			cp -R certs/ca/root.crt.pem "${TLS_CERT_PATH}"/"${TLS_CA_FILENAME}"
+			rm -rf /tmp/ssl
+			chown -R cool "${TLS_CERT_PATH}"
+		else
+			if [ ! -f "${TLS_CERT_PATH}/${TLS_KEY_FILENAME}" ] ||  [ ! -f "${TLS_CERT_PATH}/${TLS_CA_FILENAME}" ] ||  [ ! -f "${TLS_CERT_PATH}/${TLS_CERT_FILENAME}" ] ; then
+				print_error "TLS Certificates missing... Please switch to autogenerate mode, or place your certifcates in the correct location."
+			fi
+		fi
+	fi
+fi
+
+if [ "$SETUP_TYPE" = "AUTO" ]; then
+    print_notice "Autogenerating Configuration File"
+	### Replace Configuration directives
+	sed -i -e "s|<allowed_languages \(.*\)>.*</allowed_languages>|<allowed_languages \1>${LANGUAGE}</allowed_languages>|g" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<sys_template_path \(.*\)>.*</sys_template_path>|<sys_template_path \1>${SYS_TEMPLATE_PATH}</sys_template_path>|g" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<child_root_path \(.*\)>.*</child_root_path>|<child_root_path \1>${CHILD_ROOT_PATH}</child_root_path>|g" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<mount_jail_tree \(.*\)>.*</mount_jail_tree>|<mount_jail_tree \1>${ENABLE_MOUNT_JAIL}</mount_jail_tree>|g" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<server_name \(.*\)>.*</server_name>|<server_name \1>${HOSTNAME}</server_name>|g" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<file_server_root_path \(.*\)>.*</file_server_root_path>|<file_server_root_path \1>${FILE_SERVER_ROOT_PATH}</file_server_root_path>|g" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<memproportion \(.*\)>.*</memproportion>|<memproportion \1>${MEMORY_USAGE_MAX}</memproportion>|g" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<num_prespawn_children \(.*\)>.*</num_prespawn_children>|<num_prespawn_children \1>${PRESPAWN_CHILD_PROCESSES}</num_prespawn_children>|g" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<max_concurrency \(.*\)>.*<\/max_concurrency>|<max_concurrency \1>${MAX_THREADS_DOCUMENT}<\/max_concurrency>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<batch_priority \(.*\)>.*<\/batch_priority>|<batch_priority \1>${BATCH_PRIORITY}<\/batch_priority>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<document_signing_url \(.*\)>.*<\/document_signing_url>|<document_signing_url \1>${DOCUMENT_SIGNING_URL}<\/document_signing_url>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<redlining_as_comments \(.*\)>.*<\/redlining_as_comments>|<redlining_as_comments \1>${REDLINING_AS_COMMENTS}<\/redlining_as_comments>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<idle_timeout_secs \(.*\)>.*<\/idle_timeout_secs>|<idle_timeout_secs \1>${IDLE_UNLOAD_TIMEOUT}<\/idle_timeout_secs>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<idlesave_duration_secs \(.*\)>.*<\/idlesave_duration_secs>|<idlesave_duration_secs \1>${IDLE_SAVE}<\/idlesave_duration_secs>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<autosave_duration_secs \(.*\)>.*<\/autosave_duration_secs>|<autosave_duration_secs \1>${AUTO_SAVE}<\/autosave_duration_secs>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<always_save_on_exit \(.*\)>.*<\/always_save_on_exit>|<always_save_on_exit \1>${ALWAYS_SAVE_ON_EXIT}<\/always_save_on_exit>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<limit_virt_mem_mb \(.*\)>.*<\/limit_virt_mem_mb>|<limit_virt_mem_mb \1>${MEMORY_VIRT_LIMIT}<\/limit_virt_mem_mb>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<limit_stack_mem_kb \(.*\)>.*<\/limit_stack_mem_kb>|<limit_stack_mem_kb \1>${MEMORY_STACK_LIMIT}<\/limit_stack_mem_kb>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<limit_file_size_mb \(.*\)>.*<\/limit_file_size_mb>|<limit_file_size_mb \1>${FILE_SIZE_LIMIT}<\/limit_file_size_mb>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<limit_num_open_files \(.*\)>.*<\/limit_num_open_files>|<limit_num_open_files \1>${MAX_OPEN_FILES}<\/limit_num_open_files>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<limit_load_secs \(.*\)>.*<\/limit_load_secs>|<limit_load_secs \1>${MAX_FILE_LOAD_LIMIT}<\/limit_load_secs>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<limit_convert_secs \(.*\)>.*<\/limit_convert_secs>|<limit_convert_secs \1>${MAX_CONVERT_LIMIT}<\/limit_convert_secs>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<cleanup desc=\(.*\)>.*>|<cleanup desc=\1>${ENABLE_CLEANUP}>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<cleanup_interval_ms \(.*\)>.*<\/cleanup_interval_ms>|<cleanup_interval_ms \1>${CLEANUP_INTERVAL}<\/cleanup_interval_ms>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<bad_behavior_period_secs \(.*\)>.*<\/bad_behavior_period_secs>|<bad_behavior_period_secs \1>${CLEANUP_BAD_BEHAVIOUR_TIME}<\/bad_behavior_period_secs>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<idle_time_secs \(.*\)>.*<\/<idle_time_secs>|<<idle_time_secs \1>${CLEANUP_IDLE_TIME}<\/<idle_time_secs>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<limit_dirty_mem_mb \(.*\)>.*<\/limit_dirty_mem_mb>|<limit_dirty_mem_mb \1>${CLEANUP_LIMIT_DIRTY_MEMORY}<\/limit_dirty_mem_mb>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<limit_cpu_per \(.*\)>.*<\/limit_cpu_per>|<limit_cpu_per \1>${CLEANUP_LIMIT_CPU_PER}<\/limit_cpu_per>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<out_of_focus_timeout_secs \(.*\)>.*<\/out_of_focus_timeout_secs>|<out_of_focus_timeout_secs \1>${USER_OUT_OF_FOCUS_TIMEOUT}<\/out_of_focus_timeout_secs>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<idle_timeout_secs \(.*\)>.*<\/idle_timeout_secs>|<idle_timeout_secs \1>${USER_IDLE_TIMEOUT}<\/idle_timeout_secs>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<browser_html \(.*\)>.*<\/browser_html>|<browser_html \1>${LOLEAFLET_HTML}<\/browser_html>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<color \(.*\)>.*<\/color>|<color \1>${LOG_COLOURIZE}<\/color>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<level \(.*\)>.*<\/level>|<level \1>${LOG_LEVEL}<\/level>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<protocol \(.*\)>.*<\/protocol>|<protocol \1>${LOG_CLIENT_CONSOLE}<\/protocol>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<lokit_sal_log \(.*\)>.*<\/lokit_sal_log>|<lokit_sal_log \1>${LOG_LIBREOFFICE}<\/lokit_sal_log>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<browser_logging \(.*\)>.*<\/browser_logging>|<browser_logging \1>${LOG_CLIENT_CONSOLE}<\/browser_logging>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<proto \(.*\)>.*<\/proto>|<proto \1>${NETWORK_PROTOCOL}<\/proto>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<frame_ancestors \(.*\)>.*<\/frame_ancestors>|<frame_ancestors \1>${FRAME_ANCESTORS}<\/frame_ancestors>|" /etc/coolwsd/coolwsd.xml
+	#sed -i -e "s|localhost<\/host>|${ALLOWED_HOSTS}<\/host>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<connection_timeout \(.*\)>.*<\/connection_timeout>|<connection_timeout \1>${CONNECTION_TIMEOUT}<\/connection_timeout>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<ca_file_path \(.*\) relative=\"false\">.*<\/ca_file_path>|<ca_file_path \1 relative=\"false\">${TLS_CERT_PATH}/${TLS_CA_FILENAME}<\/ca_file_path>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<cert_file_path \(.*\) relative=\"false\">.*<\/cert_file_path>|<cert_file_path \1 relative=\"false\">${TLS_CERT_PATH}/${TLS_CERT_FILENAME}<\/cert_file_path>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<key_file_path \(.*\) relative=\"false\">.*<\/key_file_path>|<key_file_path \1 relative=\"false\">${TLS_CERT_PATH}/${TLS_KEY_FILENAME}<\/key_file_path>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<seccomp \(.*\)>.*<\/seccomp>|<seccomp \1>${ENABLE_SECCOMP}<\/seccomp>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<capabilities \(.*\)>.*<\/capabilities>|<capabilities \1>${ENABLE_CAPABILITIES}<\/capabilities>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<opacity \(.*\)>.*<\/opacity>|<opacity \1>${WATERMARK_OPACITY}<\/opacity>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<text \(.*\)>.*<\/text>|<text \1>${WATERMARK_TEXT}<\/text>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<mode \(.*\)>.*<\/mode>|<mode \1>${INTERFACE}<\/mode>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<webdav desc=\(.*\) allow=\".*\">|<webdav desc=\1 allow=\"${ENABLE_WEBDAV}\">|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<enable desc=\(.*\)>.*<\/enable>|<enable desc=\1>${ENABLE_ADMIN_CONSOLE}<\/enable>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<username \(.*\)>.*<\/username>|<username \1>${ADMIN_USER}<\/username>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<password \(.*\)>.*<\/password>|<password \1>${ADMIN_PASS}<\/password>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<limit_data_mem_kb \(.*\)>.*<\/limit_data_mem_kb>|<limit_data_mem_kb \1>${MEMORY_DATA_LIMIT}<\/limit_data_mem_kb>|" /etc/coolwsd/coolwsd.xml
+
+	if var_false "${ENABLE_TLS}" ; then
+		sed -i -E "s|<enable type=\"bool\" desc=\"Controls(.*)>.*<\/enable>|<enable type=\"bool\" desc=\"Controls\1>false<\/enable>|" /etc/coolwsd/coolwsd.xml
+	fi
+
+	if var_true "${ENABLE_TLS_REVERSE_PROXY}" ; then
+		sed -i -e "s|<termination \(.*\)>.*<\/termination>|<termination \1>true<\/termination>|" /etc/coolwsd/coolwsd.xml
+	else
+		sed -i -e "s|<termination \(.*\)>.*<\/termination>|<termination \1>false<\/termination>|" /etc/coolwsd/coolwsd.xml
+	fi
+
+	if var_true "${LOG_ANONYMIZE}"; then
+		sed -i -e "s|<anonymize_user_data \(.*\)>.*<\/anonymize_user_data>|<anonymize_user_data \1>${LOG_ANONYMIZE}<\/anonymize_user_data>|" /etc/coolwsd/coolwsd.xml
+		sed -i -e "s|<anonymization_salt \(.*\)>.*<\/anonymization_salt>|<anonymization_salt \1>${LOG_ANONYMIZE_SALT}<\/anonymization_salt>|" /etc/coolwsd/coolwsd.xml
+	fi
+
+	if [ "$LOG_TYPE" = "FILE" ]; then
+		sed -i -e "s|<file enable=\"false\"|<file enable=\"true\"|" /etc/coolwsd/coolwsd.xml
+		sed -i -e "s|<property name=\"path\"\(.*\)>.*<\/property>|<property name=\"path\" \1>${LOG_PATH}/${LOG_FILE}<\/property>|" /etc/coolwsd/coolwsd.xml
+		sed -i -e "s|<property name=\"flush\"\(.*\)>.*<\/property>|<property name=\"flush\" \1>${LOG_FILE_FLUSH}<\/property>|" /etc/coolwsd/coolwsd.xml
+		sed -i "s|<LOG_PATH>|${LOG_PATH}|g" /etc/logrotate.d/coolwsd
+	else
+		print_debug "Log: Console"
+		rm -rf /etc/logrotate.d/coolwsd
+	fi
+
+	### Allowed Hosts
+	allowed_hosts=$(echo "${ALLOWED_HOSTS}" | tr "," "\n")
+	for host in $allowed_hosts
+		do
+    	print_info "Adding Allowed Host: ${host}"
+		sed -i "/>localhost<\/host>/a \ \ \ \ \ \ \ \ \ \ \ \ \<host desc=\"Docker\ added\ regex\ pattern\ of\ hostname\ to\ allow\ or\ deny.\"\ allow=\"true\">${host}</host>" /etc/coolwsd/coolwsd.xml
+	done
+
+	if var_true "${ALLOW_172_XX_SUBNET}" ; then
+		print_debug "Allowing 172.16.0.0/12 Subnet"
+		sed -i "/<\/post_allow>/i \ \ \ \ \ \ \ \ <host\ desc=\"Additional\ Docker\ Networks to allow\">172\\.1\[6789\]\.\[0-9\]\{1,3\}\.\[0-9\]\{1,3\}<\/host>" /etc/coolwsd/coolwsd.xml
+		sed -i "/<\/post_allow>/i \ \ \ \ \ \ \ \ <host\ desc=\"Additional\ Docker\ Networks to allow\">172\\.2\[0-9\]\\.\[0-9\]\{1,3\}\\.\[0-9\]\{1,3\}<\/host>" /etc/coolwsd/coolwsd.xml
+		sed -i "/<\/post_allow>/i \ \ \ \ \ \ \ \ <host\ desc=\"Additional\ Docker\ Networks to allow\">172\\.3\[01\]\\.\[0-9\]\{1,3\}\\.\[0-9\]\{1,3\}<\/host>" /etc/coolwsd/coolwsd.xml
+	fi
+fi
+
+# Generate WOPI proof key
+if [ ! -f /etc/coolwsd/proof_key.pub ]; then
+	silent /opt/cool/bin/coolwsd-generate-proof-key
+fi
+
+# Enable Config Reload (Restart when /etc/coolwsd/coolwsd.xml changes)
+if var_false "${ENABLE_CONFIG_RELOAD}" ; then
+	print_debug "Disabling Automatic Configuration Reloader"
+	rm -rf /etc/services.available/11-inotify
+fi
+
+print_info "Container Initialization Complete"
+liftoff

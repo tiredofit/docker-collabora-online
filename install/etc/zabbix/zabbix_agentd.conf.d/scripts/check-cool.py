@@ -28,12 +28,12 @@ def get_doc_info(socket_url,token_value):
 	return data
 
 if __name__ == '__main__':
-	url = "http://localhost:9980/loleaflet/dist/admin/admin.html"
+	url = "http://localhost:9980/browser/dist/admin/admin.html"
 	username = os.getenv('ADMIN_USER')
 	password = os.getenv('ADMIN_PASS')
 	token_value = get_token_value(url,username,password)
-	socket_url = "ws://localhost:9980/lool/adminws"
+	socket_url = "ws://localhost:9980/cool/adminws"
 	data = get_doc_info(socket_url,token_value)
 	for key,value in data.items() :
-                print("lool."+key , value)
+                print("cool."+key , value)
 

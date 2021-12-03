@@ -1,3 +1,11 @@
+## 2.3.0 2021-12-02 <techsupport+sd111 at selfdesign dot org>
+
+   ### Added
+      - Debian Bulleye Base
+      - Collabora Online 21.11.0-3
+      - Libreoffice CO2021
+
+
 ## 2.2.4 2021-10-29 <dave at tiredofit dot ca>
 
    ### Added
@@ -170,7 +178,7 @@
   - `ENABLE_TLS` (Default: `TRUE`)
   - `ENABLE_TLS_CERT_GENERATE` (Default: `TRUE`)
   - `ENABLE_TLS_REVERSE_PROXY` (Default: `FALSE`)
-  - `TLS_CERT_PATH` (Default: `/etc/loolwsd/certs`)
+  - `TLS_CERT_PATH` (Default: `/etc/coolwsd/certs`)
   - `TLS_CA_FILENAME` (Default: `ca-chain-cert.pem`)
   - `TLS_CERT_FILENAME` (Default: `cert.pem`)
   - `TLS_KEY_FILENAME` (Default: `key.pem`)
