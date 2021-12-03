@@ -171,6 +171,10 @@ if [ "$SETUP_TYPE" = "AUTO" ]; then
 	sed -i -e "s|<key_file_path \(.*\) relative=\"false\">.*<\/key_file_path>|<key_file_path \1 relative=\"false\">${TLS_CERT_PATH}/${TLS_KEY_FILENAME}<\/key_file_path>|" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<seccomp \(.*\)>.*<\/seccomp>|<seccomp \1>${ENABLE_SECCOMP}<\/seccomp>|" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<capabilities \(.*\)>.*<\/capabilities>|<capabilities \1>${ENABLE_CAPABILITIES}<\/capabilities>|" /etc/coolwsd/coolwsd.xml
+    sed -i -e "s|<jwt_expiry_secs \(.*\)>.*<\/jwt_expiry_secs>|<jwt_expiry_secs \1>${ADMIN_JWT_EXPIRY}<\/jwt_expiry_secs>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<enable_macros_execution \(.*\)>.*<\/enable_macros_execution>|<enable_macros_execution \1>${ENABLE_MACROS}<\/enable_macros_execution>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<macro_security_level \(.*\)>.*<\/macro_security_level>|<macro_security_level \1>${MACRO_SECURITY_LEVEL}<\/macro_security_level>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<enable_metrics_unauthenticated \(.*\)>.*<\/enable_metrics_unauthenticated>|<enable_metrics_unauthenticated \1>${ENABLE_METRICS_UNAUTHENTICATED}<\/enable_metrics_unauthenticated>|" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<opacity \(.*\)>.*<\/opacity>|<opacity \1>${WATERMARK_OPACITY}<\/opacity>|" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<text \(.*\)>.*<\/text>|<text \1>${WATERMARK_TEXT}<\/text>|" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<mode \(.*\)>.*<\/mode>|<mode \1>${INTERFACE}<\/mode>|" /etc/coolwsd/coolwsd.xml
@@ -199,6 +203,7 @@ if [ "$SETUP_TYPE" = "AUTO" ]; then
 		sed -i -e "s|<file enable=\"false\"|<file enable=\"true\"|" /etc/coolwsd/coolwsd.xml
 		sed -i -e "s|<property name=\"path\"\(.*\)>.*<\/property>|<property name=\"path\" \1>${LOG_PATH}/${LOG_FILE}<\/property>|" /etc/coolwsd/coolwsd.xml
 		sed -i -e "s|<property name=\"flush\"\(.*\)>.*<\/property>|<property name=\"flush\" \1>${LOG_FILE_FLUSH}<\/property>|" /etc/coolwsd/coolwsd.xml
+		sed -i -e "s|<property name=\"rotateOnOpen\"\(.*\)>.*<\/property>|<property name=\"rotateOnOpen\" \1>false<\/property>|" /etc/coolwsd/coolwsd.xml
 		sed -i "s|<LOG_PATH>|${LOG_PATH}|g" /etc/logrotate.d/coolwsd
 	else
 		print_debug "Log: Console"

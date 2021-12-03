@@ -32,7 +32,7 @@ This will build a Docker image for [Collabora Online](https://www.collaboraoffic
 - [Installation](#installation)
   - [Build from Source](#build-from-source)
   - [Prebuilt Images](#prebuilt-images)
-    - [Multi Architecture](#multi-archictecture)
+    - [Multi Architecture](#multi-architecture)
 - [Configuration](#configuration)
   - [Quick Start](#quick-start)
   - [Persistent Storage](#persistent-storage)
@@ -80,14 +80,14 @@ docker pull tiredofit/collabora-online:(imagetag)
 
 The following image tags are available along with their taged release based on what's written in the [Changelog](CHANGELOG.md):
 
-| LibreOffice version | Collabora Online version  | Tag      |
-| ------------------- | ------------------------- | -------- |
-| `2021`              | `21.11.0`                 | `latest` |
-| `2021`              | `21.11.0`                 | `2.3.0`  |
-| `6.4.x`             | `6.4.x`                   | `2.1`    |
-| `6.4.x`             | `6.4.x`                   | `2.0`    |
-| `6.0.x`             | `4.0.x`                   | `1.6`    |
-| `5.3.x`             | `3.4.x`                   | `1.1`    |
+| LibreOffice version | Collabora Online version | Tag      |
+| ------------------- | ------------------------ | -------- |
+| `2021`              | `21.11.0`                | `latest` |
+| `2021`              | `21.11.0`                | `2.3.0`  |
+| `6.4.x`             | `6.4.x`                  | `2.1`    |
+| `6.4.x`             | `6.4.x`                  | `2.0`    |
+| `6.0.x`             | `4.0.x`                  | `1.6`    |
+| `5.3.x`             | `3.4.x`                  | `1.1`    |
 
 #### Multi Architecture
 Images are built primarily for `amd64` architecture, and may also include builds for `arm/v6`, `arm/v7`, `arm64` and others. These variants are all unsupported. Consider [sponsoring](https://github.com/sponsors/tiredofit) my work so that I can work with various hardware. To see if this image supports multiple architecures, type `docker manifest (image):(tag)`
@@ -104,13 +104,13 @@ Images are built primarily for `amd64` architecture, and may also include builds
 
 The following directories should be mapped for persistent storage in order to utilize the container effectively.
 
-| Folder                   | Description                                                                                                             |
-| ------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
-| `/logs/`                 | Log files                                                                                                               |
+| Folder                   | Description                                                                                                           |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| `/logs/`                 | Log files                                                                                                             |
 | `/assets/custom`         | If you want to update the theme of Collabora online, dropping files in here will overwrite /opt/cool/share on startup |
-| `/assets/custom-fonts`   | (Optional) If you want to include custom truetype fonts, place them in this folder                                      |
-| `/assets/custom-scripts` | (Optional) If you want to execute a bash script before the application starts, drop your files here                     |
-| `/etc/coolwsd/certs`     | (Optional) If you would like to use your own certificates, map this volume and set appropriate variables                |
+| `/assets/custom-fonts`   | (Optional) If you want to include custom truetype fonts, place them in this folder                                    |
+| `/assets/custom-scripts` | (Optional) If you want to execute a bash script before the application starts, drop your files here                   |
+| `/etc/coolwsd/certs`     | (Optional) If you would like to use your own certificates, map this volume and set appropriate variables              |
 
 ### Environment Variables
 
@@ -125,14 +125,18 @@ Be sure to view the following repositories to understand all the customizable op
 | [OS Base](https://github.com/tiredofit/docker-debian/) | Customized Image based on Debian Linux |
 
 #### General Usage
-| Parameter           | Description                                                                                                        | Default   |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------ | --------- |
-| `SETUP_TYPE`        | Automatically generate configuration with defaults. Set to `MANUAL` and map the configuration file to use your own | `AUTO`    |
-| `ALLOWED_HOSTS`     | Set which domains which can access service Seperate Multiple with `,` - Example: `^(.*)\.example\.org`             | ``        |
-| `EXTRA_OPTIONS`     | If you want to pass additional arguments upon startup, add it here                                                 | ``        |
-| `INTERFACE`         | Web interface type `classic` or `notebookbar`                                                                      | `classic` |
-| `WATERMARK_OPACITY` | Watermark Opacity                                                                                                  | `0.2`     |
-| `WATERMARK_TEXT`    | Text to display for watermark                                                                                      | ``        |
+| Parameter                        | Description                                                                                                        | Default   |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------ | --------- |
+| `SETUP_TYPE`                     | Automatically generate configuration with defaults. Set to `MANUAL` and map the configuration file to use your own | `AUTO`    |
+| `ALLOWED_HOSTS`                  | Set which domains which can access service Seperate Multiple with `,` - Example: `^(.*)\.example\.org`             | ``        |
+| `EXTRA_OPTIONS`                  | If you want to pass additional arguments upon startup, add it here                                                 | ``        |
+| `INTERFACE`                      | Web interface type `classic` or `notebookbar`                                                                      | `classic` |
+| `WATERMARK_OPACITY`              | Watermark Opacity                                                                                                  | `0.2`     |
+| `WATERMARK_TEXT`                 | Text to display for watermark                                                                                      | ``        |
+| `ENABLE_MACROS`                  | Enable Macros                                                                                                      | `FALSE`   |
+| `MACRO_SECURITY_LEVEL`           | Macro Security Level `1` Medium `0` Low                                                                            | `1`       |
+| `ENABLE_METRICS_UNAUTHENTICATED` | Enable Unauthenticated Metrics                                                                                     | `FALSE`   |
+
 
 #### Administration
 | Parameter              | Description                                   | Default           |
@@ -140,6 +144,8 @@ Be sure to view the following repositories to understand all the customizable op
 | `ENABLE_ADMIN_CONSOLE` | Enable Administration Console                 | `TRUE`            |
 | `ADMIN_USER`           | User for accessing Administration Console     | `admin`           |
 | `ADMIN_PASS`           | Password for accessing Administration Console | `collaboraonline` |
+| `ADMIN_JWT_EXPIRY`     | Admin JWT Expiry in seconds                   | `1800`            |
+
 
 #### Logging
 | Parameter            | Description                                                                                      | Default         |
@@ -205,6 +211,8 @@ The image comes with English (US, GB, Canada variants) baked into the image, how
 |                | `tr`    | Turkish                |
 |                | `uk`    | Ukranian               |
 |                | `vi`    | Vietnamese             |
+
+
 #### TLS Settings
 | Parameter                  | Description                                                         | Default              |
 | -------------------------- | ------------------------------------------------------------------- | -------------------- |
@@ -254,12 +262,12 @@ The image comes with English (US, GB, Canada variants) baked into the image, how
 | `ENABLE_CAPABILITIES`   | Enable Capabilities                                     | `TRUE`          |
 | `ENABLE_CONFIG_RELOAD`  | Enable Reload of coolwsd if config changed in container | `TRUE`          |
 | `ENABLE_SECCOMP`        | Enable Seccomp                                          | `TRUE`          |
-| `LOLEAFLET_HTML`        | Name of browser.html to use                           | `loleafet.html` |
+| `LOLEAFLET_HTML`        | Name of browser.html to use                             | `loleafet.html` |
 | `REDLINING_AS_COMMENTS` | Show red-lines as comments                              | `false`         |
 | `DOCUMENT_SIGNING_URL`  | Endpoint URL of signing server                          | ``              |
 | `NETWORK_PROTOCOL`      | Network Protocol `ipv4` `ipv6` `all`                    | `ipv4`          |
 | `ENABLE_WEBDAV`         | Enable WebDav Storage                                   | `FALSE`         |
-| `FILE_SERVER_ROOT_PATH` | Path to directory considered as root                    | `browser/../` |
+| `FILE_SERVER_ROOT_PATH` | Path to directory considered as root                    | `browser/../`   |
 | `FRAME_ANCESTORS`       | Hosts where interface van be hosted in Iframe           | ``              |
 | `ENABLE_MOUNT_JAIL`     | Enable mounting jails                                   | `true`          |
 | `CHILD_ROOT_PATH`       | Child root path                                         | `child-roots`   |
@@ -273,9 +281,9 @@ This image comes with some highly opninionated default fonts by the LibreOffice 
 
 The following ports are exposed.
 
-| Port   | Description              |
-| ------ | ------------------------ |
-| `9980` | Collabora Web Services   |
+| Port   | Description            |
+| ------ | ---------------------- |
+| `9980` | Collabora Web Services |
 
 * * *
 ## Maintenance

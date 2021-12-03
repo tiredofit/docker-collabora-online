@@ -1,3 +1,12 @@
+## 2.3.2 2021-12-03 <techsupport+sd111 at selfdesign dot org>
+
+   ### Added
+      - Allow abilities to use macros
+      - Allow unauthenticated metrics gathering
+      - Fix for Log rotation when LOG_TYPE=FILES
+      - Allow setting Admin JWT token lifetime
+
+
 ## 2.3.0 2021-12-02 <techsupport+sd111 at selfdesign dot org>
 
    ### Added
