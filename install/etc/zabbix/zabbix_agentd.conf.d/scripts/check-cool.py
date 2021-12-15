@@ -2,6 +2,7 @@
 
 import requests
 from websocket import create_connection,WebSocket
+import datetime
 import sys
 import os
 
@@ -34,6 +35,7 @@ if __name__ == '__main__':
 	token_value = get_token_value(url,username,password)
 	socket_url = "ws://localhost:9980/cool/adminws"
 	data = get_doc_info(socket_url,token_value)
+	now = datetime.datetime.now()
+	print (now.strftime('%Y-%m-%d %H:%M:%S')+"         Collabora Online Monitoring")
 	for key,value in data.items() :
-                print("cool."+key , value)
-
+                print("cool."+key, value)

@@ -1,4 +1,11 @@
-## 2.3.2 2021-12-03 <techsupport+sd111 at selfdesign dot org>
+## 2.3.3 2021-12-15 <dave at tiredofit dot ca>
+
+   ## Changed
+      - Zabbix Monitoring templates
+      - Collabora Online 21.11.0-5
+
+
+## 2.3.2 2021-12-03 <dave at tiredofit dot ca>
 
    ### Added
       - Allow abilities to use macros
@@ -7,7 +14,7 @@
       - Allow setting Admin JWT token lifetime
 
 
-## 2.3.0 2021-12-02 <techsupport+sd111 at selfdesign dot org>
+## 2.3.0 2021-12-02 <dave at tiredofit dot ca>
 
    ### Added
       - Debian Bulleye Base

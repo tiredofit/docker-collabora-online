@@ -1,0 +1,377 @@
+{
+    "zabbix_export": {
+        "version": "5.4",
+        "date": "2021-12-15T15:57:43Z",
+        "groups": [
+            {
+                "uuid": "a571c0d144b14fd4a87a9d9b2aa9fcd6",
+                "name": "Templates/Applications"
+            }
+        ],
+        "templates": [
+            {
+                "uuid": "00f612e4dc8e44c686e89d2b540de330",
+                "template": "Collabora Online",
+                "name": "Collabora Online",
+                "groups": [
+                    {
+                        "name": "Templates/Applications"
+                    }
+                ],
+                "items": [
+                    {
+                        "uuid": "3a4d06d031844b1fa3f217f7ab4a1e75",
+                        "name": "Collabora Online: Get Statistics",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "cool.get_statistics",
+                        "history": "60m",
+                        "trends": "0",
+                        "value_type": "TEXT"
+                    },
+                    {
+                        "uuid": "07fdc378b8804f68952204f9223c705b",
+                        "name": "Collabora Online: Active Documents",
+                        "type": "DEPENDENT",
+                        "key": "cool.stats.active_docs",
+                        "delay": "0",
+                        "history": "7d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "cool.active_docs_count ([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "cool.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "LibreOffice Online"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "65854e1f94cd453f84e7efe7ccca9bfa",
+                        "name": "Collabora Online: Active Users",
+                        "type": "DEPENDENT",
+                        "key": "cool.stats.active_users",
+                        "delay": "0",
+                        "history": "7d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "cool.active_users_count ([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "cool.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "LibreOffice Online"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "0d370f09daf0472c83a3af43cc810bc5",
+                        "name": "Collabora Online: Bytes received",
+                        "type": "DEPENDENT",
+                        "key": "cool.stats.bytes_received",
+                        "delay": "0",
+                        "history": "7d",
+                        "units": "B",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "cool.recv_bytes ([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "cool.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "LibreOffice Online"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "43d3e041925042a3b74150a7ef9489c4",
+                        "name": "Collabora Online: Bytes sent",
+                        "type": "DEPENDENT",
+                        "key": "cool.stats.bytes_sent",
+                        "delay": "0",
+                        "history": "7d",
+                        "units": "B",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "cool.sent_bytes ([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "cool.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "LibreOffice Online"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "447722d607644a9d993a1d084558ec4c",
+                        "name": "Collabora Online: Memory consumed",
+                        "type": "DEPENDENT",
+                        "key": "cool.stats.mem_consumed",
+                        "delay": "0",
+                        "history": "7d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "cool.mem_consumed ([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "cool.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "LibreOffice Online"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "35706f863505475f8115a7ab08e3765a",
+                        "name": "Collabora Online: Service is running",
+                        "key": "proc.num[coolwsd]",
+                        "history": "7d",
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "LibreOffice Online"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "f973afdb7f444e24b94dd6a1bc51bff8",
+                                "expression": "sum(/Collabora Online/proc.num[coolwsd],#3)=0",
+                                "name": "Collabora Online Service is down",
+                                "priority": "HIGH"
+                            }
+                        ]
+                    }
+                ],
+                "dashboards": [
+                    {
+                        "uuid": "bdca680af1f5409d856b7ad7f48f63ef",
+                        "name": "Collabora Online",
+                        "pages": [
+                            {
+                                "widgets": [
+                                    {
+                                        "type": "GRAPH_CLASSIC",
+                                        "width": "12",
+                                        "height": "5",
+                                        "fields": [
+                                            {
+                                                "type": "GRAPH",
+                                                "name": "graphid",
+                                                "value": {
+                                                    "name": "Active Users",
+                                                    "host": "Collabora Online"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "GRAPH_CLASSIC",
+                                        "x": "12",
+                                        "width": "12",
+                                        "height": "5",
+                                        "fields": [
+                                            {
+                                                "type": "GRAPH",
+                                                "name": "graphid",
+                                                "value": {
+                                                    "name": "Active Documents",
+                                                    "host": "Collabora Online"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "GRAPH_CLASSIC",
+                                        "x": "12",
+                                        "y": "5",
+                                        "width": "12",
+                                        "height": "5",
+                                        "fields": [
+                                            {
+                                                "type": "GRAPH",
+                                                "name": "graphid",
+                                                "value": {
+                                                    "name": "All Statistics",
+                                                    "host": "Collabora Online"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "GRAPH_CLASSIC",
+                                        "y": "5",
+                                        "width": "12",
+                                        "height": "5",
+                                        "fields": [
+                                            {
+                                                "type": "GRAPH",
+                                                "name": "graphid",
+                                                "value": {
+                                                    "name": "Memory Consumed",
+                                                    "host": "Collabora Online"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "GRAPH_CLASSIC",
+                                        "y": "10",
+                                        "width": "12",
+                                        "height": "5",
+                                        "fields": [
+                                            {
+                                                "type": "GRAPH",
+                                                "name": "graphid",
+                                                "value": {
+                                                    "name": "Network Traffic",
+                                                    "host": "Collabora Online"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "graphs": [
+            {
+                "uuid": "cf1222f4fc464cfda66ffe1f4856fbe9",
+                "name": "Active Documents",
+                "graph_items": [
+                    {
+                        "color": "1A7C11",
+                        "item": {
+                            "host": "Collabora Online",
+                            "key": "cool.stats.active_docs"
+                        }
+                    }
+                ]
+            },
+            {
+                "uuid": "6b46328682d64157906e51a8bdb92204",
+                "name": "Active Users",
+                "graph_items": [
+                    {
+                        "color": "1A7C11",
+                        "item": {
+                            "host": "Collabora Online",
+                            "key": "cool.stats.active_users"
+                        }
+                    }
+                ]
+            },
+            {
+                "uuid": "84f045fb9fc447a49813543545284458",
+                "name": "All Statistics",
+                "graph_items": [
+                    {
+                        "color": "1A7C11",
+                        "item": {
+                            "host": "Collabora Online",
+                            "key": "cool.stats.active_docs"
+                        }
+                    },
+                    {
+                        "sortorder": "1",
+                        "color": "F63100",
+                        "item": {
+                            "host": "Collabora Online",
+                            "key": "cool.stats.active_users"
+                        }
+                    },
+                    {
+                        "sortorder": "2",
+                        "color": "2774A4",
+                        "item": {
+                            "host": "Collabora Online",
+                            "key": "cool.stats.mem_consumed"
+                        }
+                    }
+                ]
+            },
+            {
+                "uuid": "9bd057eaa6c24fdc8ec9ebe432128fea",
+                "name": "Memory Consumed",
+                "graph_items": [
+                    {
+                        "color": "1A7C11",
+                        "item": {
+                            "host": "Collabora Online",
+                            "key": "cool.stats.mem_consumed"
+                        }
+                    }
+                ]
+            },
+            {
+                "uuid": "2d2d7f65e3234af7843ae8f2b4271017",
+                "name": "Network Traffic",
+                "graph_items": [
+                    {
+                        "sortorder": "1",
+                        "color": "1A7C11",
+                        "item": {
+                            "host": "Collabora Online",
+                            "key": "cool.stats.bytes_received"
+                        }
+                    },
+                    {
+                        "sortorder": "2",
+                        "color": "F63100",
+                        "item": {
+                            "host": "Collabora Online",
+                            "key": "cool.stats.bytes_sent"
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}
