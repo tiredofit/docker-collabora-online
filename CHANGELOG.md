@@ -1,3 +1,10 @@
+## 2.3.4 2022-01-27 <dave at tiredofit dot ca>
+
+   ## Changed
+      - Collbora Online 21.11.1-4
+      - Libreoffice Core 21.06.13-1
+
+
 ## 2.3.3 2021-12-15 <dave at tiredofit dot ca>
 
    ## Changed
