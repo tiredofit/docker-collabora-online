@@ -1,7 +1,6 @@
 # github.com/tiredofit/docker-collabora-online
 
 [![GitHub release](https://img.shields.io/github/v/tag/tiredofit/docker-collabora-online?style=flat-square)](https://github.com/tiredofit/docker-collabora-online/releases/latest)
-[![Build Status](https://img.shields.io/github/workflow/status/tiredofit/docker-collabora-online/build?style=flat-square)](https://github.com/tiredofit/docker-collabora-online/actions?query=workflow%3Abuild)
 [![Docker Stars](https://img.shields.io/docker/stars/tiredofit/collabora-online.svg?style=flat-square&logo=docker)](https://hub.docker.com/r/tiredofit/collabora-online/)
 [![Docker Pulls](https://img.shields.io/docker/pulls/tiredofit/collabora-online.svg?style=flat-square&logo=docker)](https://hub.docker.com/r/tiredofit/collabora-online/)
 [![Become a sponsor](https://img.shields.io/badge/sponsor-tiredofit-181717.svg?logo=github&style=flat-square)](https://github.com/sponsors/tiredofit)
