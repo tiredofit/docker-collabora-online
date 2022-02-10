@@ -5,7 +5,8 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/tiredofit/collabora-online.svg?style=flat-square&logo=docker)](https://hub.docker.com/r/tiredofit/collabora-online/)
 [![Become a sponsor](https://img.shields.io/badge/sponsor-tiredofit-181717.svg?logo=github&style=flat-square)](https://github.com/sponsors/tiredofit)
 [![Paypal Donate](https://img.shields.io/badge/donate-paypal-00457c.svg?logo=paypal&style=flat-square)](https://www.paypal.me/tiredofit)
-
+[![Docker Stars](https://img.shields.io/docker/stars/tiredofit/libreoffice-online.svg?style=flat-square&logo=docker)](https://hub.docker.com/r/tiredofit/collabora-online/)
+[![Docker Pulls](https://img.shields.io/docker/pulls/tiredofit/libreoffice-online.svg?style=flat-square&logo=docker)](https://hub.docker.com/r/tiredofit/collabora-online/)
 * * *
 
 
