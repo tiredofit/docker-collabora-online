@@ -14,11 +14,11 @@ ARG APP_NAME
 
 ### Environment Variables
 ENV COLLABORA_ONLINE_BRANCH=${COLLABORA_ONLINE_BRANCH:-"master"} \
-    COLLABORA_ONLINE_VERSION=${COLLABORA_ONLINE_VERSION:-"cp-21.11.1-4"} \
+    COLLABORA_ONLINE_VERSION=${COLLABORA_ONLINE_VERSION:-"cp-21.11.2-0"} \
     COLLABORA_ONLINE_REPO_URL=${COLLABORA_ONLINE_REPO_URL:-"https://github.com/CollaboraOnline/online"} \
     #
     LIBREOFFICE_BRANCH=${LIBREOFFICE_BRANCH:-"master"} \
-    LIBREOFFICE_VERSION=${LIBREOFFICE_VERSION:-"cp-21.06.13-1"} \
+    LIBREOFFICE_VERSION=${LIBREOFFICE_VERSION:-"cp-21.06.16-1"} \
     LIBREOFFICE_REPO_URL=${LIBREOFFICE_REPO_URL:-"https://github.com/LibreOffice/core"} \
     #
     APP_NAME=${APP_NAME:-"Document Editor"} \
@@ -182,7 +182,9 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 ### Set Defaults
 ENV ADMIN_USER=admin \
     ADMIN_PASS=collaboraonline \
-    CONTAINER_ENABLE_MESSAGING=FALSE
+    CONTAINER_ENABLE_MESSAGING=FALSE \
+    IMAGE_NAME="tiredofit/collabora-online" \
+    IMAGE_REPO_URL="https://github.com/tiredofit/docker-collabora-online/"
 
 ### Grab Compiled Assets from builder image
 COPY --from=builder /opt/ /opt/
