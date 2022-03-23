@@ -14,11 +14,11 @@ ARG APP_NAME
 
 ### Environment Variables
 ENV COLLABORA_ONLINE_BRANCH=${COLLABORA_ONLINE_BRANCH:-"master"} \
-    COLLABORA_ONLINE_VERSION=${COLLABORA_ONLINE_VERSION:-"cp-21.11.2-0"} \
+    COLLABORA_ONLINE_VERSION=${COLLABORA_ONLINE_VERSION:-"cp-21.11.3-2"} \
     COLLABORA_ONLINE_REPO_URL=${COLLABORA_ONLINE_REPO_URL:-"https://github.com/CollaboraOnline/online"} \
     #
     LIBREOFFICE_BRANCH=${LIBREOFFICE_BRANCH:-"master"} \
-    LIBREOFFICE_VERSION=${LIBREOFFICE_VERSION:-"cp-21.06.16-1"} \
+    LIBREOFFICE_VERSION=${LIBREOFFICE_VERSION:-"cp-21.06.22-1"} \
     LIBREOFFICE_REPO_URL=${LIBREOFFICE_REPO_URL:-"https://github.com/LibreOffice/core"} \
     #
     APP_NAME=${APP_NAME:-"Document Editor"} \
@@ -188,6 +188,7 @@ ENV ADMIN_USER=admin \
 
 ### Grab Compiled Assets from builder image
 COPY --from=builder /opt/ /opt/
+COPY CHANGELOG.md /assets/.changelogs/tiredofit_docker-collabora-online.md
 
 ADD build-assets /build-assets
 
