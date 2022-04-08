@@ -1,3 +1,13 @@
+## 2.4.0 2022-04-07 <dave at tiredofit dot ca>
+
+   ### Added
+      - Collabora Online cp-22.05.0-1
+      - LibreOffice Core cp-22.05.0-1
+
+   ### Changed
+      - Changed how ALLOWED_HOSTS works - may require https://url, instead of Regex
+      - Changed Idle Timeout from 15 minutes to 1 hour
+
 ## 2.3.6 2022-03-22 <dave at tiredofit dot ca>
 
    ### Added
@@ -149,7 +159,7 @@
    ### Changed
       - Max Open Documents to 100000 (from 5000)
       - Max Users to 100000 (from 5000)
-      
+
 
 ## 2.0.2 2021-03-24 <dave at tiredofit dot ca>
 

@@ -82,7 +82,8 @@ The following image tags are available along with their taged release based on w
 
 | LibreOffice version | Collabora Online version | Tag      |
 | ------------------- | ------------------------ | -------- |
-| `2021`              | `21.11.0`                | `latest` |
+| `2022`              | `22.05.x`                | `latest` |
+| `2022`              | `22.05.x`                | `2.4.0`  |
 | `2021`              | `21.11.0`                | `2.3.0`  |
 | `6.4.x`             | `6.4.x`                  | `2.1`    |
 | `6.4.x`             | `6.4.x`                  | `2.0`    |
@@ -258,7 +259,6 @@ The image comes with English (US, GB, Canada variants) baked into the image, how
 #### Other Settings
 | Parameter               | Description                                             | Default         |
 | ----------------------- | ------------------------------------------------------- | --------------- |
-| `ALLOW_172_XX_SUBNET`   | Allow 172.16.0.0/12 Subnet                              | `TRUE`          |
 | `ENABLE_CAPABILITIES`   | Enable Capabilities                                     | `TRUE`          |
 | `ENABLE_CONFIG_RELOAD`  | Enable Reload of coolwsd if config changed in container | `TRUE`          |
 | `ENABLE_SECCOMP`        | Enable Seccomp                                          | `TRUE`          |

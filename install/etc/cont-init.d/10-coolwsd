@@ -57,6 +57,8 @@ if [ -n "${DICTIONARIES}" ]; then
 	silent apt-get clean
 	rm -rf /var/lib/apt/lists/*
 	chown -R cool. /opt/libreoffice/share/extensions/*
+	rm -rf /opt/cool/systemplate/*
+    silent sudo -u cool /opt/cool/bin/coolwsd-systemplate-setup /opt/cool/systemplate /opt/libreoffice
 fi
 
 ### Custom File Support
@@ -83,7 +85,7 @@ if [ -d /assets/custom-fonts/ ] ; then
   chmod +rx /assets/custom-fonts
   ln -s /assets/custom-fonts /usr/share/fonts/truetype/custom
   silent fc-cache -f -v
-  rm -rf /opt/cool/systemplate
+  rm -rf /opt/cool/systemplate/*
   silent sudo -u cool /opt/cool/bin/coolwsd-systemplate-setup /opt/cool/systemplate /opt/libreoffice
 fi
 
@@ -117,14 +119,14 @@ if var_true "${ENABLE_TLS}" ; then
 			rm -rf /tmp/ssl
 			chown -R cool "${TLS_CERT_PATH}"
 		else
-			if [ ! -f "${TLS_CERT_PATH}/${TLS_KEY_FILENAME}" ] ||  [ ! -f "${TLS_CERT_PATH}/${TLS_CA_FILENAME}" ] ||  [ ! -f "${TLS_CERT_PATH}/${TLS_CERT_FILENAME}" ] ; then
+			if [ ! -f "${TLS_CERT_PATH}"/"${TLS_KEY_FILENAME}" ] ||  [ ! -f "${TLS_CERT_PATH}"/"${TLS_CA_FILENAME}" ] ||  [ ! -f "${TLS_CERT_PATH}"/"${TLS_CERT_FILENAME}" ] ; then
 				print_error "TLS Certificates missing... Please switch to autogenerate mode, or place your certifcates in the correct location."
 			fi
 		fi
 	fi
 fi
 
-if [ "$SETUP_TYPE" = "AUTO" ]; then
+if [ "${SETUP_TYPE,,}" = "auto" ]; then
     print_notice "Autogenerating Configuration File"
 	### Replace Configuration directives
 	sed -i -e "s|<allowed_languages \(.*\)>.*</allowed_languages>|<allowed_languages \1>${LANGUAGE}</allowed_languages>|g" /etc/coolwsd/coolwsd.xml
@@ -200,7 +202,7 @@ if [ "$SETUP_TYPE" = "AUTO" ]; then
 		sed -i -e "s|<anonymization_salt \(.*\)>.*<\/anonymization_salt>|<anonymization_salt \1>${LOG_ANONYMIZE_SALT}<\/anonymization_salt>|" /etc/coolwsd/coolwsd.xml
 	fi
 
-	if [ "$LOG_TYPE" = "FILE" ]; then
+	if [ "${LOG_TYPE,,}" = "file" ]; then
 		sed -i -e "s|<file enable=\"false\"|<file enable=\"true\"|" /etc/coolwsd/coolwsd.xml
 		sed -i -e "s|<property name=\"path\"\(.*\)>.*<\/property>|<property name=\"path\" \1>${LOG_PATH}/${LOG_FILE}<\/property>|" /etc/coolwsd/coolwsd.xml
 		sed -i -e "s|<property name=\"flush\"\(.*\)>.*<\/property>|<property name=\"flush\" \1>${LOG_FILE_FLUSH}<\/property>|" /etc/coolwsd/coolwsd.xml
@@ -212,19 +214,12 @@ if [ "$SETUP_TYPE" = "AUTO" ]; then
 	fi
 
 	### Allowed Hosts
+	sed -i -e 's|<alias_groups \(.*\) mode=.*>|<alias_groups \1 mode="groups">|' /etc/coolwsd/coolwsd.xml
 	allowed_hosts=$(echo "${ALLOWED_HOSTS}" | tr "," "\n")
-	for host in $allowed_hosts
-		do
+	for host in $allowed_hosts; do
     	print_info "Adding Allowed Host: ${host}"
-		sed -i "/>localhost<\/host>/a \ \ \ \ \ \ \ \ \ \ \ \ \<host desc=\"Docker\ added\ regex\ pattern\ of\ hostname\ to\ allow\ or\ deny.\"\ allow=\"true\">${host}</host>" /etc/coolwsd/coolwsd.xml
+		sed -i "/<alias_groups .*>/a \              <group><host desc=\"hostname to allow or deny.\" allow=\"true\">${host}</host></group>" /etc/coolwsd/coolwsd.xml
 	done
-
-	if var_true "${ALLOW_172_XX_SUBNET}" ; then
-		print_debug "Allowing 172.16.0.0/12 Subnet"
-		sed -i "/<\/post_allow>/i \ \ \ \ \ \ \ \ <host\ desc=\"Additional\ Docker\ Networks to allow\">172\\.1\[6789\]\.\[0-9\]\{1,3\}\.\[0-9\]\{1,3\}<\/host>" /etc/coolwsd/coolwsd.xml
-		sed -i "/<\/post_allow>/i \ \ \ \ \ \ \ \ <host\ desc=\"Additional\ Docker\ Networks to allow\">172\\.2\[0-9\]\\.\[0-9\]\{1,3\}\\.\[0-9\]\{1,3\}<\/host>" /etc/coolwsd/coolwsd.xml
-		sed -i "/<\/post_allow>/i \ \ \ \ \ \ \ \ <host\ desc=\"Additional\ Docker\ Networks to allow\">172\\.3\[01\]\\.\[0-9\]\{1,3\}\\.\[0-9\]\{1,3\}<\/host>" /etc/coolwsd/coolwsd.xml
-	fi
 fi
 
 # Generate WOPI proof key
