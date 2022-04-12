@@ -1,3 +1,9 @@
+## 2.4.1 2022-04-12 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Cleanup some old unused lines and code
+
+
 ## 2.4.0 2022-04-07 <dave at tiredofit dot ca>
 
    ### Added
