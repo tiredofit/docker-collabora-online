@@ -121,6 +121,7 @@ if var_true "${ENABLE_TLS}" ; then
 		else
 			if [ ! -f "${TLS_CERT_PATH}"/"${TLS_KEY_FILENAME}" ] ||  [ ! -f "${TLS_CERT_PATH}"/"${TLS_CA_FILENAME}" ] ||  [ ! -f "${TLS_CERT_PATH}"/"${TLS_CERT_FILENAME}" ] ; then
 				print_error "TLS Certificates missing... Please switch to autogenerate mode, or place your certifcates in the correct location."
+				exit 1
 			fi
 		fi
 	fi
@@ -167,7 +168,6 @@ if [ "${SETUP_TYPE,,}" = "auto" ]; then
 	sed -i -e "s|<browser_logging \(.*\)>.*<\/browser_logging>|<browser_logging \1>${LOG_CLIENT_CONSOLE}<\/browser_logging>|" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<proto \(.*\)>.*<\/proto>|<proto \1>${NETWORK_PROTOCOL}<\/proto>|" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<frame_ancestors \(.*\)>.*<\/frame_ancestors>|<frame_ancestors \1>${FRAME_ANCESTORS}<\/frame_ancestors>|" /etc/coolwsd/coolwsd.xml
-	#sed -i -e "s|localhost<\/host>|${ALLOWED_HOSTS}<\/host>|" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<connection_timeout \(.*\)>.*<\/connection_timeout>|<connection_timeout \1>${CONNECTION_TIMEOUT}<\/connection_timeout>|" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<ca_file_path \(.*\) relative=\"false\">.*<\/ca_file_path>|<ca_file_path \1 relative=\"false\">${TLS_CERT_PATH}/${TLS_CA_FILENAME}<\/ca_file_path>|" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<cert_file_path \(.*\) relative=\"false\">.*<\/cert_file_path>|<cert_file_path \1 relative=\"false\">${TLS_CERT_PATH}/${TLS_CERT_FILENAME}<\/cert_file_path>|" /etc/coolwsd/coolwsd.xml
