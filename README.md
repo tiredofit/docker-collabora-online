@@ -68,7 +68,7 @@ This will build a Docker image for [Collabora Online](https://www.collaboraoffic
 ### Build from Source
 - Clone this repository and build the image with `docker build <arguments> (imagename) .`
 
-- If you decide to compile this, it will take quite a few hours even on the fastest computer due to the amount of data required to download to compile. At some stages this image will grow to 30GB before sheeding most of it for it's final size.
+- If you decide to compile this, it will take quite a few hours even on the fastest computer due to the amount of data required to download to compile. At some stages this image will grow to 30GB before shedding most of it for it's final size.
 
 
 ### Prebuilt Images
@@ -78,7 +78,7 @@ Builds of the image are available on [Docker Hub](https://hub.docker.com/r/tired
 docker pull tiredofit/collabora-online:(imagetag)
 ```
 
-The following image tags are available along with their taged release based on what's written in the [Changelog](CHANGELOG.md):
+The following image tags are available along with their tagged release based on what's written in the [Changelog](CHANGELOG.md):
 
 | LibreOffice version | Collabora Online version | Tag      |
 | ------------------- | ------------------------ | -------- |
@@ -126,17 +126,17 @@ Be sure to view the following repositories to understand all the customizable op
 | [OS Base](https://github.com/tiredofit/docker-debian/) | Customized Image based on Debian Linux |
 
 #### General Usage
-| Parameter                        | Description                                                                                                        | Default   |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------------------ | --------- |
-| `SETUP_TYPE`                     | Automatically generate configuration with defaults. Set to `MANUAL` and map the configuration file to use your own | `AUTO`    |
-| `ALLOWED_HOSTS`                  | Set which domains which can access service Seperate Multiple with `,` - Example: `^(.*)\.example\.org`             | ``        |
-| `EXTRA_OPTIONS`                  | If you want to pass additional arguments upon startup, add it here                                                 | ``        |
-| `INTERFACE`                      | Web interface type `classic` or `notebookbar`                                                                      | `classic` |
-| `WATERMARK_OPACITY`              | Watermark Opacity                                                                                                  | `0.2`     |
-| `WATERMARK_TEXT`                 | Text to display for watermark                                                                                      | ``        |
-| `ENABLE_MACROS`                  | Enable Macros                                                                                                      | `FALSE`   |
-| `MACRO_SECURITY_LEVEL`           | Macro Security Level `1` Medium `0` Low                                                                            | `1`       |
-| `ENABLE_METRICS_UNAUTHENTICATED` | Enable Unauthenticated Metrics                                                                                     | `FALSE`   |
+| Parameter                        | Description                                                                                                        | Default       |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------ | ------------- |
+| `SETUP_TYPE`                     | Automatically generate configuration with defaults. Set to `MANUAL` and map the configuration file to use your own | `AUTO`        |
+| `ALLOWED_HOSTS`                  | Set which domains which can access service Seperate Multiple with `,` - Example: `https://www.example\.org`        | ``            |
+| `EXTRA_OPTIONS`                  | If you want to pass additional arguments upon startup, add it here                                                 | ``            |
+| `INTERFACE`                      | Web interface type `classic` or `notebookbar`                                                                      | `notebookbar` |
+| `WATERMARK_OPACITY`              | Watermark Opacity                                                                                                  | `0.2`         |
+| `WATERMARK_TEXT`                 | Text to display for watermark                                                                                      | ``            |
+| `ENABLE_MACROS`                  | Enable Macros                                                                                                      | `FALSE`       |
+| `MACRO_SECURITY_LEVEL`           | Macro Security Level `1` Medium `0` Low                                                                            | `1`           |
+| `ENABLE_METRICS_UNAUTHENTICATED` | Enable Unauthenticated Metrics                                                                                     | `FALSE`       |
 
 
 #### Administration
@@ -268,7 +268,7 @@ The image comes with English (US, GB, Canada variants) baked into the image, how
 | `NETWORK_PROTOCOL`      | Network Protocol `ipv4` `ipv6` `all`                    | `ipv4`          |
 | `ENABLE_WEBDAV`         | Enable WebDav Storage                                   | `FALSE`         |
 | `FILE_SERVER_ROOT_PATH` | Path to directory considered as root                    | `browser/../`   |
-| `FRAME_ANCESTORS`       | Hosts where interface van be hosted in Iframe           | ``              |
+| `FRAME_ANCESTORS`       | Hosts where interface can be hosted in Iframe           | ``              |
 | `ENABLE_MOUNT_JAIL`     | Enable mounting jails                                   | `true`          |
 | `CHILD_ROOT_PATH`       | Child root path                                         | `child-roots`   |
 | `SYS_TEMPLATE_PATH`     | System Template Path                                    | `systemplate`   |

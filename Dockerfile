@@ -257,7 +257,7 @@ RUN set -x && \
 ### Setup LibreOffice Online Jails
     sudo -u cool /opt/cool/bin/coolwsd-systemplate-setup /opt/cool/systemplate /opt/libreoffice && \
     \
-    if [ -d "/build-assets/container/src" ] ; then cp -R /build-assets/container/src/* /usr/src/libreoffice-container ; fi; \
+    if [ -d "/build-assets/container/src" ] ; then cp -R /build-assets/container/src/* / ; fi; \
     if [ -d "/build-assets/container/scripts" ] ; then for script in /build-assets/container/scripts/*.sh; do echo "** Applying $script"; bash $script; done && \ ; fi ; \
     apt-get autoremove -y && \
     apt-get clean && \
