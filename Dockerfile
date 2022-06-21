@@ -30,7 +30,7 @@ ENV COLLABORA_ONLINE_BRANCH=${COLLABORA_ONLINE_BRANCH:-"master"} \
     ## Uses Approximately 20mb per document open
     MAX_DOCUMENTS=${MAX_DOCUMENTS:-"100000"}
 
-#ADD build-assets /build-assets
+ADD build-assets /build-assets
 
 ### Get Updates
 RUN set -x && \

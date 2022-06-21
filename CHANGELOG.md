@@ -1,3 +1,9 @@
+## 2.3.8 2022-06-20 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Restore Build Asset overrides
+
+
 ## 2.3.7 2022-06-20 <dave at tiredofit dot ca>
 
    ### Added
