@@ -1,3 +1,20 @@
+## 2.4.2 2022-06-28 <dave at tiredofit dot ca>
+
+   ### Added
+      - Collabora Online 22.05.3.1
+      - Collabora Office 22.05.3.1
+      - Add support for Language Tool Grammar checking
+      - Add support for file quarantining
+      - Add support for user statistics
+      - Add support for document statstics
+      - Add support for remote JSON font loading
+      - Add support for Tile Caching
+      - Add more rules for client logging
+      - Add support for experimental features
+      - Add support to hexify embedded URLs
+      - Add support to enable Integrators theme
+
+
 ## 2.3.8 2022-06-20 <dave at tiredofit dot ca>
 
    ### Changed
