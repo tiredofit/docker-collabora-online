@@ -44,6 +44,8 @@ This will build a Docker image for [Collabora Online](https://www.collaboraoffic
     - [Spell Check](#spell-check)
     - [TLS Settings](#tls-settings)
     - [Performance and Limits](#performance-and-limits)
+    - [Files Quarantine](#files-quarantine)
+    - [Language Tool](#language-tool)
     - [Cleanup](#cleanup)
     - [Other Settings](#other-settings)
     - [Adding Custom Fonts](#adding-custom-fonts)
@@ -149,18 +151,22 @@ Be sure to view the following repositories to understand all the customizable op
 
 
 #### Logging
-| Parameter            | Description                                                                                      | Default         |
-| -------------------- | ------------------------------------------------------------------------------------------------ | --------------- |
-| `LOG_TYPE`           | Write Logs to `CONSOLE` or to `FILE`                                                             | `CONSOLE`       |
-| `LOG_LEVEL`          | Log Level - Available `none, fatal, critical, error, warning, notice, information, debug, trace` | `warning`       |
-| `LOG_PATH`           | Log Path                                                                                         | `/var/log/cool` |
-| `LOG_FILE`           | Log File                                                                                         | `cool.log`      |
-| `LOG_ANONYMIZE`      | Anonymize File+User information in Logs `TRUE` or `FALSE`                                        | `FALSE`         |
-| `LOG_ANONYMIZE_SALT` | Salt for anonymizing log data                                                                    | 8 char random   |
-| `LOG_CLIENT_CONSOLE` | Log in users browser console                                                                     | `false`         |
-| `LOG_COLOURIZE`      | Colourize the log entries in console                                                             | `true`          |
-| `LOG_LIBREOFFICE`    | Log filter what Libreoffice entries                                                              | `-INFO-WARN`    |
-| `LOG_FILE_FLUSH`     | Flush Entries on each line to log file                                                           | `false`         |
+| Parameter                        | Description                                                                                      | Default         |
+| -------------------------------- | ------------------------------------------------------------------------------------------------ | --------------- |
+| `LOG_TYPE`                       | Write Logs to `CONSOLE` or to `FILE`                                                             | `CONSOLE`       |
+| `LOG_LEVEL`                      | Log Level - Available `none, fatal, critical, error, warning, notice, information, debug, trace` | `warning`       |
+| `LOG_PATH`                       | Log Path                                                                                         | `/var/log/cool` |
+| `LOG_FILE`                       | Log File                                                                                         | `cool.log`      |
+| `ENABLE_DOCUMENT_STATISTICS`     | Enable Collecting statistics about documents                                                     | `FALSE`         |
+| `ENABLE_USER_STATISTICS`         | Enable collecting statistics about the user working on document                                  | `FALSE`         |
+| `LOG_ANONYMIZE_SALT`             | Salt for anonymizing log data                                                                    | 8 char random   |
+| `LOG_ANONYMIZE`                  | Anonymize File+User information in Logs `TRUE` or `FALSE`                                        | `FALSE`         |
+| `LOG_CLIENT_CONSOLE`             | Log in users browser console                                                                     | `false`         |
+| `LOG_COLOURIZE`                  | Colourize the log entries in console                                                             | `true`          |
+| `LOG_FILE_FLUSH`                 | Flush Entries on each line to log file                                                           | `false`         |
+| `LOG_LEVEL_CLIENT_LEAST_VERBOSE` | Least verbose log level to ever send to client                                                   | `FATAL`         |
+| `LOG_LEVEL_CLIENT_MOST_VERBOSE`  | Most verbose log level to ever send to client                                                    | `NOTICE`        |
+| `LOG_LIBREOFFICE`                | Log filter what Libreoffice entries                                                              | `-INFO-WARN`    |
 
 #### Spell Check
 
@@ -231,6 +237,7 @@ The image comes with English (US, GB, Canada variants) baked into the image, how
 | `AUTO_SAVE`                 | The number of seconds after which document, if modified, should be saved                                                              | `300`           |
 | `BATCH_PRIORITY`            | A (lower) priority for use by batch convert to processes to avoid starving interactive ones                                           | `5`             |
 | `CONNECTION_TIMEOUT`        | Connection, Send, Receeive timeout in seconds for connections initiated by coolwsd                                                    | `30`            |
+| `ENABLE_TILES_CACHE`        | Enable caching of tiles should document be opened up twice                                                                            | `TRUE`          |
 | `FILE_SIZE_LIMIT`           | The maximum file size allowed to each document process to write                                                                       | `0` (unlimited) |
 | `IDLE_SAVE`                 | The number of idle seconds after which document, if modified, should be saved                                                         | `30`            |
 | `IDLE_UNLOAD_TIMEOUT`       | The maximum number of seconds before unloading an idle documen                                                                        | `3600`          |
@@ -246,6 +253,23 @@ The image comes with English (US, GB, Canada variants) baked into the image, how
 | `USER_IDLE_TIMEOUT`         | The maximum number of seconds before dimming and stopping updates when the user is no longer active (even if the browser is in focus) | `900`           |
 | `USER_OUT_OF_FOCUS_TIMEOUT` | The maximum number of seconds before dimming and stopping updates when the browser tab is no longer in focus                          | `60`            |
 
+#### Files Quarantine
+| Parameter                               | Description                                            | Default      |
+| --------------------------------------- | ------------------------------------------------------ | ------------ |
+| `ENABLE_FILES_QUARANTINE`               | Alllow file quaranting for review of crashed/bad files | `FALSE`      |
+| `FILES_QUARANTINE_DIRECTORY_SIZE_LIMIT` | Directory size limit in MB                             | `250`        |
+| `FILES_QUARANTINE_MAX_VERSIONS`         | Hold this many versions in quarantime                  | `2`          |
+| `FILES_QUARANTINE_PATH`                 | Relative path for storing files                        | `quarantine` |
+| `FILES_QUARANTINE_EXPIRY`               | Files expiry in minutes                                | `30`         |
+
+#### Language Tool
+| Parameter                 | Description                                        | Default |
+| ------------------------- | -------------------------------------------------- | ------- |
+| `ENABLE_LANGUAGE_TOOL`    | Enable Language Tool  Grammar checking integration | `FALSE` |
+| `LANGUAGE_TOOL_BASE_URL`  | Base URL for Language Tool                         |         |
+| `LANGUAGE_TOOL_USER_NAME` | Language Tool User Name                            |         |
+| `LANGUAGE_TOOL_API_KEY`   | Language Tool provided API Key                     |         |
+
 #### Cleanup
 | Parameter                    | Description                                                                     | Default |
 | ---------------------------- | ------------------------------------------------------------------------------- | ------- |
@@ -257,21 +281,25 @@ The image comes with English (US, GB, Canada variants) baked into the image, how
 | `CLEANUP_LIMIT_CPU_PER`      | Minimum CPU usage in percent for a document to be candidate for bad state       | `85`    |
 
 #### Other Settings
-| Parameter               | Description                                             | Default         |
-| ----------------------- | ------------------------------------------------------- | --------------- |
-| `ENABLE_CAPABILITIES`   | Enable Capabilities                                     | `TRUE`          |
-| `ENABLE_CONFIG_RELOAD`  | Enable Reload of coolwsd if config changed in container | `TRUE`          |
-| `ENABLE_SECCOMP`        | Enable Seccomp                                          | `TRUE`          |
-| `LOLEAFLET_HTML`        | Name of browser.html to use                             | `loleafet.html` |
-| `REDLINING_AS_COMMENTS` | Show red-lines as comments                              | `false`         |
-| `DOCUMENT_SIGNING_URL`  | Endpoint URL of signing server                          | ``              |
-| `NETWORK_PROTOCOL`      | Network Protocol `ipv4` `ipv6` `all`                    | `ipv4`          |
-| `ENABLE_WEBDAV`         | Enable WebDav Storage                                   | `FALSE`         |
-| `FILE_SERVER_ROOT_PATH` | Path to directory considered as root                    | `browser/../`   |
-| `FRAME_ANCESTORS`       | Hosts where interface can be hosted in Iframe           | ``              |
-| `ENABLE_MOUNT_JAIL`     | Enable mounting jails                                   | `true`          |
-| `CHILD_ROOT_PATH`       | Child root path                                         | `child-roots`   |
-| `SYS_TEMPLATE_PATH`     | System Template Path                                    | `systemplate`   |
+| Parameter                      | Description                                             | Default         |
+| ------------------------------ | ------------------------------------------------------- | --------------- |
+| `CHILD_ROOT_PATH`              | Child root path                                         | `child-roots`   |
+| `DOCUMENT_SIGNING_URL`         | Endpoint URL of signing server                          | ``              |
+| `ENABLE_CAPABILITIES`          | Enable Capabilities                                     | `TRUE`          |
+| `ENABLE_CONFIG_RELOAD`         | Enable Reload of coolwsd if config changed in container | `TRUE`          |
+| `ENABLE_EXPERIMENTAL_FEATURES` | Enable experimental features                            | `FALSE`         |
+| `ENABLE_MOUNT_JAIL`            | Enable mounting jails                                   | `true`          |
+| `ENABLE_SECCOMP`               | Enable Seccomp                                          | `TRUE`          |
+| `ENABLE_WEBDAV`                | Enable WebDav Storage                                   | `FALSE`         |
+| `FILE_SERVER_ROOT_PATH`        | Path to directory considered as root                    | `browser/../`   |
+| `FRAME_ANCESTORS`              | Hosts where interface can be hosted in Iframe           | ``              |
+| `HEXIFY_EMBEDDED_URLS`         | Hexify Embedded URLS (useful for Azure deployments)     | `FALSE`         |
+| `LOLEAFLET_HTML`               | Name of browser.html to use                             | `loleafet.html` |
+| `NETWORK_PROTOCOL`             | Network Protocol `ipv4` `ipv6` `all`                    | `ipv4`          |
+| `REDLINING_AS_COMMENTS`        | Show red-lines as comments                              | `false`         |
+| `REMOTE_FONT_URL`              | URL to json font lists to load                          |                 |
+| `SYS_TEMPLATE_PATH`            | System Template Path                                    | `systemplate`   |
+| `USE_INTEGRATOR_THEME`         | Use the remote integrators theme                        | `TRUE`          |
 
 
 #### Adding Custom Fonts

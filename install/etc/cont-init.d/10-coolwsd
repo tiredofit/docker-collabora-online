@@ -11,7 +11,7 @@ print_debug "Creating directories and setting up logging"
 mkdir -p "${LOG_PATH}"
 touch "${LOG_PATH}"/"${LOG_FILE}"
 chown -R cool "${LOG_PATH}"
-create_logrotate cool ${LOG_PATH}/${LOG_FILE} none cool cool
+
 
 print_debug "Setting up DNS Resolution"
 rm /opt/cool/systemplate/etc/resolv.conf
@@ -133,7 +133,7 @@ if [ "${SETUP_TYPE,,}" = "auto" ]; then
 	sed -i -e "s|<allowed_languages \(.*\)>.*</allowed_languages>|<allowed_languages \1>${LANGUAGE}</allowed_languages>|g" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<sys_template_path \(.*\)>.*</sys_template_path>|<sys_template_path \1>${SYS_TEMPLATE_PATH}</sys_template_path>|g" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<child_root_path \(.*\)>.*</child_root_path>|<child_root_path \1>${CHILD_ROOT_PATH}</child_root_path>|g" /etc/coolwsd/coolwsd.xml
-	sed -i -e "s|<mount_jail_tree \(.*\)>.*</mount_jail_tree>|<mount_jail_tree \1>${ENABLE_MOUNT_JAIL}</mount_jail_tree>|g" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<mount_jail_tree \(.*\)>.*</mount_jail_tree>|<mount_jail_tree \1>${ENABLE_MOUNT_JAIL,,}</mount_jail_tree>|g" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<server_name \(.*\)>.*</server_name>|<server_name \1>${HOSTNAME}</server_name>|g" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<file_server_root_path \(.*\)>.*</file_server_root_path>|<file_server_root_path \1>${FILE_SERVER_ROOT_PATH}</file_server_root_path>|g" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<memproportion \(.*\)>.*</memproportion>|<memproportion \1>${MEMORY_USAGE_MAX}</memproportion>|g" /etc/coolwsd/coolwsd.xml
@@ -152,7 +152,7 @@ if [ "${SETUP_TYPE,,}" = "auto" ]; then
 	sed -i -e "s|<limit_num_open_files \(.*\)>.*<\/limit_num_open_files>|<limit_num_open_files \1>${MAX_OPEN_FILES}<\/limit_num_open_files>|" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<limit_load_secs \(.*\)>.*<\/limit_load_secs>|<limit_load_secs \1>${MAX_FILE_LOAD_LIMIT}<\/limit_load_secs>|" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<limit_convert_secs \(.*\)>.*<\/limit_convert_secs>|<limit_convert_secs \1>${MAX_CONVERT_LIMIT}<\/limit_convert_secs>|" /etc/coolwsd/coolwsd.xml
-	sed -i -e "s|<cleanup desc=\(.*\)>.*>|<cleanup desc=\1>${ENABLE_CLEANUP}>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<cleanup desc=\(.*\)>.*>|<cleanup desc=\1>${ENABLE_CLEANUP},,>|" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<cleanup_interval_ms \(.*\)>.*<\/cleanup_interval_ms>|<cleanup_interval_ms \1>${CLEANUP_INTERVAL}<\/cleanup_interval_ms>|" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<bad_behavior_period_secs \(.*\)>.*<\/bad_behavior_period_secs>|<bad_behavior_period_secs \1>${CLEANUP_BAD_BEHAVIOUR_TIME}<\/bad_behavior_period_secs>|" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<idle_time_secs \(.*\)>.*<\/<idle_time_secs>|<<idle_time_secs \1>${CLEANUP_IDLE_TIME}<\/<idle_time_secs>|" /etc/coolwsd/coolwsd.xml
@@ -162,7 +162,7 @@ if [ "${SETUP_TYPE,,}" = "auto" ]; then
 	sed -i -e "s|<idle_timeout_secs \(.*\)>.*<\/idle_timeout_secs>|<idle_timeout_secs \1>${USER_IDLE_TIMEOUT}<\/idle_timeout_secs>|" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<browser_html \(.*\)>.*<\/browser_html>|<browser_html \1>${LOLEAFLET_HTML}<\/browser_html>|" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<color \(.*\)>.*<\/color>|<color \1>${LOG_COLOURIZE}<\/color>|" /etc/coolwsd/coolwsd.xml
-	sed -i -e "s|<level \(.*\)>.*<\/level>|<level \1>${LOG_LEVEL}<\/level>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<level \(.*\)>.*<\/level>|<level \1>${LOG_LEVEL,,}<\/level>|" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<protocol \(.*\)>.*<\/protocol>|<protocol \1>${LOG_CLIENT_CONSOLE}<\/protocol>|" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<lokit_sal_log \(.*\)>.*<\/lokit_sal_log>|<lokit_sal_log \1>${LOG_LIBREOFFICE}<\/lokit_sal_log>|" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<browser_logging \(.*\)>.*<\/browser_logging>|<browser_logging \1>${LOG_CLIENT_CONSOLE}<\/browser_logging>|" /etc/coolwsd/coolwsd.xml
@@ -172,20 +172,38 @@ if [ "${SETUP_TYPE,,}" = "auto" ]; then
 	sed -i -e "s|<ca_file_path \(.*\) relative=\"false\">.*<\/ca_file_path>|<ca_file_path \1 relative=\"false\">${TLS_CERT_PATH}/${TLS_CA_FILENAME}<\/ca_file_path>|" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<cert_file_path \(.*\) relative=\"false\">.*<\/cert_file_path>|<cert_file_path \1 relative=\"false\">${TLS_CERT_PATH}/${TLS_CERT_FILENAME}<\/cert_file_path>|" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<key_file_path \(.*\) relative=\"false\">.*<\/key_file_path>|<key_file_path \1 relative=\"false\">${TLS_CERT_PATH}/${TLS_KEY_FILENAME}<\/key_file_path>|" /etc/coolwsd/coolwsd.xml
-	sed -i -e "s|<seccomp \(.*\)>.*<\/seccomp>|<seccomp \1>${ENABLE_SECCOMP}<\/seccomp>|" /etc/coolwsd/coolwsd.xml
-	sed -i -e "s|<capabilities \(.*\)>.*<\/capabilities>|<capabilities \1>${ENABLE_CAPABILITIES}<\/capabilities>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<seccomp \(.*\)>.*<\/seccomp>|<seccomp \1>${ENABLE_SECCOMP,,}<\/seccomp>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<capabilities \(.*\)>.*<\/capabilities>|<capabilities \1>${ENABLE_CAPABILITIES,,}<\/capabilities>|" /etc/coolwsd/coolwsd.xml
     sed -i -e "s|<jwt_expiry_secs \(.*\)>.*<\/jwt_expiry_secs>|<jwt_expiry_secs \1>${ADMIN_JWT_EXPIRY}<\/jwt_expiry_secs>|" /etc/coolwsd/coolwsd.xml
-	sed -i -e "s|<enable_macros_execution \(.*\)>.*<\/enable_macros_execution>|<enable_macros_execution \1>${ENABLE_MACROS}<\/enable_macros_execution>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<enable_macros_execution \(.*\)>.*<\/enable_macros_execution>|<enable_macros_execution \1>${ENABLE_MACROS,,}<\/enable_macros_execution>|" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<macro_security_level \(.*\)>.*<\/macro_security_level>|<macro_security_level \1>${MACRO_SECURITY_LEVEL}<\/macro_security_level>|" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<enable_metrics_unauthenticated \(.*\)>.*<\/enable_metrics_unauthenticated>|<enable_metrics_unauthenticated \1>${ENABLE_METRICS_UNAUTHENTICATED}<\/enable_metrics_unauthenticated>|" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<opacity \(.*\)>.*<\/opacity>|<opacity \1>${WATERMARK_OPACITY}<\/opacity>|" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<text \(.*\)>.*<\/text>|<text \1>${WATERMARK_TEXT}<\/text>|" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<mode \(.*\)>.*<\/mode>|<mode \1>${INTERFACE}<\/mode>|" /etc/coolwsd/coolwsd.xml
-	sed -i -e "s|<webdav desc=\(.*\) allow=\".*\">|<webdav desc=\1 allow=\"${ENABLE_WEBDAV}\">|" /etc/coolwsd/coolwsd.xml
-	sed -i -e "s|<enable desc=\(.*\)>.*<\/enable>|<enable desc=\1>${ENABLE_ADMIN_CONSOLE}<\/enable>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<webdav desc=\(.*\) allow=\".*\">|<webdav desc=\1 allow=\"${ENABLE_WEBDAV,,}\">|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<enable desc=\(.*\)>.*<\/enable>|<enable desc=\1>${ENABLE_ADMIN_CONSOLE,,}<\/enable>|" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<username \(.*\)>.*<\/username>|<username \1>${ADMIN_USER}<\/username>|" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<password \(.*\)>.*<\/password>|<password \1>${ADMIN_PASS}<\/password>|" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<limit_data_mem_kb \(.*\)>.*<\/limit_data_mem_kb>|<limit_data_mem_kb \1>${MEMORY_DATA_LIMIT}<\/limit_data_mem_kb>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<enabled desc=\"Enable Language Tool\(.*\)>.*<\/enable>|<enable desc=\"Enable Language Tool\1>${ENABLE_LANGUAGE_TOOL,,}<\/enable>|" /etc/coolwsd/coolwsd.xml
+    sed -i -e "s|<base_url desc=\"Http endpoint\(.*\)>.*<\/base_url>|<base_url desc=\"Http endpoint\1>${LANGUAGE_TOOL_BASE_URL}<\/base_url>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<user_name desc=\"Lan\(.*\)>.*<\/user_name>|<user_name desc=\"Lan\1>${LANGUAGE_TOOL_USER_NAME}<\/user_name>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<api_key desc=\"Api\(.*\)>.*<\/api_key>|<api_key desc=\"Api\1>${LANGUAGE_TOOL_API_KEY}<\/api_key>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<hexify_embedded_urls \(.*\)>.*<\/hexify_embedded_urls>|<hexify_embedded_urls \1>${HEXIFY_EMBEDDED_URLS,,}<\/hexify_embedded_urls>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<experimental_features \(.*\)>.*<\/experimental_features>|<experimental_features \1>${ENABLE_EXPERIMENTAL_FEATURES,,}<\/experimental_features>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<docstats \(.*\)>.*<\/docstats>|<docstats \1>${ENABLE_DOCUMENT_STATISTICS,,}<\/docstats>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<userstats \(.*\)>.*<\/userstats>|<userstats \1>${ENABLE_USER_STATISTICS,,}<\/userstats>|" /etc/coolwsd/coolwsd.xml
+    sed -i -e "s|<most_verbose_level_settable_from_client \(.*\)>.*<\/most_verbose_level_settable_from_client>|<most_verbose_level_settable_from_client \1>${LOG_LEVEL_CLIENT_MOST_VERBOSE}<\/most_verbose_level_settable_from_client>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<least_verbose_level_settable_from_client \(.*\)>.*<\/least_verbose_level_settable_from_client>|<least_verbose_level_settable_from_client \1>${LOG_LEVEL_CLIENT_LEAST_VERBOSE}<\/least_verbose_level_settable_from_client>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<use_integration_theme \(.*\)>.*<\/use_integration_theme>|<use_integration_theme \1>${USE_INTEGRATOR_THEME,,}<\/use_integration_theme>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<url desc=\"URL of optional JSON\(.*\)>.*<\/url>|<url desc=\"URL of optional JSON\1>${REMOTE_FONT_URL}<\/url>|" /etc/coolwsd/coolwsd.xml
+    sed -i -e "s|<tile_cache_persistent \(.*\)>.*<\/tile_cache_persistent>|<tile_cache_persistent \1>${ENABLE_TILES_CACHE,,}<\/tile_cache_persistent>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<quarantine_files \(.*\) enable\".*\">|<quarantine_files \1> enable=\"${ENABLE_FILES_QUARANTINE,,}\">|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<limit_dir_size_mb \(.*\)>.*<\/limit_dir_size_mb>|<limit_dir_size_mb \1>${FILES_QUARANTINE_DIRECTORY_SIZE_LIMIT}<\/limit_dir_size_mb>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<max_versions_to_maintain \(.*\)>.*<\/max_versions_to_maintain>|<max_versions_to_maintain \1>${FILES_QUARANTINE_MAX_VERSIONS}<\/max_versions_to_maintain>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<expiry_min \(.*\)>.*<\/expiry_min>|<expiry_min \1>${FILES_QUARANTINE_EXPIRY}<\/expiry_min>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<path desc=\"Path to directory\(.*\)>.*<\/path>|<path desc=\"Path to directory\1>${FILES_QUARANTINE_PATH}<\/path>|" /etc/coolwsd/coolwsd.xml
 
 	if var_false "${ENABLE_TLS}" ; then
 		sed -i -E "s|<enable type=\"bool\" desc=\"Controls(.*)>.*<\/enable>|<enable type=\"bool\" desc=\"Controls\1>false<\/enable>|" /etc/coolwsd/coolwsd.xml
@@ -207,10 +225,9 @@ if [ "${SETUP_TYPE,,}" = "auto" ]; then
 		sed -i -e "s|<property name=\"path\"\(.*\)>.*<\/property>|<property name=\"path\" \1>${LOG_PATH}/${LOG_FILE}<\/property>|" /etc/coolwsd/coolwsd.xml
 		sed -i -e "s|<property name=\"flush\"\(.*\)>.*<\/property>|<property name=\"flush\" \1>${LOG_FILE_FLUSH}<\/property>|" /etc/coolwsd/coolwsd.xml
 		sed -i -e "s|<property name=\"rotateOnOpen\"\(.*\)>.*<\/property>|<property name=\"rotateOnOpen\" \1>false<\/property>|" /etc/coolwsd/coolwsd.xml
-		sed -i "s|<LOG_PATH>|${LOG_PATH}|g" /etc/logrotate.d/coolwsd
+		create_logrotate cool "${LOG_PATH}"/"${LOG_FILE}" none cool cool
 	else
 		print_debug "Log: Console"
-		rm -rf /etc/logrotate.d/coolwsd
 	fi
 
 	### Allowed Hosts
