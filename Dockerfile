@@ -156,6 +156,7 @@ RUN set -x && \
                 --with-poco-libs=/opt/poco/lib \
                 --with-app-name="${APP_NAME}" \
                 --with-vendor="tiredofit@github" \
+                ${COOL_CONFIGURE_ARGS} \
                 && \
     #( scripts/locorestrings.py /usr/src/collabora-online /usr/src/libreoffice-core/translations ) && \
     make -j$(nproc) && \

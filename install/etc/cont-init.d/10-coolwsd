@@ -204,6 +204,7 @@ if [ "${SETUP_TYPE,,}" = "auto" ]; then
 	sed -i -e "s|<max_versions_to_maintain \(.*\)>.*<\/max_versions_to_maintain>|<max_versions_to_maintain \1>${FILES_QUARANTINE_MAX_VERSIONS}<\/max_versions_to_maintain>|" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<expiry_min \(.*\)>.*<\/expiry_min>|<expiry_min \1>${FILES_QUARANTINE_EXPIRY}<\/expiry_min>|" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<path desc=\"Path to directory\(.*\)>.*<\/path>|<path desc=\"Path to directory\1>${FILES_QUARANTINE_PATH}<\/path>|" /etc/coolwsd/coolwsd.xml
+	sed -i -e "s|<ver_suffix \(.*\)>.*<\/ver_suffix>|<ver_suffix \1>${VERSION_SUFFIX}<\/ver_suffix>|" /etc/coolwsd/coolwsd.xml
 
 	if var_false "${ENABLE_TLS}" ; then
 		sed -i -E "s|<enable type=\"bool\" desc=\"Controls(.*)>.*<\/enable>|<enable type=\"bool\" desc=\"Controls\1>false<\/enable>|" /etc/coolwsd/coolwsd.xml

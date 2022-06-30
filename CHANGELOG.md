@@ -1,3 +1,9 @@
+## 2.4.3 2022-06-30 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add 'VERSION_SUFFIX' in order to be able to bust client cache for development purposes
+
+
 ## 2.4.2 2022-06-28 <dave at tiredofit dot ca>
 
    ### Added

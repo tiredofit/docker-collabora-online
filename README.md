@@ -281,25 +281,26 @@ The image comes with English (US, GB, Canada variants) baked into the image, how
 | `CLEANUP_LIMIT_CPU_PER`      | Minimum CPU usage in percent for a document to be candidate for bad state       | `85`    |
 
 #### Other Settings
-| Parameter                      | Description                                             | Default         |
-| ------------------------------ | ------------------------------------------------------- | --------------- |
-| `CHILD_ROOT_PATH`              | Child root path                                         | `child-roots`   |
-| `DOCUMENT_SIGNING_URL`         | Endpoint URL of signing server                          | ``              |
-| `ENABLE_CAPABILITIES`          | Enable Capabilities                                     | `TRUE`          |
-| `ENABLE_CONFIG_RELOAD`         | Enable Reload of coolwsd if config changed in container | `TRUE`          |
-| `ENABLE_EXPERIMENTAL_FEATURES` | Enable experimental features                            | `FALSE`         |
-| `ENABLE_MOUNT_JAIL`            | Enable mounting jails                                   | `true`          |
-| `ENABLE_SECCOMP`               | Enable Seccomp                                          | `TRUE`          |
-| `ENABLE_WEBDAV`                | Enable WebDav Storage                                   | `FALSE`         |
-| `FILE_SERVER_ROOT_PATH`        | Path to directory considered as root                    | `browser/../`   |
-| `FRAME_ANCESTORS`              | Hosts where interface can be hosted in Iframe           | ``              |
-| `HEXIFY_EMBEDDED_URLS`         | Hexify Embedded URLS (useful for Azure deployments)     | `FALSE`         |
-| `LOLEAFLET_HTML`               | Name of browser.html to use                             | `loleafet.html` |
-| `NETWORK_PROTOCOL`             | Network Protocol `ipv4` `ipv6` `all`                    | `ipv4`          |
-| `REDLINING_AS_COMMENTS`        | Show red-lines as comments                              | `false`         |
-| `REMOTE_FONT_URL`              | URL to json font lists to load                          |                 |
-| `SYS_TEMPLATE_PATH`            | System Template Path                                    | `systemplate`   |
-| `USE_INTEGRATOR_THEME`         | Use the remote integrators theme                        | `TRUE`          |
+| Parameter                      | Description                                                                                                       | Default         |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------- | --------------- |
+| `CHILD_ROOT_PATH`              | Child root path                                                                                                   | `child-roots`   |
+| `DOCUMENT_SIGNING_URL`         | Endpoint URL of signing server                                                                                    | ``              |
+| `ENABLE_CAPABILITIES`          | Enable Capabilities                                                                                               | `TRUE`          |
+| `ENABLE_CONFIG_RELOAD`         | Enable Reload of coolwsd if config changed in container                                                           | `TRUE`          |
+| `ENABLE_EXPERIMENTAL_FEATURES` | Enable experimental features                                                                                      | `FALSE`         |
+| `ENABLE_MOUNT_JAIL`            | Enable mounting jails                                                                                             | `true`          |
+| `ENABLE_SECCOMP`               | Enable Seccomp                                                                                                    | `TRUE`          |
+| `ENABLE_WEBDAV`                | Enable WebDav Storage                                                                                             | `FALSE`         |
+| `FILE_SERVER_ROOT_PATH`        | Path to directory considered as root                                                                              | `browser/../`   |
+| `FRAME_ANCESTORS`              | Hosts where interface can be hosted in Iframe                                                                     | ``              |
+| `HEXIFY_EMBEDDED_URLS`         | Hexify Embedded URLS (useful for Azure deployments)                                                               | `FALSE`         |
+| `LOLEAFLET_HTML`               | Name of browser.html to use                                                                                       | `loleafet.html` |
+| `NETWORK_PROTOCOL`             | Network Protocol `ipv4` `ipv6` `all`                                                                              | `ipv4`          |
+| `REDLINING_AS_COMMENTS`        | Show red-lines as comments                                                                                        | `false`         |
+| `REMOTE_FONT_URL`              | URL to json font lists to load                                                                                    |                 |
+| `SYS_TEMPLATE_PATH`            | System Template Path                                                                                              | `systemplate`   |
+| `USE_INTEGRATOR_THEME`         | Use the remote integrators theme                                                                                  | `TRUE`          |
+| `VERSION_SUFFIX`               | Append this value onto version to break cache when developing. Generates random uuid when using value of `random` |                 |
 
 
 #### Adding Custom Fonts
