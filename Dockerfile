@@ -23,7 +23,7 @@ ENV COLLABORA_ONLINE_BRANCH=${COLLABORA_ONLINE_BRANCH:-"master"} \
     #
     APP_NAME=${APP_NAME:-"Document Editor"} \
     #
-    POCO_VERSION=${POCO_VERSION:-"poco-1.11.3-release.tar.gz"} \
+    POCO_VERSION=${POCO_VERSION:-"poco-1.12.0-release.tar.gz"} \
     POCO_URL=${POCO_URL:-"https://github.com/pocoproject/poco/archive/"} \
     #
     MAX_CONNECTIONS=${MAX_CONNECTIONS:-"100000"} \

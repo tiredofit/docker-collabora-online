@@ -1,3 +1,9 @@
+## 2.4.4 2022-07-08 <dave at tiredofit dot ca>
+
+   ### Added
+      - Poco 1.12.0
+
+
 ## 2.4.3 2022-06-30 <dave at tiredofit dot ca>
 
    ### Added
