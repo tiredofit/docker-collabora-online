@@ -158,7 +158,6 @@ RUN set -x && \
                 --with-vendor="tiredofit@github" \
                 ${COOL_CONFIGURE_ARGS} \
                 && \
-    #( scripts/locorestrings.py /usr/src/collabora-online /usr/src/libreoffice-core/translations ) && \
     make -j$(nproc) && \
     mkdir -p /opt/cool && \
     chown -R cool /opt/cool && \

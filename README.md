@@ -139,6 +139,7 @@ Be sure to view the following repositories to understand all the customizable op
 | `ENABLE_MACROS`                  | Enable Macros                                                                                                      | `FALSE`       |
 | `MACRO_SECURITY_LEVEL`           | Macro Security Level `1` Medium `0` Low                                                                            | `1`           |
 | `ENABLE_METRICS_UNAUTHENTICATED` | Enable Unauthenticated Metrics                                                                                     | `FALSE`       |
+| `ENABLE_HOME_MODE`               | Enable more features with home mode                                                                                | `FALSE`       |
 
 
 #### Administration
