@@ -61,22 +61,8 @@ if [ -n "${DICTIONARIES}" ]; then
     silent sudo -u cool /opt/cool/bin/coolwsd-systemplate-setup /opt/cool/systemplate /opt/libreoffice
 fi
 
-### Custom File Support
-if [ -d /assets/custom ] ; then
-	print_warn "Custom Files Found, Copying over top of Master.."
-	cp -R /assets/custom/* /opt/cool/share/
-	chown -R cool. /opt/cool/share/
-fi
-
-### Execute Custom Scripts if exist to modify parts of the system
-if [ -d /assets/custom-scripts/ ] ; then
-  print_warn "Found Custom Scripts to Execute"
-  for f in $(find /assets/custom-scripts/ -name \*.sh -type f); do
-    print_warn "Running Script ${f}"
-    chmod +x "${f}"
-    ${f}
-  done
-fi
+custom_files "${CONTAINER_CUSTOM_PATH}" /opt/cool/share/ cool cool
+custom_scripts
 
 ### Load Custom Fonts
 if [ -d /assets/custom-fonts/ ] ; then
