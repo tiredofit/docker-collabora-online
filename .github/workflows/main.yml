@@ -23,8 +23,8 @@ jobs:
           sudo apt-get remove -y '^mongodb-.*'
           sudo apt-get remove -y '^mysql-.*'
           sudo apt-get remove -y azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell mono-devel libgl1-mesa-dri
-          apt-get -y autoremove
-          apt-get clean
+          sudo apt-get -y autoremove
+          sudo apt-get clean
           after=$(df -a $1 | awk 'NR > 1 {avail+=$4} END {print avail}')
           saved=$((after-before))
           echo "Saved: $saved"
