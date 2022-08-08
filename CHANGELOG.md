@@ -1,3 +1,9 @@
+## 2.4.8 2022-08-08 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix problem with "Home Users" configuration
+
+
 ## 2.4.7 2022-08-07 <dave at tiredofit dot ca>
 
    ### Added
