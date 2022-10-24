@@ -2,10 +2,8 @@ FROM docker.io/tiredofit/debian:bullseye as builder
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Buildtime arguments
-ARG COLLABORA_ONLINE_BRANCH
 ARG COLLABORA_ONLINE_VERSION
 ARG COLLABORA_ONLINE_REPO_URL
-ARG LIBREOFFICE_BRANCH
 ARG LIBREOFFICE_VERSION
 ARG LIBREOFFICE_REPO_URL
 ARG MAX_CONNECTIONS
@@ -13,17 +11,15 @@ ARG MAX_DOCUMENTS
 ARG APP_NAME
 
 ### Environment Variables
-ENV COLLABORA_ONLINE_BRANCH=${COLLABORA_ONLINE_BRANCH:-"master"} \
-    COLLABORA_ONLINE_VERSION=${COLLABORA_ONLINE_VERSION:-"cp-22.05.6-3"} \
+ENV COLLABORA_ONLINE_VERSION=${COLLABORA_ONLINE_VERSION:-"cp-22.05.7-2"} \
     COLLABORA_ONLINE_REPO_URL=${COLLABORA_ONLINE_REPO_URL:-"https://github.com/CollaboraOnline/online"} \
     #
-    LIBREOFFICE_BRANCH=${LIBREOFFICE_BRANCH:-"master"} \
-    LIBREOFFICE_VERSION=${LIBREOFFICE_VERSION:-"cp-22.05.6-3"} \
+    LIBREOFFICE_VERSION=${LIBREOFFICE_VERSION:-"cp-22.05.7-2"} \
     LIBREOFFICE_REPO_URL=${LIBREOFFICE_REPO_URL:-"https://github.com/LibreOffice/core"} \
     #
     APP_NAME=${APP_NAME:-"Document Editor"} \
     #
-    POCO_VERSION=${POCO_VERSION:-"poco-1.12.2-release.tar.gz"} \
+    POCO_VERSION=${POCO_VERSION:-"poco-1.12.3-release.tar.gz"} \
     POCO_URL=${POCO_URL:-"https://github.com/pocoproject/poco/archive/"} \
     #
     MAX_CONNECTIONS=${MAX_CONNECTIONS:-"100000"} \
@@ -32,9 +28,8 @@ ENV COLLABORA_ONLINE_BRANCH=${COLLABORA_ONLINE_BRANCH:-"master"} \
 
 ADD build-assets /build-assets
 
-### Get Updates
-RUN set -x && \
-### Add Repositories
+RUN source /assets/functions/00-container && \
+    set -x && \
     apt-get update && \
     apt-get -o Dpkg::Options::="--force-confold" upgrade -y && \
     echo "deb-src http://deb.debian.org/debian $(cat /etc/os-release |grep "VERSION=" | awk 'NR>1{print $1}' RS='(' FS=')') main" >> /etc/apt/sources.list && \
@@ -110,41 +105,37 @@ RUN set -x && \
     make install && \
     \
     ### Build Fetch LibreOffice - This will take a while..
-    git clone -b ${LIBREOFFICE_BRANCH} ${LIBREOFFICE_REPO_URL} /usr/src/libreoffice-core && \
-    cd /usr/src/libreoffice-core && \
-    git checkout ${LIBREOFFICE_VERSION} && \
-    if [ -d "/build-assets/core/src" ] ; then cp -R /build-assets/core/src/* /usr/src/libreoffice-core ; fi; \
+    clone_git_repo ${LIBREOFFICE_REPO_URL} ${LIBREOFFICE_VERSION} ${GIT_REPO_SRC_CORE} && \
+    if [ -d "/build-assets/core/src" ] ; then cp -R /build-assets/core/src/* ${GIT_REPO_SRC_CORE} ; fi; \
     if [ -d "/build-assets/core/scripts" ] ; then for script in /build-assets/core/scripts/*.sh; do echo "** Applying $script"; bash $script; done && \ ; fi ; \
-    sed -i "s|--enable-symbols|--disable-symbols|g" /usr/src/libreoffice-core/distro-configs/CPLinux-LOKit.conf && \
+    sed -i "s|--enable-symbols|--disable-symbols|g" ${GIT_REPO_SRC_CORE}/distro-configs/CPLinux-LOKit.conf && \
     \
-    echo "--prefix=/opt/libreoffice" >> /usr/src/libreoffice-core/distro-configs/CPLinux-LOKit.conf  && \
+    echo "--prefix=/opt/libreoffice" >> ${GIT_REPO_SRC_CORE}/distro-configs/CPLinux-LOKit.conf  && \
     ./autogen.sh \
             --with-distro="CPLinux-LOKit" \
             --disable-epm \
             --without-package-format && \
-    chown -R cool /usr/src/libreoffice-core && \
+    chown -R cool ${GIT_REPO_SRC_CORE} && \
     sudo -u cool make fetch && \
     sudo -u cool make -j$(nproc) build-nocheck && \
     mkdir -p /opt/libreoffice && \
     chown -R cool /opt/libreoffice && \
-    cp -R /usr/src/libreoffice-core/instdir/* /opt/libreoffice/ && \
+    cp -R ${GIT_REPO_SRC_CORE}/instdir/* /opt/libreoffice/ && \
     \
     ### Build LibreOffice Online (Not as long as above)
-    git clone -b ${COLLABORA_ONLINE_BRANCH} ${COLLABORA_ONLINE_REPO_URL} /usr/src/collabora-online && \
-    cd /usr/src/collabora-online && \
-    git checkout ${COLLABORA_ONLINE_VERSION} && \
-    if [ -d "/build-assets/online/src" ] ; then cp -R /build-assets/online/src/* /usr/src/collabora-online ; fi; \
+    clone_git_repo ${COLLABORA_ONLINE_REPO_URL} ${COLLABORA_ONLINE_VERSION} ${GIT_REPO_SRC_ONLINE} && \
+    if [ -d "/build-assets/online/src" ] ; then cp -R /build-assets/online/src/* ${GIT_REPO_SRC_ONLINE} ; fi; \
     if [ -d "/build-assets/online/scripts" ] ; then for script in /build-assets/online/scripts/*.sh; do echo "** Applying $script"; bash $script; done && \ ; fi ; \
-    sed -i "s|Collabora Online Development Edition|${APP_NAME}|g" /usr/src/collabora-online/configure.ac && \
-    sed -i "s|Collabora Online Development Edition|${APP_NAME}|g" /usr/src/collabora-online/browser/admin/admin.strings.js && \
-    sed -i "s|Collabora Online Development Edition|${APP_NAME}|g" /usr/src/collabora-online/browser/src/control/Toolbar.js && \
-    sed -i "s|Collabora Online Development Edition|${APP_NAME}|g" /usr/src/collabora-online/browser/src/core/Socket.js && \
-    sed -i "s|Collabora Online Development Edition|${APP_NAME}|g" /usr/src/collabora-online/browser/src/layer/marker/ProgressOverlay.js && \
-    sed -i "s|Collabora Online Development Edition|${APP_NAME}|g" /usr/src/collabora-online/browser/src/map/Clipboard.js && \
-    sed -i "s|Collabora Online Development Edition|${APP_NAME}|g" /usr/src/collabora-online/browser/welcome/*.html && \
+    sed -i -e "s|Collabora Online Development Edition|${APP_NAME}|g" ${GIT_REPO_SRC_ONLINE}/configure.ac \
+           -e "s|Collabora Online Development Edition|${APP_NAME}|g" ${GIT_REPO_SRC_ONLINE}/browser/admin/admin.strings.js && \
+           -e "s|Collabora Online Development Edition|${APP_NAME}|g" ${GIT_REPO_SRC_ONLINE}/browser/src/control/Toolbar.js && \
+           -e "s|Collabora Online Development Edition|${APP_NAME}|g" ${GIT_REPO_SRC_ONLINE}/browser/src/core/Socket.js && \
+           -e "s|Collabora Online Development Edition|${APP_NAME}|g" ${GIT_REPO_SRC_ONLINE}/browser/src/layer/marker/ProgressOverlay.js && \
+           -e "s|Collabora Online Development Edition|${APP_NAME}|g" ${GIT_REPO_SRC_ONLINE}/browser/src/map/Clipboard.js && \
+           -e "s|Collabora Online Development Edition|${APP_NAME}|g" ${GIT_REPO_SRC_ONLINE}/browser/welcome/*.html && \
     ./autogen.sh && \
     ./configure --enable-silent-rules \
-                --with-lokit-path="/usr/src/libreoffice-core/include" \
+                --with-lokit-path="${GIT_REPO_SRC_CORE}/include" \
                 --with-lo-path=/opt/libreoffice \
                 --with-max-connections=${MAX_CONNECTIONS} \
                 --with-max-documents=${MAX_DOCUMENTS} \

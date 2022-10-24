@@ -1,3 +1,11 @@
+## 2.4.12 2022-10-24 <dave at tiredofit dot ca>
+
+   ### Added
+      - Poco Project 1.12.3
+      - Collabora Online 22.5.7.2
+      - Collabora Office 22.5.7.2
+
+
 ## 2.4.11 2022-09-27 <dave at tiredofit dot ca>
 
    ### Added
