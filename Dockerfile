@@ -19,7 +19,7 @@ ENV COLLABORA_ONLINE_VERSION=${COLLABORA_ONLINE_VERSION:-"cp-22.05.7-2"} \
     #
     APP_NAME=${APP_NAME:-"Document Editor"} \
     #
-    POCO_VERSION=${POCO_VERSION:-"poco-1.12.3-release.tar.gz"} \
+    POCO_VERSION=${POCO_VERSION:-"poco-1.12.4-release.tar.gz"} \
     POCO_URL=${POCO_URL:-"https://github.com/pocoproject/poco/archive/"} \
     #
     MAX_CONNECTIONS=${MAX_CONNECTIONS:-"100000"} \
@@ -126,13 +126,13 @@ RUN source /assets/functions/00-container && \
     clone_git_repo ${COLLABORA_ONLINE_REPO_URL} ${COLLABORA_ONLINE_VERSION} ${GIT_REPO_SRC_ONLINE} && \
     if [ -d "/build-assets/online/src" ] ; then cp -R /build-assets/online/src/* ${GIT_REPO_SRC_ONLINE} ; fi; \
     if [ -d "/build-assets/online/scripts" ] ; then for script in /build-assets/online/scripts/*.sh; do echo "** Applying $script"; bash $script; done && \ ; fi ; \
-    sed -i -e "s|Collabora Online Development Edition|${APP_NAME}|g" ${GIT_REPO_SRC_ONLINE}/configure.ac \
-           -e "s|Collabora Online Development Edition|${APP_NAME}|g" ${GIT_REPO_SRC_ONLINE}/browser/admin/admin.strings.js && \
-           -e "s|Collabora Online Development Edition|${APP_NAME}|g" ${GIT_REPO_SRC_ONLINE}/browser/src/control/Toolbar.js && \
-           -e "s|Collabora Online Development Edition|${APP_NAME}|g" ${GIT_REPO_SRC_ONLINE}/browser/src/core/Socket.js && \
-           -e "s|Collabora Online Development Edition|${APP_NAME}|g" ${GIT_REPO_SRC_ONLINE}/browser/src/layer/marker/ProgressOverlay.js && \
-           -e "s|Collabora Online Development Edition|${APP_NAME}|g" ${GIT_REPO_SRC_ONLINE}/browser/src/map/Clipboard.js && \
-           -e "s|Collabora Online Development Edition|${APP_NAME}|g" ${GIT_REPO_SRC_ONLINE}/browser/welcome/*.html && \
+    sed -i "s|Collabora Online Development Edition|${APP_NAME}|g" ${GIT_REPO_SRC_ONLINE}/configure.ac && \
+    sed -i  "s|Collabora Online Development Edition|${APP_NAME}|g" ${GIT_REPO_SRC_ONLINE}/browser/admin/admin.strings.js && \
+    sed -i  "s|Collabora Online Development Edition|${APP_NAME}|g" ${GIT_REPO_SRC_ONLINE}/browser/src/control/Toolbar.js && \
+    sed -i  "s|Collabora Online Development Edition|${APP_NAME}|g" ${GIT_REPO_SRC_ONLINE}/browser/src/core/Socket.js && \
+    sed -i  "s|Collabora Online Development Edition|${APP_NAME}|g" ${GIT_REPO_SRC_ONLINE}/browser/src/layer/marker/ProgressOverlay.js && \
+    sed -i  "s|Collabora Online Development Edition|${APP_NAME}|g" ${GIT_REPO_SRC_ONLINE}/browser/src/map/Clipboard.js && \
+    sed -i  "s|Collabora Online Development Edition|${APP_NAME}|g" ${GIT_REPO_SRC_ONLINE}/browser/welcome/*.html && \
     ./autogen.sh && \
     ./configure --enable-silent-rules \
                 --with-lokit-path="${GIT_REPO_SRC_CORE}/include" \
