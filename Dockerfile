@@ -11,10 +11,10 @@ ARG MAX_DOCUMENTS
 ARG APP_NAME
 
 ### Environment Variables
-ENV COLLABORA_ONLINE_VERSION=${COLLABORA_ONLINE_VERSION:-"cp-22.05.7-3"} \
+ENV COLLABORA_ONLINE_VERSION=${COLLABORA_ONLINE_VERSION:-"cp-22.05.8-1"} \
     COLLABORA_ONLINE_REPO_URL=${COLLABORA_ONLINE_REPO_URL:-"https://github.com/CollaboraOnline/online"} \
     #
-    LIBREOFFICE_VERSION=${LIBREOFFICE_VERSION:-"cp-22.05.7-3"} \
+    LIBREOFFICE_VERSION=${LIBREOFFICE_VERSION:-"cp-22.05.8-1"} \
     LIBREOFFICE_REPO_URL=${LIBREOFFICE_REPO_URL:-"https://github.com/LibreOffice/core"} \
     #
     APP_NAME=${APP_NAME:-"Document Editor"} \
@@ -26,7 +26,7 @@ ENV COLLABORA_ONLINE_VERSION=${COLLABORA_ONLINE_VERSION:-"cp-22.05.7-3"} \
     ## Uses Approximately 20mb per document open
     MAX_DOCUMENTS=${MAX_DOCUMENTS:-"100000"}
 
-ADD build-assets /build-assets
+COPY build-assets /build-assets
 
 RUN source /assets/functions/00-container && \
     set -x && \
@@ -181,7 +181,7 @@ ENV ADMIN_USER=admin \
 COPY --from=builder /opt/ /opt/
 COPY CHANGELOG.md /assets/.changelogs/tiredofit_docker-collabora-online.md
 
-ADD build-assets /build-assets
+COPY build-assets /build-assets
 
 ### Install Dependencies
 RUN set -x && \
@@ -265,4 +265,4 @@ RUN set -x && \
 EXPOSE 9980
 
 ### Assets
-ADD install /
+COPY install /

@@ -1,3 +1,10 @@
+## 2.4.14 2022-11-07 <dave at tiredofit dot ca>
+
+   ### Added
+      - Collabra Online 22.05.8-1
+      - Collabora Office 22.05.8-1
+
+
 ## 2.4.13 2022-10-31 <dave at tiredofit dot ca>
 
    ### Added
