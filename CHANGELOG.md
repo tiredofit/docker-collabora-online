@@ -1,3 +1,9 @@
+## 2.4.15 2022-11-07 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add libzstd-dev for building online
+
+
 ## 2.4.14 2022-11-07 <dave at tiredofit dot ca>
 
    ### Added

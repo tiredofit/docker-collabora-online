@@ -65,6 +65,7 @@ RUN source /assets/functions/00-container && \
             libssl-dev \
             libtool \
             libubsan1 \
+            libzstd-dev \
             locales-all \
             m4 \
             nasm \
