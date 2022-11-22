@@ -1,3 +1,10 @@
+## 2.4.17 2022-11-22 <dave at tiredofit dot ca>
+
+   ### Added
+      - Collabora Office cp-22.05.8-3
+      - Collabora Online cp-22.05.8-3
+
+
 ## 2.4.16 2022-11-08 <dave at tiredofit dot ca>
 
    ### Added
