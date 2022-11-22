@@ -131,7 +131,7 @@ Be sure to view the following repositories to understand all the customizable op
 | Parameter                        | Description                                                                                                        | Default       |
 | -------------------------------- | ------------------------------------------------------------------------------------------------------------------ | ------------- |
 | `SETUP_TYPE`                     | Automatically generate configuration with defaults. Set to `MANUAL` and map the configuration file to use your own | `AUTO`        |
-| `ALLOWED_HOSTS`                  | Set which domains which can access service Seperate Multiple with `,` - Example: `https://www.example\.org`        | ``            |
+| `ALLOWED_HOSTS`                  | Set which domains which can access service Seperate Multiple with `,` - Example: `https://www.example\.org` (no wildcards)       | ``            |
 | `EXTRA_OPTIONS`                  | If you want to pass additional arguments upon startup, add it here                                                 | ``            |
 | `INTERFACE`                      | Web interface type `classic` or `notebookbar`                                                                      | `notebookbar` |
 | `WATERMARK_OPACITY`              | Watermark Opacity                                                                                                  | `0.2`         |
