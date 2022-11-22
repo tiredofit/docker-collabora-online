@@ -28,7 +28,7 @@ services:
 
       - ADMIN_USER=admin
       - ADMIN_PASS=collabora-online
-      - ALLOWED_HOSTS=allowedhostname.example.com
+      - ALLOWED_HOSTS=host1.example.org,host2.example.org,host1.example.net
       - DICTIONARIES="en_GB en_US"
       - LOG_LEVEL=warning
     networks:
