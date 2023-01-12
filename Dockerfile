@@ -9,6 +9,7 @@ ARG LIBREOFFICE_REPO_URL
 ARG MAX_CONNECTIONS
 ARG MAX_DOCUMENTS
 ARG APP_NAME
+ARG APP_VENDOR
 
 ### Environment Variables
 ENV COLLABORA_ONLINE_VERSION=${COLLABORA_ONLINE_VERSION:-"cp-22.05.9-2"} \
@@ -18,6 +19,7 @@ ENV COLLABORA_ONLINE_VERSION=${COLLABORA_ONLINE_VERSION:-"cp-22.05.9-2"} \
     LIBREOFFICE_REPO_URL=${LIBREOFFICE_REPO_URL:-"https://github.com/LibreOffice/core"} \
     #
     APP_NAME=${APP_NAME:-"Document Editor"} \
+    APP_VENDOR=${APP_VENDOR:-"tiredofit@github"} \
     #
     POCO_VERSION=${POCO_VERSION:-"poco-1.12.4-release.tar.gz"} \
     POCO_URL=${POCO_URL:-"https://github.com/pocoproject/poco/archive/"} \
@@ -147,7 +149,7 @@ RUN source /assets/functions/00-container && \
                 --with-poco-includes=/opt/poco/include \
                 --with-poco-libs=/opt/poco/lib \
                 --with-app-name="${APP_NAME}" \
-                --with-vendor="tiredofit@github" \
+                --with-vendor="${APP_VENDOR}" \
                 ${COOL_CONFIGURE_ARGS} \
                 && \
     make -j$(nproc) && \
