@@ -5,7 +5,7 @@ prepare_service single
 prepare_service 03-monitoring
 PROCESS_NAME="collabora-online"
 
-sanity_var "ALLOWED_HOSTS" "Allowed Hostnames"
+[[ -z $ALLOWED_HOST ]] && sanity_var "ALLOWED_HOSTS" "Allowed Hostnames"
 
 print_debug "Creating directories and setting up logging"
 mkdir -p "${LOG_PATH}"
@@ -220,11 +220,22 @@ if [ "${SETUP_TYPE,,}" = "auto" ]; then
 
 	### Allowed Hosts
 	sed -i -e 's|<alias_groups \(.*\) mode=.*>|<alias_groups \1 mode="groups">|' /etc/coolwsd/coolwsd.xml
-	allowed_hosts=$(echo "${ALLOWED_HOSTS}" | tr "," "\n")
-	for host in $allowed_hosts; do
-    	print_info "Adding Allowed Host: ${host}"
-		sed -i "/<alias_groups .*>/a \              <group><host desc=\"hostname to allow or deny.\" allow=\"true\">${host}</host></group>" /etc/coolwsd/coolwsd.xml
-	done
+	if [ -n "$ALLOWED_HOST" ]
+	then
+		print_info "Adding Allowed Host: ${ALLOWED_HOST}"
+		if [ -n "$ALLOWED_ALIAS" ]
+		then
+			print_info "Adding Allowed Host: ${ALLOWED_ALIAS}"
+			ALLOWED_ALIAS="<alias desc=\"\">${ALLOWED_ALIAS}</alias>"
+		fi
+		sed -i "/<alias_groups .*>/a \              <group><host desc=\"hostname to allow or deny.\" allow=\"true\">${ALLOWED_HOST}</host>${ALLOWED_ALIAS}</group>" /etc/coolwsd/coolwsd.xml
+	else
+		allowed_hosts=$(echo "${ALLOWED_HOSTS}" | tr "," "\n")
+		for host in $allowed_hosts; do
+			print_info "Adding Allowed Host: ${host}"
+			sed -i "/<alias_groups .*>/a \              <group><host desc=\"hostname to allow or deny.\" allow=\"true\">${host}</host></group>" /etc/coolwsd/coolwsd.xml
+		done
+	fi
 fi
 
 # Generate WOPI proof key

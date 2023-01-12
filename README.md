@@ -131,7 +131,9 @@ Be sure to view the following repositories to understand all the customizable op
 | Parameter                        | Description                                                                                                        | Default       |
 | -------------------------------- | ------------------------------------------------------------------------------------------------------------------ | ------------- |
 | `SETUP_TYPE`                     | Automatically generate configuration with defaults. Set to `MANUAL` and map the configuration file to use your own | `AUTO`        |
-| `ALLOWED_HOSTS`                  | Set which domains which can access service Seperate Multiple with `,` - Example: `https://www.example\.org` (no wildcards)       | ``            |
+| `ALLOWED_HOSTS`                  | Set which domains which can access service Seperate Multiple with `,` - Example: `https://www\.example\.org` (no wildcards)       | ``            |
+| `ALLOWED_HOST`                   | Set a domain which can access service - Example: `https://www\.example\.org` (no wildcards). Prevent the use of `ALLOWED_HOSTS` | ``            |
+| `ALLOWED_ALIAS`                  | Set a regex for alias which can access service - Example: `https://.*\.example\.org`. Requires the use of `ALLOWED_HOST` | ``            |
 | `EXTRA_OPTIONS`                  | If you want to pass additional arguments upon startup, add it here                                                 | ``            |
 | `INTERFACE`                      | Web interface type `classic` or `notebookbar`                                                                      | `notebookbar` |
 | `WATERMARK_OPACITY`              | Watermark Opacity                                                                                                  | `0.2`         |
