@@ -140,6 +140,7 @@ Be sure to view the following repositories to understand all the customizable op
 | `MACRO_SECURITY_LEVEL`           | Macro Security Level `1` Medium `0` Low                                                                            | `1`           |
 | `ENABLE_METRICS_UNAUTHENTICATED` | Enable Unauthenticated Metrics                                                                                     | `FALSE`       |
 | `ENABLE_HOME_MODE`               | Enable more features with home mode                                                                                | `FALSE`       |
+| `FORCE_HOSTNAME`                 | Bypass a [bug of podman](https://github.com/containers/podman/issues/8886) present in Debian Bullseye, which prevents to set the hostname | `` |
 
 
 #### Administration
