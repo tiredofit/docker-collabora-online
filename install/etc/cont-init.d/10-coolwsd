@@ -113,6 +113,10 @@ if var_true "${ENABLE_TLS}" ; then
 	fi
 fi
 
+if [ -n "$FORCE_HOSTNAME" ]; then
+	HOSTNAME="$FORCE_HOSTNAME"
+fi
+
 if [ "${SETUP_TYPE,,}" = "auto" ]; then
     print_notice "Autogenerating Configuration File"
 	### Replace Configuration directives
