@@ -12,7 +12,7 @@
 
 ## About
 
-This will build a Docker image for [Collabora Online](https://www.collaboraoffice.com/collabora-online//) for editing documents in a browser from supported applications.
+This will build a Docker image for [Collabora Online](https://www.collaboraoffice.com/collabora-online/) for editing documents in a browser from supported applications.
 
 * Configurable Concurrent User and Document Limit (set to generarous values by default)
 * Custom Font Support
@@ -128,18 +128,18 @@ Be sure to view the following repositories to understand all the customizable op
 | [OS Base](https://github.com/tiredofit/docker-debian/) | Customized Image based on Debian Linux |
 
 #### General Usage
-| Parameter                        | Description                                                                                                        | Default       |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------------------ | ------------- |
-| `SETUP_TYPE`                     | Automatically generate configuration with defaults. Set to `MANUAL` and map the configuration file to use your own | `AUTO`        |
-| `ALLOWED_HOSTS`                  | Set which domains which can access service Seperate Multiple with `,` - Example: `https://www.example\.org` (no wildcards)       | ``            |
-| `EXTRA_OPTIONS`                  | If you want to pass additional arguments upon startup, add it here                                                 | ``            |
-| `INTERFACE`                      | Web interface type `classic` or `notebookbar`                                                                      | `notebookbar` |
-| `WATERMARK_OPACITY`              | Watermark Opacity                                                                                                  | `0.2`         |
-| `WATERMARK_TEXT`                 | Text to display for watermark                                                                                      | ``            |
-| `ENABLE_MACROS`                  | Enable Macros                                                                                                      | `FALSE`       |
-| `MACRO_SECURITY_LEVEL`           | Macro Security Level `1` Medium `0` Low                                                                            | `1`           |
-| `ENABLE_METRICS_UNAUTHENTICATED` | Enable Unauthenticated Metrics                                                                                     | `FALSE`       |
-| `ENABLE_HOME_MODE`               | Enable more features with home mode                                                                                | `FALSE`       |
+| Parameter                        | Description                                                                                                                | Default       |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `SETUP_TYPE`                     | Automatically generate configuration with defaults. Set to `MANUAL` and map the configuration file to use your own         | `AUTO`        |
+| `ALLOWED_HOSTS`                  | Set which domains which can access service Seperate Multiple with `,` - Example: `https://www.example\.org` (no wildcards) | ``            |
+| `EXTRA_OPTIONS`                  | If you want to pass additional arguments upon startup, add it here                                                         | ``            |
+| `INTERFACE`                      | Web interface type `classic` or `notebookbar`                                                                              | `notebookbar` |
+| `WATERMARK_OPACITY`              | Watermark Opacity                                                                                                          | `0.2`         |
+| `WATERMARK_TEXT`                 | Text to display for watermark                                                                                              | ``            |
+| `ENABLE_MACROS`                  | Enable Macros                                                                                                              | `FALSE`       |
+| `MACRO_SECURITY_LEVEL`           | Macro Security Level `1` Medium `0` Low                                                                                    | `1`           |
+| `ENABLE_METRICS_UNAUTHENTICATED` | Enable Unauthenticated Metrics                                                                                             | `FALSE`       |
+| `ENABLE_HOME_MODE`               | Enable more features with home mode                                                                                        | `FALSE`       |
 
 
 #### Administration

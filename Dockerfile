@@ -12,10 +12,10 @@ ARG APP_NAME
 ARG APP_BRAND
 
 ### Environment Variables
-ENV COLLABORA_ONLINE_VERSION=${COLLABORA_ONLINE_VERSION:-"cp-22.05.9-2"} \
+ENV COLLABORA_ONLINE_VERSION=${COLLABORA_ONLINE_VERSION:-"cp-22.05.9-3"} \
     COLLABORA_ONLINE_REPO_URL=${COLLABORA_ONLINE_REPO_URL:-"https://github.com/CollaboraOnline/online"} \
     #
-    LIBREOFFICE_VERSION=${LIBREOFFICE_VERSION:-"cp-22.05.9-2"} \
+    LIBREOFFICE_VERSION=${LIBREOFFICE_VERSION:-"cp-22.05.9-3"} \
     LIBREOFFICE_REPO_URL=${LIBREOFFICE_REPO_URL:-"https://github.com/LibreOffice/core"} \
     #
     APP_NAME=${APP_NAME:-"Document Editor"} \
@@ -32,11 +32,11 @@ COPY build-assets /build-assets
 
 RUN source /assets/functions/00-container && \
     set -x && \
-    apt-get update && \
+    package update && \
     apt-get -o Dpkg::Options::="--force-confold" upgrade -y && \
     echo "deb-src http://deb.debian.org/debian $(cat /etc/os-release |grep "VERSION=" | awk 'NR>1{print $1}' RS='(' FS=')') main" >> /etc/apt/sources.list && \
     echo "deb http://deb.debian.org/debian $(cat /etc/os-release |grep "VERSION=" | awk 'NR>1{print $1}' RS='(' FS=')') contrib" >> /etc/apt/sources.list && \
-    curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
+    curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
     \
 ### Setup Distribution
     echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections && \
@@ -46,74 +46,80 @@ RUN source /assets/functions/00-container && \
     chown cool:cool /home/cool -R && \
     \
     BUILD_DEPS=' \
-            adduser \
-            automake \
-            build-essential \
-            cpio \
-            default-jre \
-            devscripts \
-            fontconfig \
-            g++ \
-            git \
-            inotify-tools \
-            libcap-dev \
-            libcap2-bin \
-            libcppunit-dev \
-            libghc-zlib-dev \
-            libkrb5-dev \
-            libpam-dev \
-            libpam0g-dev \
-            libpng16-16 \
-            libssl-dev \
-            libtool \
-            libubsan1 \
-            libzstd-dev \
-            locales-all \
-            m4 \
-            nasm \
-            nodejs \
-            openssl \
-            pkg-config \
-            procps \
-            python3-lxml \
-            python3-polib \
-            sudo \
-            translate-toolkit \
-            ttf-mscorefonts-installer \
-            wget \
-    ' && \
+                    adduser \
+                    automake \
+                    build-essential \
+                    bison \
+                    cpio \
+                    default-jre \
+                    devscripts \
+                    flex \
+                    fontconfig \
+                    g++ \
+                    git \
+                    gperf \
+                    inotify-tools \
+                    libcap-dev \
+                    libcap2-bin \
+                    libcppunit-dev \
+                    libghc-zlib-dev \
+                    libkrb5-dev \
+                    libpam-dev \
+                    libpam0g-dev \
+                    libpng-dev \
+                    libssl-dev \
+                    libtool \
+                    libubsan1 \
+                    libx11-dev \
+                    libzstd-dev \
+                    locales-all \
+                    m4 \
+                    nasm \
+                    nodejs \
+                    openssl \
+                    pkg-config \
+                    procps \
+                    python3-lxml \
+                    python3-polib \
+                    sudo \
+                    translate-toolkit \
+                    ttf-mscorefonts-installer \
+                    unzip \
+                    wget \
+                    zip \
+                ' && \
     ## Add Build Dependencies
-    apt-get install -y \
-            ${BUILD_DEPS} \
-            && \
+    package install -y \
+                            ${BUILD_DEPS} \
+                        && \
     \
-    apt-get build-dep -y \
-            libreoffice \
-            && \
+    package build-dep -y \
+                            libreoffice \
+                        && \
     \
 ### Build Poco
     mkdir -p /usr/src/poco && \
     curl -sSL ${POCO_URL}${POCO_VERSION} | tar xvfz - --strip 1 -C /usr/src/poco && \
     cd /usr/src/poco && \
     ./configure \
-            --static \
-            --no-tests \
-            --no-samples \
-            --no-sharedlibs \
-            --cflags="-fPIC" \
-            --omit=Zip,Data,Data/SQLite,Data/ODBC,Data/MySQL,MongoDB,PDF,CppParser,PageCompiler,Redis,Encodings \
-            --prefix=/opt/poco \
-            && \
+        --static \
+        --no-tests \
+        --no-samples \
+        --no-sharedlibs \
+        --cflags="-fPIC" \
+        --omit=Zip,Data,Data/SQLite,Data/ODBC,Data/MySQL,MongoDB,PDF,CppParser,PageCompiler,Redis,Encodings \
+        --prefix=/opt/poco \
+        && \
     make -j$(nproc) && \
     make install && \
     \
     ### Build Fetch LibreOffice - This will take a while..
     clone_git_repo ${LIBREOFFICE_REPO_URL} ${LIBREOFFICE_VERSION} ${GIT_REPO_SRC_CORE} && \
-    if [ -d "/build-assets/core/src" ] ; then cp -R /build-assets/core/src/* ${GIT_REPO_SRC_CORE} ; fi; \
-    if [ -d "/build-assets/core/scripts" ] ; then for script in /build-assets/core/scripts/*.sh; do echo "** Applying $script"; bash $script; done && \ ; fi ; \
+    if [ -d "/build-assets/core/src" ] && [ -n "$(ls -A "/build-assets/core/src" 2>/dev/null)" ]; then cp -R /build-assets/core/src/* / ; fi; \
+    if [ -d "/build-assets/core/scripts" ] && [ -n "$(ls -A "/build-assets/core/scripts" 2>/dev/null)" ]; then for script in /build-assets/core/scripts/*.sh; do echo "** Applying $script"; bash $script; done && \ ; fi ; \
     sed -i "s|--enable-symbols|--disable-symbols|g" ${GIT_REPO_SRC_CORE}/distro-configs/CPLinux-LOKit.conf && \
     \
-    echo "--prefix=/opt/libreoffice" >> ${GIT_REPO_SRC_CORE}/distro-configs/CPLinux-LOKit.conf  && \
+    echo "--prefix=/opt/libreoffice" >> ${GIT_REPO_SRC_CORE}/distro-configs/CPLinux-LOKit.conf && \
     ./autogen.sh \
             --with-distro="CPLinux-LOKit" \
             --disable-epm \
@@ -138,7 +144,8 @@ RUN source /assets/functions/00-container && \
         ${GIT_REPO_SRC_ONLINE}/browser/src/core/Socket.js \
         ${GIT_REPO_SRC_ONLINE}/browser/src/layer/marker/ProgressOverlay.js \
         ${GIT_REPO_SRC_ONLINE}/browser/src/map/Clipboard.js \
-        ${GIT_REPO_SRC_ONLINE}/browser/welcome/*.html && \
+        ${GIT_REPO_SRC_ONLINE}/browser/welcome/*.html \
+        && \
     ./autogen.sh && \
     ./configure --enable-silent-rules \
                 --with-lokit-path="${GIT_REPO_SRC_CORE}/include" \
@@ -164,14 +171,13 @@ RUN source /assets/functions/00-container && \
     \
     ### Cleanup
     cd / && \
-    apt-get autoremove -y && \
-    apt-get clean && \
-    rm -rf /usr/src/* && \
-    rm -rf /usr/share/doc && \
-    rm -rf /usr/share/man && \
-    rm -rf /usr/share/locale && \
-    rm -rf /var/lib/apt/lists/* && \
-    rm -rf /var/log/*
+    package cleanup && \
+    rm -rf \
+            /usr/share/doc \
+            /usr/share/locale \
+            /usr/share/man \
+            /usr/src/* \
+            /var/log/*
 
 FROM docker.io/tiredofit/debian:bullseye
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
@@ -190,46 +196,47 @@ COPY CHANGELOG.md /assets/.changelogs/tiredofit_docker-collabora-online.md
 COPY build-assets /build-assets
 
 ### Install Dependencies
-RUN set -x && \
+RUN source /assets/functions/00-container && \
+    set -x && \
     adduser --quiet --system --group --home /opt/cool cool && \
     \
 ### Add Repositories
     echo "deb http://deb.debian.org/debian $(cat /etc/os-release |grep "VERSION=" | awk 'NR>1{print $1}' RS='(' FS=')') contrib" >> /etc/apt/sources.list && \
     echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections && \
-    apt-get update && \
+    package update && \
     apt-get -o Dpkg::Options::="--force-confold" upgrade -y && \
-    apt-get install -y\
-             apt-transport-https \
-             cpio \
-             findutils \
-             fontconfig \
-             hunspell \
-             hunspell-en-ca \
-             hunspell-en-gb \
-             hunspell-en-us \
-             inotify-tools \
-             libcap2-bin \
-             libcups2 \
-             libfontconfig1 \
-             libfreetype6 \
-             libgl1-mesa-glx \
-             libpam0g \
-             libpng16-16 \
-             libsm6 \
-             libubsan1 \
-             libxcb-render0 \
-             libxcb-shm0 \
-             libxinerama1 \
-             libxrender1 \
-             locales \
-             locales-all \
-             openssl \
-             openssh-client \
-             procps \
-             python3-requests \
-             python3-websocket \
-             ttf-mscorefonts-installer \
-             && \
+    package install \
+                        apt-transport-https \
+                        cpio \
+                        findutils \
+                        fontconfig \
+                        hunspell \
+                        hunspell-en-ca \
+                        hunspell-en-gb \
+                        hunspell-en-us \
+                        inotify-tools \
+                        libcap2-bin \
+                        libcups2 \
+                        libfontconfig1 \
+                        libfreetype6 \
+                        libgl1-mesa-glx \
+                        libpam0g \
+                        libpng16-16 \
+                        libsm6 \
+                        libubsan1 \
+                        libxcb-render0 \
+                        libxcb-shm0 \
+                        libxinerama1 \
+                        libxrender1 \
+                        locales \
+                        locales-all \
+                        openssl \
+                        openssh-client \
+                        procps \
+                        python3-requests \
+                        python3-websocket \
+                        ttf-mscorefonts-installer \
+                        && \
     \
 ### Setup Directories and Permissions
     mkdir -p /etc/coolwsd && \
@@ -254,20 +261,18 @@ RUN set -x && \
 ### Setup LibreOffice Online Jails
     sudo -u cool /opt/cool/bin/coolwsd-systemplate-setup /opt/cool/systemplate /opt/libreoffice && \
     \
-    if [ -d "/build-assets/container/src" ] ; then cp -R /build-assets/container/src/* / ; fi; \
-    if [ -d "/build-assets/container/scripts" ] ; then for script in /build-assets/container/scripts/*.sh; do echo "** Applying $script"; bash $script; done && \ ; fi ; \
-    apt-get autoremove -y && \
-    apt-get clean && \
-    \
-    rm -rf /usr/src/* && \
-    rm -rf /usr/share/doc && \
-    rm -rf /usr/share/man && \
-    rm -rf /var/lib/apt/lists/* && \
-    rm -rf /var/log/* && \
-    rm -rf /build-assets && \
-    rm -rf /tmp/*
+    if [ -d "/build-assets/container/src" ] && [ -n "$(ls -A "/build-assets/container/src" 2>/dev/null)" ]; then cp -R /build-assets/container/src/* / ; fi; \
+    if [ -d "/build-assets/container/scripts" ] && [ -n "$(ls -A "/build-assets/container/scripts" 2>/dev/null)" ]; then for script in /build-assets/container/scripts/*.sh; do echo "** Applying $script"; bash $script; done && \ ; fi ; \
+    package cleanup && \
+    rm -rf \
+            /build-assets \
+            /tmp/* \
+            /usr/src/* \
+            /usr/share/doc \
+            /usr/share/man \
+            /var/lib/apt/lists/* \
+            /var/log/*
 
-### Networking Configuration
 EXPOSE 9980
 
 ### Assets

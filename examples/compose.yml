@@ -1,26 +1,20 @@
-version: '3.7'
 services:
-
   collabora-online-app:
     image: tiredofit/collabora-online
     container_name: collabora-online-app
-    hostname: collabora-online.example.com
-    expose:
-      - 9980
+    hostname: online.example.com
     cap_add:
       - MKNOD
       - NET_ADMIN
     privileged: true
     labels:
       - traefik.enable=true
-      - traefik.frontend.rule=Host:collabora-online.example.com
-      - traefik.port=9980
-      - traefik.protocol=http
-      - traefik.docker.network=proxy
-      - traefik.backend=collabora-online-app
+      - traefik.http.routers.collabora-online-app.rule=Host(`online.example.com`)
+      - traefik.http.services.collabora-online-app.loadbalancer.server.port=9980
     volumes:
       - ./logs:/logs
     environment:
+      - TIMEZONE=America/Vancouver
       - CONTAINER_NAME=collabora-online-app
 
       - ADMIN_USER=admin
@@ -30,6 +24,9 @@ services:
 
       - ENABLE_TLS=FALSE
       - ENABLE_TLS_REVERSE_PROXY=TRUE
+
+      - INTERFACE=notebookbar
+      - LOG_TYPE=FILE
     networks:
       - proxy
       - services
@@ -40,4 +37,3 @@ networks:
     external: true
   services:
     external: true
-

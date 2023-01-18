@@ -8,9 +8,8 @@ check_container_initialized
 check_service_initialized init 10-coolwsd
 liftoff
 
-while inotifywait -q -e create,delete,modify,attrib /etc/coolwsd/coolwsd.xml
- do
-  print_info "Reloading coolwsd configuration do to a detected certificate change"
-  pkill -f --signal 1 coolwsd
-  exit 0
+while inotifywait -q -e create,delete,modify,attrib /etc/coolwsd/coolwsd.xml ; do
+    print_info "Reloading coolwsd configuration do to a detected certificate change"
+    pkill -f --signal 1 coolwsd
+    exit 0
 done

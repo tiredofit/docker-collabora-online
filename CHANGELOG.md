@@ -1,3 +1,15 @@
+## 2.4.19 2023-01-18 <dave at tiredofit dot ca>
+
+   ### Added
+      - Collabora Office cp-22.05.9-3
+      - Collabora Online cp-22.05.9-3
+      - Add libpng-dev packages for building
+      - Add x11-dev packages for building
+
+   ### Changed
+      - Switch to package management via base image functions
+
+
 ## 2.4.18 2022-12-19 <dave at tiredofit dot ca>
 
    ### Added
