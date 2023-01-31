@@ -1,10 +1,11 @@
-name: "build_image"
+name: "manual_build_image"
 
 on:
-  push:
-    paths:
-      - "**"
-      - "!README.md"
+  workflow_dispatch:
+    inputs:
+      Manual Build:
+        description: 'Manual Build'
+        required: false
 
 jobs:
   build:
