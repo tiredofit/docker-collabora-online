@@ -1,5 +1,6 @@
 FROM docker.io/tiredofit/debian:bullseye as builder
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
+LABEL org.opencontainers.image.source="https://github.com/tiredofit/docker-collabora-online"
 
 ### Buildtime arguments
 ARG COLLABORA_ONLINE_VERSION
@@ -12,10 +13,10 @@ ARG APP_NAME
 ARG APP_BRAND
 
 ### Environment Variables
-ENV COLLABORA_ONLINE_VERSION=${COLLABORA_ONLINE_VERSION:-"cp-22.05.9-5"} \
+ENV COLLABORA_ONLINE_VERSION=${COLLABORA_ONLINE_VERSION:-"cp-22.05.10-1"} \
     COLLABORA_ONLINE_REPO_URL=${COLLABORA_ONLINE_REPO_URL:-"https://github.com/CollaboraOnline/online"} \
     #
-    LIBREOFFICE_VERSION=${LIBREOFFICE_VERSION:-"cp-22.05.9-5"} \
+    LIBREOFFICE_VERSION=${LIBREOFFICE_VERSION:-"cp-22.05.10-1"} \
     LIBREOFFICE_REPO_URL=${LIBREOFFICE_REPO_URL:-"https://github.com/LibreOffice/core"} \
     #
     APP_NAME=${APP_NAME:-"Document Editor"} \
@@ -181,7 +182,7 @@ RUN source /assets/functions/00-container && \
 
 FROM docker.io/tiredofit/debian:bullseye
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
-
+LABEL org.opencontainers.image.source="https://github.com/tiredofit/docker-collabora-online"
 ### Set Defaults
 ENV ADMIN_USER=admin \
     ADMIN_PASS=collaboraonline \
