@@ -1,3 +1,20 @@
+## 2.4.25 2023-03-23 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add DeepL Translation Support
+      - Add Zotero Citation Support
+      - Add support for Fonts Missing
+      - Add more options for Language Tool
+      - Add UI option to Group Download As items
+      - Add performance settings for minimum time between saves/uploads
+      - Add PDF Resolution DPI settings
+
+   ### Reverted
+      - Remove MEMORY_DATA_LIMIT
+      - Remove LOLEAFLET_HTML
+      - Rework config to be better legible
+
+
 ## 2.4.24 2023-03-23 <dave at tiredofit dot ca>
 
    ### Added
