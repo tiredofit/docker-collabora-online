@@ -100,7 +100,7 @@ Images are built primarily for `amd64` architecture, and may also include builds
 ## Configuration
 ### Quick Start
 
-* The quickest way to get started is using [docker-compose](https://docs.docker.com/compose/). See the examples folder for a working [docker-compose.yml](examples/docker-compose.yml) that can be modified for development or production use.
+* The quickest way to get started is using [docker-compose](https://docs.docker.com/compose/). See the examples folder for a working [docker-compose.yml](examples/compose.yml) that can be modified for development or production use.
 * Set various [environment variables](#environment-variables) to understand the capabilities of this image. A Sample `docker-compose.yml` is provided that will work right out of the box for most people without any fancy optimizations.
 * Map [persistent storage](#data-volumes) for access to configuration and data files for backup.
 * Make sure you set your hostname e.g. online.example.com when starting your container to make sure the administration console urls are correct.
