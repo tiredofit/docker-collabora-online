@@ -1,3 +1,9 @@
+## 2.4.27 2023-03-28 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix a number of issues in config generation in 2.4.26 and 2.4.26
+
+
 ## 2.4.26 2023-03-24 <dave at tiredofit dot ca>
 
    ### Added
