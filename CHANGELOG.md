@@ -1,3 +1,9 @@
+## 2.4.29 2023-03-28 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Add default for LOG_PROTOCOL
+
+
 ## 2.4.28 2023-03-28 <dave at tiredofit dot ca>
 
    ### Added
