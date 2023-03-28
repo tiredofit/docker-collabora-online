@@ -179,7 +179,7 @@ if [ "${SETUP_TYPE,,}" = "auto" ]; then
 
     ## Per View Settings
     sed -i \
-                -e "s|<group_download_as \(.*\)>.*<\/group_download_as>|<group_download_as \1>${GROUP_DOWNLOAD_AS}<\/group_download_as>|" \
+                -e "s|<group_download_as \(.*\)>.*<\/group_download_as>|<group_download_as \1>${GROUP_DOWNLOAD_AS,,}<\/group_download_as>|" \
                 -e "s|<out_of_focus_timeout_secs \(.*\)>.*<\/out_of_focus_timeout_secs>|<out_of_focus_timeout_secs \1>${USER_OUT_OF_FOCUS_TIMEOUT}<\/out_of_focus_timeout_secs>|" \
 	            -e "s|<idle_timeout_secs \(.*\)>.*<\/idle_timeout_secs>|<idle_timeout_secs \1>${USER_IDLE_TIMEOUT}<\/idle_timeout_secs>|" \
             /etc/coolwsd/coolwsd.xml
@@ -257,7 +257,7 @@ if [ "${SETUP_TYPE,,}" = "auto" ]; then
                 -e "s|<jwt_expiry_secs \(.*\)>.*<\/jwt_expiry_secs>|<jwt_expiry_secs \1>${ADMIN_JWT_EXPIRY}<\/jwt_expiry_secs>|" \
                 -e "s|<enable_macros_execution \(.*\)>.*<\/enable_macros_execution>|<enable_macros_execution \1>${ENABLE_MACROS,,}<\/enable_macros_execution>|" \
                 -e "s|<macro_security_level \(.*\)>.*<\/macro_security_level>|<macro_security_level \1>${MACRO_SECURITY_LEVEL}<\/macro_security_level>|" \
-                -e "s|<enable_metrics_unauthenticated \(.*\)>.*<\/enable_metrics_unauthenticated>|<enable_metrics_unauthenticated \1>${ENABLE_METRICS_UNAUTHENTICATED}<\/enable_metrics_unauthenticated>|" \
+                -e "s|<enable_metrics_unauthenticated \(.*\)>.*<\/enable_metrics_unauthenticated>|<enable_metrics_unauthenticated \1>${ENABLE_METRICS_UNAUTHENTICATED,,}<\/enable_metrics_unauthenticated>|" \
             /etc/coolwsd/coolwsd.xml
 
 	## Watermark
@@ -297,7 +297,7 @@ if [ "${SETUP_TYPE,,}" = "auto" ]; then
 	sed -i -e "s|<url desc=\"URL of optional JSON\(.*\)>.*<\/url>|<url desc=\"URL of optional JSON\1>${REMOTE_FONT_URL}<\/url>|" /etc/coolwsd/coolwsd.xml
 
     ## Home Mode
-    sed -i -e "s|<enable desc=\"Enable more configuration options for home users\(.*\)>.*<\/enable>|<enable desc=\"Enable more configuration options for home users\1>${ENABLE_HOME_MODE}<\/enable>|g" /etc/coolwsd/coolwsd.xml
+    sed -i -e "s|<enable desc=\"Enable more configuration options for home users\(.*\)>.*<\/enable>|<enable desc=\"Enable more configuration options for home users\1>${ENABLE_HOME_MODE,,}<\/enable>|g" /etc/coolwsd/coolwsd.xml
 
     ## Fonts Missing
     sed -i -e "s|<handling desc=\(.*\)>.*<\/handling>|<handling desc=\1>${FONTS_MISSING_ACTION}<\/handling>|" /etc/coolwsd/coolwsd.xml
