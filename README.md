@@ -136,7 +136,7 @@ Be sure to view the following repositories to understand all the customizable op
 | `ALLOWED_HOSTS`                  | Set which domains which can access service Seperate Multiple with `,` - Example: `https://www.example\.org` (no wildcards) | ``            |
 | `EXTRA_OPTIONS`                  | If you want to pass additional arguments upon startup, add it here                                                         | ``            |
 | `INTERFACE`                      | Web interface type `classic` or `notebookbar`                                                                              | `notebookbar` |
-| `GROUP_DOWNLOAD_AS` | Group Download as Icons into dropdown in notebookbar view | `TRUE` |
+| `GROUP_DOWNLOAD_AS`              | Group Download as Icons into dropdown in notebookbar view                                                                  | `TRUE`        |
 | `WATERMARK_OPACITY`              | Watermark Opacity                                                                                                          | `0.2`         |
 | `WATERMARK_TEXT`                 | Text to display for watermark                                                                                              | ``            |
 | `ENABLE_MACROS`                  | Enable Macros                                                                                                              | `FALSE`       |
@@ -171,6 +171,7 @@ Be sure to view the following repositories to understand all the customizable op
 | `LOG_LEVEL_CLIENT_LEAST_VERBOSE` | Least verbose log level to ever send to client                                                   | `FATAL`         |
 | `LOG_LEVEL_CLIENT_MOST_VERBOSE`  | Most verbose log level to ever send to client                                                    | `NOTICE`        |
 | `LOG_LIBREOFFICE`                | Log filter what Libreoffice entries                                                              | `-INFO-WARN`    |
+| `LOG_PROTOCOL`                   | Log Client Server Protocol                                                                       | `false`         |
 
 #### Spell Check
 
@@ -245,8 +246,8 @@ The image comes with English (US, GB, Canada variants) baked into the image, how
 | `FILE_SIZE_LIMIT`           | The maximum file size allowed to each document process to write                                                                       | `0` (unlimited) |
 | `IDLE_SAVE`                 | The number of idle seconds after which document, if modified, should be saved                                                         | `30`            |
 | `IDLE_UNLOAD_TIMEOUT`       | The maximum number of seconds before unloading an idle documen                                                                        | `3600`          |
-| `MIN_TIME_BETWEEN_SAVES` | Minimum number of milliseconds between saving document on disk | `500` |
-| `MIN_TIME_BETWEEN_UPLOADS` | Minimum number of milliseconds between uploading document to storage | `5000` |
+| `MIN_TIME_BETWEEN_SAVES`    | Minimum number of milliseconds between saving document on disk                                                                        | `500`           |
+| `MIN_TIME_BETWEEN_UPLOADS`  | Minimum number of milliseconds between uploading document to storage                                                                  | `5000`          |
 | `MAX_CONVERT_LIMIT`         | Maximum time in seconds to wait for a convert process to complete                                                                     | `30`            |
 | `MAX_FILE_LOAD_LIMIT`       | Maximum number of seconds to wait for a document load to succeed                                                                      | `100`           |
 | `MAX_OPEN_FILES`            | The maximum number of files allowed to each document process to open                                                                  | `0` (unlimited) |
@@ -268,11 +269,12 @@ The image comes with English (US, GB, Canada variants) baked into the image, how
 | `FILES_QUARANTINE_EXPIRY`               | Files expiry in minutes                                | `30`         |
 
 #### DeepL Translation
-| Parameter                     | Description                                                              | Default |
-| ----------------------------- | ------------------------------------------------------------------------ | ------- |
-| `ENABLE_DEEPL`        | Enable DeepL Translation Support                       | `FALSE` |
-| `DEEPL_API_URL` | DeepL API URL | `` |
-| `DEEPL_AUTH_KEY` | DeepL Auth Key | `` |
+| Parameter        | Description                      | Default |
+| ---------------- | -------------------------------- | ------- |
+| `ENABLE_DEEPL`   | Enable DeepL Translation Support | `FALSE` |
+| `DEEPL_API_URL`  | DeepL API URL                    | ``      |
+| `DEEPL_AUTH_KEY` | DeepL Auth Key                   | ``      |
+
 #### Language Tool
 | Parameter                     | Description                                                              | Default |
 | ----------------------------- | ------------------------------------------------------------------------ | ------- |
@@ -284,9 +286,9 @@ The image comes with English (US, GB, Canada variants) baked into the image, how
 | `LANGUAGE_TOOL_SSL_VERIFY`    | SSL Verify                                                               | `TRUE`  |
 
 #### Zotero
-| Parameter                     | Description                                                              | Default |
-| ----------------------------- | ------------------------------------------------------------------------ | ------- |
-| `ENABLE_ZOTERO` | Enable Zotero Citations | `TRUE` |
+| Parameter       | Description             | Default |
+| --------------- | ----------------------- | ------- |
+| `ENABLE_ZOTERO` | Enable Zotero Citations | `TRUE`  |
 
 #### Cleanup
 | Parameter                    | Description                                                                     | Default |
@@ -299,26 +301,25 @@ The image comes with English (US, GB, Canada variants) baked into the image, how
 | `CLEANUP_LIMIT_CPU_PER`      | Minimum CPU usage in percent for a document to be candidate for bad state       | `85`    |
 
 #### Other Settings
-| Parameter                      | Description                                                                                                       | Default         |
-| ------------------------------ | ----------------------------------------------------------------------------------------------------------------- | --------------- |
-| `CHILD_ROOT_PATH`              | Child root path                                                                                                   | `child-roots`   |
-| `DOCUMENT_SIGNING_URL`         | Endpoint URL of signing server                                                                                    | ``              |
-| `ENABLE_CAPABILITIES`          | Enable Capabilities                                                                                               | `TRUE`          |
-| `ENABLE_CONFIG_RELOAD`         | Enable Reload of coolwsd if config changed in container                                                           | `TRUE`          |
-| `ENABLE_EXPERIMENTAL_FEATURES` | Enable experimental features                                                                                      | `FALSE`         |
-| `ENABLE_MOUNT_JAIL`            | Enable mounting jails                                                                                             | `true`          |
-| `ENABLE_SECCOMP`               | Enable Seccomp                                                                                                    | `TRUE`          |
-| `FILE_SERVER_ROOT_PATH`        | Path to directory considered as root                                                                              | `browser/../`   |
-| `FRAME_ANCESTORS`              | Hosts where interface can be hosted in Iframe                                                                     | ``              |
-| `HEXIFY_EMBEDDED_URLS`         | Hexify Embedded URLS (useful for Azure deployments)                                                               | `FALSE`         |
-| `INDIRECTION_ENDPOINT` | URL endpoint to server which zervers routeToken in json format | |
-| `NETWORK_PROTOCOL`             | Network Protocol `ipv4` `ipv6` `all`                                                                              | `ipv4`          |
-| `PDF_RESOLUTION_DPI` | PDF Resolution DPI when rendering PDF documents as image | `96` |
-| `REDLINING_AS_COMMENTS`        | Show red-lines as comments                                                                                        | `false`         |
-| `REMOTE_URL` | Remote server to send request to get remote config | |
-| `SYS_TEMPLATE_PATH`            | System Template Path                                                                                              | `systemplate`   |
-| `USE_INTEGRATOR_THEME`         | Use the remote integrators theme                                                                                  | `TRUE`          |
-| `VERSION_SUFFIX`               | Append this value onto version to break cache when developing. Generates random uuid when using value of `random` |                 |
+| Parameter                      | Description                                                                                                       | Default       |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------- | ------------- |
+| `CHILD_ROOT_PATH`              | Child root path                                                                                                   | `child-roots` |
+| `DOCUMENT_SIGNING_URL`         | Endpoint URL of signing server                                                                                    | ``            |
+| `ENABLE_CAPABILITIES`          | Enable Capabilities                                                                                               | `TRUE`        |
+| `ENABLE_CONFIG_RELOAD`         | Enable Reload of coolwsd if config changed in container                                                           | `TRUE`        |
+| `ENABLE_EXPERIMENTAL_FEATURES` | Enable experimental features                                                                                      | `FALSE`       |
+| `ENABLE_MOUNT_JAIL`            | Enable mounting jails                                                                                             | `true`        |
+| `ENABLE_SECCOMP`               | Enable Seccomp                                                                                                    | `TRUE`        |
+| `FILE_SERVER_ROOT_PATH`        | Path to directory considered as root                                                                              | `browser/../` |
+| `FRAME_ANCESTORS`              | Hosts where interface can be hosted in Iframe                                                                     | ``            |
+| `HEXIFY_EMBEDDED_URLS`         | Hexify Embedded URLS (useful for Azure deployments)                                                               | `FALSE`       |
+| `INDIRECTION_ENDPOINT`         | URL endpoint to server which zervers routeToken in json format                                                    |               |
+| `PDF_RESOLUTION_DPI`           | PDF Resolution DPI when rendering PDF documents as image                                                          | `96`          |
+| `REDLINING_AS_COMMENTS`        | Show red-lines as comments                                                                                        | `false`       |
+| `REMOTE_URL`                   | Remote server to send request to get remote config                                                                |               |
+| `SYS_TEMPLATE_PATH`            | System Template Path                                                                                              | `systemplate` |
+| `USE_INTEGRATOR_THEME`         | Use the remote integrators theme                                                                                  | `TRUE`        |
+| `VERSION_SUFFIX`               | Append this value onto version to break cache when developing. Generates random uuid when using value of `random` |               |
 
 
 #### Adding Custom Fonts
@@ -326,10 +327,10 @@ This image comes with some highly opninionated default fonts by the LibreOffice 
 
 You can also configure this inside the container with a compatible application.
 
-| Parameter                      | Description                                                                                                       | Default         |
-| ------------------------------ | ----------------------------------------------------------------------------------------------------------------- | --------------- |
-| `REMOTE_FONT_URL`              | URL to json font lists to load                                                                                    |                 |
-| `FONTS_MISSING_ACTION` | How to handle fonts missing in a document `report` `log` `both` `ignore` | `log` |
+| Parameter              | Description                                                              | Default |
+| ---------------------- | ------------------------------------------------------------------------ | ------- |
+| `REMOTE_FONT_URL`      | URL to json font lists to load                                           |         |
+| `FONTS_MISSING_ACTION` | How to handle fonts missing in a document `report` `log` `both` `ignore` | `log`   |
 
 ### Networking
 

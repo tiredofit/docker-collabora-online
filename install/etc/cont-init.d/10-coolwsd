@@ -193,7 +193,7 @@ if [ "${SETUP_TYPE,,}" = "auto" ]; then
 	            -e "s|<protocol \(.*\)>.*<\/protocol>|<protocol \1>${LOG_CLIENT_CONSOLE}<\/protocol>|" \
 	            -e "s|<lokit_sal_log \(.*\)>.*<\/lokit_sal_log>|<lokit_sal_log \1>${LOG_LIBREOFFICE}<\/lokit_sal_log>|" \
 	            -e "s|<browser_logging \(.*\)>.*<\/browser_logging>|<browser_logging \1>${LOG_CLIENT_CONSOLE}<\/browser_logging>|" \
-                -e "s|<protocol \(.*\)>.*<\/protocol>|<protocol \1>${NETWORK_PROTOCOL}<\/protocol>|" \
+                -e "s|<protocol \(.*\)>.*<\/protocol>|<protocol \1>${LOG_PROTOCOL,,}<\/protocol>|" \
                 -e "s|<most_verbose_level_settable_from_client \(.*\)>.*<\/most_verbose_level_settable_from_client>|<most_verbose_level_settable_from_client \1>${LOG_LEVEL_CLIENT_MOST_VERBOSE}<\/most_verbose_level_settable_from_client>|" \
 	            -e "s|<least_verbose_level_settable_from_client \(.*\)>.*<\/least_verbose_level_settable_from_client>|<least_verbose_level_settable_from_client \1>${LOG_LEVEL_CLIENT_LEAST_VERBOSE}<\/least_verbose_level_settable_from_client>|" \
             /etc/coolwsd/coolwsd.xml

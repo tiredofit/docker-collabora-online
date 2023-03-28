@@ -1,3 +1,11 @@
+## 2.4.28 2023-03-28 <dave at tiredofit dot ca>
+
+   ### Added
+      - Fix logging issue relating to Javascript protocol
+      - Change some booleans to false
+      - Fix sed statements
+
+
 ## 2.4.27 2023-03-28 <dave at tiredofit dot ca>
 
    ### Changed
