@@ -146,12 +146,12 @@ Be sure to view the following repositories to understand all the customizable op
 
 
 #### Administration
-| Parameter              | Description                                   | Default           |
-| ---------------------- | --------------------------------------------- | ----------------- |
-| `ENABLE_ADMIN_CONSOLE` | Enable Administration Console                 | `TRUE`            |
-| `ADMIN_USER`           | User for accessing Administration Console     | `admin`           |
-| `ADMIN_PASS`           | Password for accessing Administration Console | `collaboraonline` |
-| `ADMIN_JWT_EXPIRY`     | Admin JWT Expiry in seconds                   | `1800`            |
+| Parameter              | Description                                   | Default           | `_FILE` |
+| ---------------------- | --------------------------------------------- | ----------------- | --- |
+| `ENABLE_ADMIN_CONSOLE` | Enable Administration Console                 | `TRUE`            | |
+| `ADMIN_USER`           | User for accessing Administration Console     | `admin`           | x |
+| `ADMIN_PASS`           | Password for accessing Administration Console | `collaboraonline` | x |
+| `ADMIN_JWT_EXPIRY`     | Admin JWT Expiry in seconds                   | `1800`            | |
 
 
 #### Logging
@@ -269,21 +269,21 @@ The image comes with English (US, GB, Canada variants) baked into the image, how
 | `FILES_QUARANTINE_EXPIRY`               | Files expiry in minutes                                | `30`         |
 
 #### DeepL Translation
-| Parameter        | Description                      | Default |
-| ---------------- | -------------------------------- | ------- |
-| `ENABLE_DEEPL`   | Enable DeepL Translation Support | `FALSE` |
-| `DEEPL_API_URL`  | DeepL API URL                    | ``      |
-| `DEEPL_AUTH_KEY` | DeepL Auth Key                   | ``      |
+| Parameter        | Description                      | Default | `_FILE` |
+| ---------------- | -------------------------------- | ------- | --- |
+| `ENABLE_DEEPL`   | Enable DeepL Translation Support | `FALSE` ||
+| `DEEPL_API_URL`  | DeepL API URL                    | ``      | x |
+| `DEEPL_AUTH_KEY` | DeepL Auth Key                   | ``      | x |
 
 #### Language Tool
-| Parameter                     | Description                                                              | Default |
-| ----------------------------- | ------------------------------------------------------------------------ | ------- |
-| `ENABLE_LANGUAGE_TOOL`        | Enable Language Tool  Grammar checking integration                       | `FALSE` |
-| `LANGUAGE_TOOL_BASE_URL`      | Base URL for Language Tool                                               |         |
-| `LANGUAGE_TOOL_USER_NAME`     | Language Tool User Name                                                  |         |
-| `LANGUAGE_TOOL_API_KEY`       | Language Tool provided API Key                                           |         |
-| `LANGUAGE_TOOL_REST_PROTOCOL` | REST protocol. blank for Language Tool `duden` for Duden Korrekturserver |         |
-| `LANGUAGE_TOOL_SSL_VERIFY`    | SSL Verify                                                               | `TRUE`  |
+| Parameter                     | Description                                                              | Default | `_FILE` |
+| ----------------------------- | ------------------------------------------------------------------------ | ------- | --- |
+| `ENABLE_LANGUAGE_TOOL`        | Enable Language Tool  Grammar checking integration                       | `FALSE` | |
+| `LANGUAGE_TOOL_BASE_URL`      | Base URL for Language Tool                                               |         | x |
+| `LANGUAGE_TOOL_USER_NAME`     | Language Tool User Name                                                  |         | x |
+| `LANGUAGE_TOOL_API_KEY`       | Language Tool provided API Key                                           |         | x|
+| `LANGUAGE_TOOL_REST_PROTOCOL` | REST protocol. blank for Language Tool `duden` for Duden Korrekturserver |         | |
+| `LANGUAGE_TOOL_SSL_VERIFY`    | SSL Verify                                                               | `TRUE`  | |
 
 #### Zotero
 | Parameter       | Description             | Default |

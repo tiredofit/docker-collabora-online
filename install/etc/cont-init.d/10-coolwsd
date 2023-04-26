@@ -5,13 +5,20 @@ prepare_service single
 prepare_service 03-monitoring
 PROCESS_NAME="collabora-online"
 
+transform_file_var \
+                        ADMIN_USER \
+                        ADMIN_PASS \
+                        DEEPL_API_URL \
+                        DEEPL_AUTH_KEY \
+                        LANGUAGE_TOOL_USER_NAME \
+                        LANGUAGE_TOOL_REST_PROTOCOL
+
 sanity_var "ALLOWED_HOSTS" "Allowed Hostnames"
 
 print_debug "Creating directories and setting up logging"
 mkdir -p "${LOG_PATH}"
 touch "${LOG_PATH}"/"${LOG_FILE}"
 chown -R cool "${LOG_PATH}"
-
 
 print_debug "Setting up DNS Resolution"
 rm /opt/cool/systemplate/etc/resolv.conf
