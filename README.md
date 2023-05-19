@@ -84,15 +84,16 @@ docker pull tiredofit/collabora-online:(imagetag)
 
 The following image tags are available along with their tagged release based on what's written in the [Changelog](CHANGELOG.md):
 
-| LibreOffice version | Collabora Online version | Tag      |
-| ------------------- | ------------------------ | -------- |
-| `2022`              | `22.05.x`                | `latest` |
-| `2022`              | `22.05.x`                | `2.4.0`  |
-| `2021`              | `21.11.0`                | `2.3.0`  |
-| `6.4.x`             | `6.4.x`                  | `2.1`    |
-| `6.4.x`             | `6.4.x`                  | `2.0`    |
-| `6.0.x`             | `4.0.x`                  | `1.6`    |
-| `5.3.x`             | `3.4.x`                  | `1.1`    |
+| Collabora Office version | Collabora Online version | Tag        |
+| ------------------------ | ------------------------ | ---------- |
+| `2023`                   | `23.05.x`                | `23.05.xx` |
+| `2023`                   | `23.05.x`                | `latest`   |
+| `2022`                   | `22.05.x`                | `2.4.0`    |
+| `2021`                   | `21.11.0`                | `2.3.0`    |
+| `6.4.x`                  | `6.4.x`                  | `2.1`      |
+| `6.4.x`                  | `6.4.x`                  | `2.0`      |
+| `6.0.x`                  | `4.0.x`                  | `1.6`      |
+| `5.3.x`                  | `3.4.x`                  | `1.1`      |
 
 #### Multi Architecture
 Images are built primarily for `amd64` architecture, and may also include builds for `arm/v7`, `arm64` and others. These variants are all unsupported. Consider [sponsoring](https://github.com/sponsors/tiredofit) my work so that I can work with various hardware. To see if this image supports multiple architecures, type `docker manifest (image):(tag)`

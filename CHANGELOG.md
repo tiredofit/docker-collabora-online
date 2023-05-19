@@ -1,3 +1,12 @@
+## 23.05.0-1 2023-05-19 <dave at tiredofit dot ca>
+
+New versioning scheme
+
+   ### Added
+      - Collabora Online 23.05.0-1
+      - Collabora Office 23.05.0-1
+
+
 ## 2.4.34 2023-05-05 <dave at tiredofit dot ca>
 
    ### Added
