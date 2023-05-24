@@ -133,7 +133,8 @@ RUN source /assets/functions/00-container && \
     cp -R ${GIT_REPO_SRC_CORE}/instdir/* /opt/libreoffice/ && \
     \
     ### Build LibreOffice Online (Not as long as above)
-    clone_git_repo ${COLLABORA_ONLINE_REPO_URL} ${COLLABORA_ONLINE_VERSION} ${GIT_REPO_SRC_ONLINE} && \
+   clone_git_repo ${COLLABORA_ONLINE_REPO_URL} ${COLLABORA_ONLINE_VERSION} ${GIT_REPO_SRC_ONLINE}
+RUN source /assets/functions/00-container && \
     if [ -d "/build-assets/online/src" ] ; then cp -R /build-assets/online/src/* ${GIT_REPO_SRC_ONLINE} ; fi; \
     if [ -d "/build-assets/online/scripts" ] ; then for script in /build-assets/online/scripts/*.sh; do echo "** Applying $script"; bash $script; done && \ ; fi ; \
     sed -i \
