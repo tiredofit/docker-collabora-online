@@ -1,3 +1,9 @@
+## 23.05.0-2 2023-06-01 <dave at tiredofit dot ca>
+
+   ### Added
+      - 23.05.0-2
+
+
 ## 23.05.0-1 2023-05-19 <dave at tiredofit dot ca>
 
 New versioning scheme
