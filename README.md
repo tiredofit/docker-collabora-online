@@ -136,7 +136,7 @@ Be sure to view the following repositories to understand all the customizable op
 | `SETUP_TYPE`                     | Automatically generate configuration with defaults. Set to `MANUAL` and map the configuration file to use your own         | `AUTO`        |
 | `ALLOWED_HOSTS`                  | Set which domains which can access service Seperate Multiple with `,` - Example: `https://www.example\.org` (no wildcards) | ``            |
 | `EXTRA_OPTIONS`                  | If you want to pass additional arguments upon startup, add it here                                                         | ``            |
-| `INTERFACE`                      | Web interface type `classic` or `notebookbar`                                                                              | `notebookbar` |
+| `INTERFACE`                      | After version 21.11, Web interface type changed from `classic` => `compact` or `notebookbar` => `tabbed`                   | `tabbed`      |
 | `GROUP_DOWNLOAD_AS`              | Group Download as Icons into dropdown in notebookbar view                                                                  | `TRUE`        |
 | `WATERMARK_OPACITY`              | Watermark Opacity                                                                                                          | `0.2`         |
 | `WATERMARK_TEXT`                 | Text to display for watermark                                                                                              | ``            |
