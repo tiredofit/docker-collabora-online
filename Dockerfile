@@ -13,10 +13,10 @@ ARG APP_NAME
 ARG APP_BRAND
 
 ### Environment Variables
-ENV COLLABORA_ONLINE_VERSION=${COLLABORA_ONLINE_VERSION:-"cp-23.05.0-2"} \
+ENV COLLABORA_ONLINE_VERSION=${COLLABORA_ONLINE_VERSION:-"cp-23.05.0-3"} \
     COLLABORA_ONLINE_REPO_URL=${COLLABORA_ONLINE_REPO_URL:-"https://github.com/CollaboraOnline/online"} \
     #
-    LIBREOFFICE_VERSION=${LIBREOFFICE_VERSION:-"cp-23.05.0-2"} \
+    LIBREOFFICE_VERSION=${LIBREOFFICE_VERSION:-"cp-23.05.0-3"} \
     LIBREOFFICE_REPO_URL=${LIBREOFFICE_REPO_URL:-"https://github.com/LibreOffice/core"} \
     #
     APP_NAME=${APP_NAME:-"Document Editor"} \
@@ -127,14 +127,13 @@ RUN source /assets/functions/00-container && \
             --without-package-format && \
     chown -R cool ${GIT_REPO_SRC_CORE} && \
     sudo -u cool make fetch && \
-    sudo -u cool make -j$(nproc) build-nocheck && \
+    sudo -u cool make -j$(nproc) build && \
     mkdir -p /opt/libreoffice && \
     chown -R cool /opt/libreoffice && \
     cp -R ${GIT_REPO_SRC_CORE}/instdir/* /opt/libreoffice/ && \
     \
     ### Build LibreOffice Online (Not as long as above)
-   clone_git_repo ${COLLABORA_ONLINE_REPO_URL} ${COLLABORA_ONLINE_VERSION} ${GIT_REPO_SRC_ONLINE}
-RUN source /assets/functions/00-container && \
+    clone_git_repo ${COLLABORA_ONLINE_REPO_URL} ${COLLABORA_ONLINE_VERSION} ${GIT_REPO_SRC_ONLINE} && \
     if [ -d "/build-assets/online/src" ] ; then cp -R /build-assets/online/src/* ${GIT_REPO_SRC_ONLINE} ; fi; \
     if [ -d "/build-assets/online/scripts" ] ; then for script in /build-assets/online/scripts/*.sh; do echo "** Applying $script"; bash $script; done && \ ; fi ; \
     sed -i \
@@ -184,25 +183,22 @@ RUN source /assets/functions/00-container && \
 FROM docker.io/tiredofit/debian:bullseye
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 LABEL org.opencontainers.image.source="https://github.com/tiredofit/docker-collabora-online"
-### Set Defaults
+
 ENV ADMIN_USER=admin \
     ADMIN_PASS=collaboraonline \
     CONTAINER_ENABLE_MESSAGING=FALSE \
     IMAGE_NAME="tiredofit/collabora-online" \
     IMAGE_REPO_URL="https://github.com/tiredofit/docker-collabora-online/"
 
-### Grab Compiled Assets from builder image
 COPY --from=builder /opt/ /opt/
 COPY CHANGELOG.md /assets/.changelogs/tiredofit_docker-collabora-online.md
 
 COPY build-assets /build-assets
 
-### Install Dependencies
 RUN source /assets/functions/00-container && \
     set -x && \
     adduser --quiet --system --group --home /opt/cool cool && \
     \
-### Add Repositories
     echo "deb http://deb.debian.org/debian $(cat /etc/os-release |grep "VERSION=" | awk 'NR>1{print $1}' RS='(' FS=')') contrib" >> /etc/apt/sources.list && \
     echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections && \
     package update && \
@@ -240,7 +236,6 @@ RUN source /assets/functions/00-container && \
                         ttf-mscorefonts-installer \
                         && \
     \
-### Setup Directories and Permissions
     mkdir -p /etc/coolwsd && \
     mv /opt/cool/coolwsd.xml /etc/coolwsd/ && \
     mv /opt/cool/coolkitconfig.xcu /etc/coolwsd/ && \
@@ -260,7 +255,6 @@ RUN source /assets/functions/00-container && \
     touch /var/log/cool/coolwsd.log && \
     chown -R cool /var/log/cool && \
     \
-### Setup LibreOffice Online Jails
     sudo -u cool /opt/cool/bin/coolwsd-systemplate-setup /opt/cool/systemplate /opt/libreoffice && \
     \
     if [ -d "/build-assets/container/src" ] && [ -n "$(ls -A "/build-assets/container/src" 2>/dev/null)" ]; then cp -R /build-assets/container/src/* / ; fi; \
