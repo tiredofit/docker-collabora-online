@@ -1,4 +1,4 @@
-FROM docker.io/tiredofit/debian:bullseye as builder
+FROM docker.io/tiredofit/debian:bookworm as builder
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 LABEL org.opencontainers.image.source="https://github.com/tiredofit/docker-collabora-online"
 
@@ -33,11 +33,10 @@ COPY build-assets /build-assets
 
 RUN source /assets/functions/00-container && \
     set -x && \
-    package update && \
-    apt-get -o Dpkg::Options::="--force-confold" upgrade -y && \
     echo "deb-src http://deb.debian.org/debian $(cat /etc/os-release |grep "VERSION=" | awk 'NR>1{print $1}' RS='(' FS=')') main" >> /etc/apt/sources.list && \
     echo "deb http://deb.debian.org/debian $(cat /etc/os-release |grep "VERSION=" | awk 'NR>1{print $1}' RS='(' FS=')') contrib" >> /etc/apt/sources.list && \
-    curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
+    package update && \
+    apt-get -o Dpkg::Options::="--force-confold" upgrade -y && \
     \
 ### Setup Distribution
     echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections && \
@@ -77,6 +76,7 @@ RUN source /assets/functions/00-container && \
                     m4 \
                     nasm \
                     nodejs \
+                    npm \
                     openssl \
                     pkg-config \
                     procps \
@@ -180,7 +180,7 @@ RUN source /assets/functions/00-container && \
             /usr/src/* \
             /var/log/*
 
-FROM docker.io/tiredofit/debian:bullseye
+FROM docker.io/tiredofit/debian:bookworm
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 LABEL org.opencontainers.image.source="https://github.com/tiredofit/docker-collabora-online"
 
