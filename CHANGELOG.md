@@ -1,3 +1,10 @@
+## 23.05.2-2.1 2023-07-25 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix small issue with sed statement for DeepL
+      - Run fontconfig under cool user
+
+
 ## 23.05.2-2 2023-07-24 <dave at tiredofit dot ca>
 
    ### Added
