@@ -41,6 +41,7 @@ This will build a Docker image for [Collabora Online](https://www.collaboraoffic
     - [General Usage](#general-usage)
     - [Administration](#administration)
     - [Logging](#logging)
+    - [Language](#languages-for-writing-aids-spell-checker-grammar-checker-thesaurus-hyphenation)
     - [Spell Check](#spell-check)
     - [TLS Settings](#tls-settings)
     - [Performance and Limits](#performance-and-limits)
@@ -174,6 +175,23 @@ Be sure to view the following repositories to understand all the customizable op
 | `LOG_LIBREOFFICE`                | Log filter what Libreoffice entries                                                              | `-INFO-WARN`    |
 | `LOG_PROTOCOL`                   | Log Client Server Protocol                                                                       | `false`         |
 
+#### Languages for writing aids (spell checker, grammar checker, thesaurus, hyphenation)
+
+The image comes with English (US, GB variants) baked into the image, however upon container startup you can add more languages via environment variables.
+Add multiple languages by seperating with a space.
+
+| Parameter      | Value   | Description                |
+| -------------- | ------- | -------------------------- |
+| `LANGUAGE`     | `en_GB` | English (Great Britain)    |
+|                | `en_US` | English (US)               |
+|                | `fr_FR` | French (France)            |
+
+The above table is just a sample of valid values.
+
+Please note that allowing too many has negative effect on startup performance.
+
+Default value: `en_GB en_US`
+
 #### Spell Check
 
 The image comes with English (US, GB, Canada variants) baked into the image, however upon container startup you can add more spell check variants via environment variables. Add multiple dictionaries by seperating with a comma.
@@ -225,6 +243,7 @@ The image comes with English (US, GB, Canada variants) baked into the image, how
 |                | `uk`    | Ukranian               |
 |                | `vi`    | Vietnamese             |
 
+Don’t forget to add the according languages to the [`LANGUAGE`](#languages-for-writing-aids-spell-checker-grammar-checker-thesaurus-hyphenation) environment variable.
 
 #### TLS Settings
 | Parameter                  | Description                                                         | Default              |
