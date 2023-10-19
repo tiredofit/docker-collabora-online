@@ -13,10 +13,10 @@ ARG APP_NAME
 ARG APP_BRAND
 
 ### Environment Variables
-ENV COLLABORA_ONLINE_VERSION=${COLLABORA_ONLINE_VERSION:-"cp-23.05.5-1"} \
+ENV COLLABORA_ONLINE_VERSION=${COLLABORA_ONLINE_VERSION:-"cp-23.05.5-2"} \
     COLLABORA_ONLINE_REPO_URL=${COLLABORA_ONLINE_REPO_URL:-"https://github.com/CollaboraOnline/online"} \
     #
-    LIBREOFFICE_VERSION=${LIBREOFFICE_VERSION:-"cp-23.05.5-1"} \
+    LIBREOFFICE_VERSION=${LIBREOFFICE_VERSION:-"cp-23.05.5-2"} \
     LIBREOFFICE_REPO_URL=${LIBREOFFICE_REPO_URL:-"https://github.com/LibreOffice/core"} \
     #
     APP_NAME=${APP_NAME:-"Document Editor"} \
@@ -82,6 +82,7 @@ RUN source /assets/functions/00-container && \
                     procps \
                     python3-lxml \
                     python3-polib \
+                    rsync \
                     sudo \
                     translate-toolkit \
                     ttf-mscorefonts-installer \
