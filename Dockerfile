@@ -13,16 +13,16 @@ ARG APP_NAME
 ARG APP_BRAND
 
 ### Environment Variables
-ENV COLLABORA_ONLINE_VERSION=${COLLABORA_ONLINE_VERSION:-"cp-23.05.5-2"} \
+ENV COLLABORA_ONLINE_VERSION=${COLLABORA_ONLINE_VERSION:-"cp-23.05.5-3"} \
     COLLABORA_ONLINE_REPO_URL=${COLLABORA_ONLINE_REPO_URL:-"https://github.com/CollaboraOnline/online"} \
     #
-    LIBREOFFICE_VERSION=${LIBREOFFICE_VERSION:-"cp-23.05.5-2"} \
+    LIBREOFFICE_VERSION=${LIBREOFFICE_VERSION:-"cp-23.05.5-3"} \
     LIBREOFFICE_REPO_URL=${LIBREOFFICE_REPO_URL:-"https://github.com/LibreOffice/core"} \
     #
     APP_NAME=${APP_NAME:-"Document Editor"} \
     APP_BRAND=${APP_BRAND:-"unbranded"} \
     #
-    POCO_VERSION=${POCO_VERSION:-"poco-1.12.4-release.tar.gz"} \
+    POCO_VERSION=${POCO_VERSION:-"poco-1.12.5-release.tar.gz"} \
     POCO_URL=${POCO_URL:-"https://github.com/pocoproject/poco/archive/"} \
     #
     MAX_CONNECTIONS=${MAX_CONNECTIONS:-"100000"} \
