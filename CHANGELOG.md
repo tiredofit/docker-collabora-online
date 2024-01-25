@@ -1,3 +1,10 @@
+## 23.05.8-1 2024-01-24 <dave at tiredofit dot ca>
+
+   ### Added
+      - Collabora Office cp-23.05.8-1
+      - Collabora Online cp-23.05.8-1
+
+
 ## 23.05.7-5 2024-01-19 <dave at tiredofit dot ca>
 
    ### Added
