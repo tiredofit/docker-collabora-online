@@ -150,6 +150,7 @@ RUN source /assets/functions/00-container && \
         && \
     ./autogen.sh && \
     ./configure --enable-silent-rules \
+                --without-help-url \
                 --with-lokit-path="${GIT_REPO_SRC_CORE}/include" \
                 --with-lo-path=/opt/libreoffice \
                 --with-max-connections=${MAX_CONNECTIONS} \
