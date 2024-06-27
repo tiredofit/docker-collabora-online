@@ -149,7 +149,7 @@ RUN source /assets/functions/00-container && \
         ${GIT_REPO_SRC_ONLINE}/browser/welcome/*.html \
         && \
     ./autogen.sh && \
-    ./configure --enable-silent-rules \
+   ./configure --enable-silent-rules \
                 --with-lokit-path="${GIT_REPO_SRC_CORE}/include" \
                 --with-lo-path=/opt/libreoffice \
                 --with-max-connections=${MAX_CONNECTIONS} \
@@ -162,6 +162,7 @@ RUN source /assets/functions/00-container && \
                 --with-poco-libs=/opt/poco/lib \
                 --with-app-name="${APP_NAME}" \
                 --with-vendor="tiredofit@github" \
+                --disable-werror \
                 ${COOL_CONFIGURE_ARGS} \
                 && \
     make -j$(nproc) && \
