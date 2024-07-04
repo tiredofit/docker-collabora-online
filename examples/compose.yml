@@ -25,7 +25,7 @@ services:
       - ENABLE_TLS=FALSE
       - ENABLE_TLS_REVERSE_PROXY=TRUE
 
-      - INTERFACE=notebookbar
+      - INTERFACE=tabbed
       - LOG_TYPE=FILE
     networks:
       - proxy
