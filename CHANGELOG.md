@@ -1,3 +1,15 @@
+## 24.04.4-4.1 2024-07-10 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add ENABLE_OVERWRITE_MODE environment variable
+      - Add HELP_URL environment variable
+      - Add ENABLE_WASM and FORCE_WASM support
+
+   ### Changed
+      - Rework TLS configuration due to changes in upstream configuration requirements
+      - Change INTERFACE environment defaults from notebookbar to tabbed
+
+
 ## 24.04.4-4 2024-07-10 <dave at tiredofit dot ca>
 
    ### Added

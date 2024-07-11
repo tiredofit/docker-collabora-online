@@ -83,42 +83,50 @@ if [ -d /assets/custom-fonts/ ] ; then
   silent sudo -u cool /opt/cool/bin/coolwsd-systemplate-setup /opt/cool/systemplate /opt/libreoffice
 fi
 
+
+
+	sed -i \
+                -e "s|<ca_file_path \(.*\) relative=\"false\">.*<\/ca_file_path>|<ca_file_path \1 relative=\"false\">${TLS_CERT_PATH}/${TLS_CA_FILENAME}<\/ca_file_path>|" \
+	            -e "s|<cert_file_path \(.*\) relative=\"false\">.*<\/cert_file_path>|<cert_file_path \1 relative=\"false\">${TLS_CERT_PATH}/${TLS_CERT_FILENAME}<\/cert_file_path>|" \
+	            -e "s|<key_file_path \(.*\) relative=\"false\">.*<\/key_file_path>|<key_file_path \1 relative=\"false\">${TLS_CERT_PATH}/${TLS_KEY_FILENAME}<\/key_file_path>|" \
+            /etc/coolwsd/coolwsd.xml
+
 if var_true "${ENABLE_TLS}" ; then
 	print_debug "TLS Enabled"
-	if [ ! -d "${TLS_CERT_PATH}" ] || [ ! -f "${TLS_KEY_FILENAME}" ] || [ ! -f "${TLS_CA_FILENAME}" ] || [ ! -f "${TLS_CERT_FILENAME}" ] ; then
-		print_debug "No TLS Certificates found"
-		if var_true "${ENABLE_TLS_CERT_GENERATE}" ; then
-			print_debug "TLS Certificate Autogeneration"
-			mkdir -p "$TLS_CERT_PATH"
-			# Generate new SSL certificate instead of using the default
-			print_notice "Auto Generating Self Signed Certificates"
-			mkdir -p /tmp/ssl/
-			cd /tmp/ssl/
-			mkdir -p certs/ca
-			silent openssl genrsa -out certs/ca/root.key.pem 2048
-			silent openssl req -x509 -new -nodes -key certs/ca/root.key.pem -days 9131 -out certs/ca/root.crt.pem -subj "/C=XX/ST=XX/L=XX/O=Dummy
-			Authority/CN=Dummy Authority"
-			mkdir -p certs/{servers,tmp}
-			mkdir -p "certs/servers/localhost"
-			silent openssl genrsa -out "certs/servers/localhost/privkey.pem" 2048
-			if test "${cert_domain-set}" == set; then
-				silent openssl req -key "certs/servers/localhost/privkey.pem" -new -sha256 -out "certs/tmp/localhost.csr.pem" -subj "/C=XX/ST=XX/L=XX/O=Dummy Authority/CN=localhost"
-			else
-				silent openssl req -key "certs/servers/localhost/privkey.pem" -new -sha256 -out "certs/tmp/localhost.csr.pem" -subj "/C=XX/ST=XX/L=XX/O=Dummy Authority/CN=${cert_domain}"
-			fi
-			silent openssl x509 -req -in "certs/tmp/localhost.csr.pem" -CA "certs/ca/root.crt.pem" -CAkey "certs/ca/root.key.pem" -CAcreateserial -out "certs/servers/localhost/cert.pem" -days 9131
-			cp -R certs/servers/localhost/privkey.pem "${TLS_CERT_PATH}"/"${TLS_KEY_FILENAME}"
-			cp -R certs/servers/localhost/cert.pem "${TLS_CERT_PATH}"/"${TLS_CERT_FILENAME}"
-			cp -R certs/ca/root.crt.pem "${TLS_CERT_PATH}"/"${TLS_CA_FILENAME}"
-			rm -rf /tmp/ssl
-			chown -R cool "${TLS_CERT_PATH}"
-		else
-			if [ ! -f "${TLS_CERT_PATH}"/"${TLS_KEY_FILENAME}" ] ||  [ ! -f "${TLS_CERT_PATH}"/"${TLS_CA_FILENAME}" ] ||  [ ! -f "${TLS_CERT_PATH}"/"${TLS_CERT_FILENAME}" ] ; then
-				print_error "TLS Certificates missing... Please switch to autogenerate mode, or place your certifcates in the correct location."
-				exit 1
-			fi
-		fi
+	if [ ! -f "${TLS_CERT_PATH}"/"${TLS_KEY_FILENAME}" ] && [ ! -f "${TLS_CERT_PATH}"/"${TLS_CA_FILENAME}" ] && [ ! -f "${TLS_CERT_PATH}"/"${TLS_CERT_FILENAME}" ] ; then
+		if var_true "${ENABLE_TLS_CERT_GENERATE}"; then
+            print_debug "No TLS Certificates found - TLS Certificate Autogeneration"
+            mkdir -p "${TLS_CERT_PATH}"
+            print_notice "Auto Generating Self Signed Certificates"
+            tmp_ssl_path=$(mktemp -d)
+            cd "${tmp_ssl_path}"
+            mkdir -p certs/ca
+            silent openssl genrsa -out certs/ca/root.key.pem 2048
+            silent openssl req -x509 -new -nodes -key certs/ca/root.key.pem -days 9131 -out certs/ca/root.crt.pem -subj "/C=XX/ST=XX/L=XX/O=Dummy
+            Authority/CN=Dummy Authority"
+            mkdir -p certs/{servers,tmp}
+            mkdir -p "certs/servers/localhost"
+            silent openssl genrsa -out "certs/servers/localhost/privkey.pem" 2048
+            if test "${cert_domain-set}" == set; then
+                silent openssl req -key "certs/servers/localhost/privkey.pem" -new -sha256 -out "certs/tmp/localhost.csr.pem" -subj "/C=XX/ST=XX/L=XX/O=Dummy Authority/CN=localhost"
+            else
+                silent openssl req -key "certs/servers/localhost/privkey.pem" -new -sha256 -out "certs/tmp/localhost.csr.pem" -subj "/C=XX/ST=XX/L=XX/O=Dummy Authority/CN=${cert_domain}"
+            fi
+            silent openssl x509 -req -in "certs/tmp/localhost.csr.pem" -CA "certs/ca/root.crt.pem" -CAkey "certs/ca/root.key.pem" -CAcreateserial -out "certs/servers/localhost/cert.pem" -days 9131
+            cp -R certs/servers/localhost/privkey.pem "${TLS_CERT_PATH}"/"${TLS_KEY_FILENAME}"
+            cp -R certs/servers/localhost/cert.pem "${TLS_CERT_PATH}"/"${TLS_CERT_FILENAME}"
+            cp -R certs/ca/root.crt.pem "${TLS_CERT_PATH}"/"${TLS_CA_FILENAME}"
+            cd /
+            rm -rf "${tmp_ssl_path}"
+            chown -R cool "${TLS_CERT_PATH}"
+        else
+            print_error "TLS Certificates missing... Please switch to autogenerate mode, or place your certifcates in the correct location."
+			exit 1
+        fi
 	fi
+    tls_ca_pathfile="${TLS_CERT_PATH}"/"${TLS_CA_FILENAME}"
+    tls_cert_pathfile="${TLS_CERT_PATH}"/"${TLS_CERT_FILENAME}"
+    tls_key_pathfile="${TLS_CERT_PATH}"/"${TLS_KEY_FILENAME}"
 fi
 
 if [ "${SETUP_TYPE,,}" = "auto" ]; then
@@ -253,9 +261,9 @@ if [ "${SETUP_TYPE,,}" = "auto" ]; then
 	fi
 
 	sed -i \
-                -e "s|<ca_file_path \(.*\) relative=\"false\">.*<\/ca_file_path>|<ca_file_path \1 relative=\"false\">${TLS_CERT_PATH}/${TLS_CA_FILENAME}<\/ca_file_path>|" \
-	            -e "s|<cert_file_path \(.*\) relative=\"false\">.*<\/cert_file_path>|<cert_file_path \1 relative=\"false\">${TLS_CERT_PATH}/${TLS_CERT_FILENAME}<\/cert_file_path>|" \
-	            -e "s|<key_file_path \(.*\) relative=\"false\">.*<\/key_file_path>|<key_file_path \1 relative=\"false\">${TLS_CERT_PATH}/${TLS_KEY_FILENAME}<\/key_file_path>|" \
+                -e "s|<ca_file_path \(.*\) relative=\"false\">.*<\/ca_file_path>|<ca_file_path \1 relative=\"false\">${tls_ca_pathfile}<\/ca_file_path>|" \
+	            -e "s|<cert_file_path \(.*\) relative=\"false\">.*<\/cert_file_path>|<cert_file_path \1 relative=\"false\">${tls_cert_pathfile}<\/cert_file_path>|" \
+	            -e "s|<key_file_path \(.*\) relative=\"false\">.*<\/key_file_path>|<key_file_path \1 relative=\"false\">${tls_key_pathfile}<\/key_file_path>|" \
             /etc/coolwsd/coolwsd.xml
 
     ## Security
@@ -314,7 +322,20 @@ if [ "${SETUP_TYPE,,}" = "auto" ]; then
     sed -i -e "s|<url desc=\"URL endpoint to server which servers routeToken in\(.*\)>.*<\/url>|<url desc=\"URL endpoint to server which servers routeToken in\1>${INDIRECTION_ENDPOINT}<\/url>|" /etc/coolwsd/coolwsd.xml
 
     ## Zotero
-    sed -i -e "s|<enable .*=\"Enable Zotero Plugin\(.*\)>.*<\/url>|<enable desc=\"Enable Zotero Plugin\1>${ENABLE_ZOTERO}<\/enable>|" /etc/coolwsd/coolwsd.xml
+    sed -i -e "s|<enable .*=\"Enable Zotero Plugin\(.*\)>.*<\/enable>|<enable desc=\"Enable Zotero Plugin\1>${ENABLE_ZOTERO}<\/enable>|" /etc/coolwsd/coolwsd.xml
+
+    ## HelpURL
+    sed -i -e "s|<help_url desc=\"The Help root URL\(.*\)>.*<\/help_url>|<help_url desc=\"The Help root URL\1>${HELP_URL}<\/help_url>|" /etc/coolwsd/coolwsd.xml
+
+    ## Overwrite Mode
+    sed -i -e "s|<enable .*=\"Enable overwrite mode\(.*\)>.*<\/enable>|<enable desc=\"Enable overwrite mode\1>${ENABLE_OVERWRITE_MODE}<\/enable>|" /etc/coolwsd/coolwsd.xml
+
+    ## WASM
+    sed -i \
+                -e "s|<enable .*=\"Enable WASM support\(.*\)>.*<\/enable>|<enable desc=\"Enable WASM support\1>${ENABLE_WASM}<\/enable>|" \
+                -e "s|<force .*=\"When enabled, all requests are redirected to WASM\(.*\)>.*<\/force>|<force desc=\"When enabled, all requests are redirected to WASM\1>${FORCE_WASM}<\/force>|" \
+            /etc/coolwsd/coolwsd.xml
+
 fi
 
 # Generate WOPI proof key

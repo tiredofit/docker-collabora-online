@@ -41,7 +41,7 @@ This will build a Docker image for [Collabora Online](https://www.collaboraoffic
     - [General Usage](#general-usage)
     - [Administration](#administration)
     - [Logging](#logging)
-    - [Language](#languages-for-writing-aids-spell-checker-grammar-checker-thesaurus-hyphenation)
+    - [Languages for writing aids (spell checker, grammar checker, thesaurus, hyphenation)](#languages-for-writing-aids-spell-checker-grammar-checker-thesaurus-hyphenation)
     - [Spell Check](#spell-check)
     - [TLS Settings](#tls-settings)
     - [Performance and Limits](#performance-and-limits)
@@ -133,20 +133,22 @@ Be sure to view the following repositories to understand all the customizable op
 | [OS Base](https://github.com/tiredofit/docker-debian/) | Customized Image based on Debian Linux |
 
 #### General Usage
-| Parameter                        | Description                                                                                                                | Default       |
-| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| `SETUP_TYPE`                     | Automatically generate configuration with defaults. Set to `MANUAL` and map the configuration file to use your own         | `AUTO`        |
-| `ALLOWED_HOSTS`                  | Set which domains which can access service Seperate Multiple with `,` - Example: `https://www.example\.org` (no wildcards) | ``            |
-| `EXTRA_OPTIONS`                  | If you want to pass additional arguments upon startup, add it here                                                         | ``            |
-| `INTERFACE`                      | Web interface type `classic` or `notebookbar`                                                                              | `notebookbar` |
-| `GROUP_DOWNLOAD_AS`              | Group Download as Icons into dropdown in notebookbar view                                                                  | `TRUE`        |
-| `WATERMARK_OPACITY`              | Watermark Opacity                                                                                                          | `0.2`         |
-| `WATERMARK_TEXT`                 | Text to display for watermark                                                                                              | ``            |
-| `ENABLE_MACROS`                  | Enable Macros                                                                                                              | `FALSE`       |
-| `MACRO_SECURITY_LEVEL`           | Macro Security Level `1` Medium `0` Low                                                                                    | `1`           |
-| `ENABLE_METRICS_UNAUTHENTICATED` | Enable Unauthenticated Metrics                                                                                             | `FALSE`       |
-| `ENABLE_HOME_MODE`               | Enable more features with home mode                                                                                        | `FALSE`       |
-
+| Parameter                        | Description                                                                                                                | Default  |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | -------- |
+| `SETUP_TYPE`                     | Automatically generate configuration with defaults. Set to `MANUAL` and map the configuration file to use your own         | `AUTO`   |
+| `ALLOWED_HOSTS`                  | Set which domains which can access service Seperate Multiple with `,` - Example: `https://www.example\.org` (no wildcards) | ``       |
+| `EXTRA_OPTIONS`                  | If you want to pass additional arguments upon startup, add it here                                                         | ``       |
+| `INTERFACE`                      | Web interface type `compact` `tabbed`                                                                                      | `tabbed` |
+| `GROUP_DOWNLOAD_AS`              | Group Download as Icons into dropdown in notebookbar view                                                                  | `TRUE`   |
+| `WATERMARK_OPACITY`              | Watermark Opacity                                                                                                          | `0.2`    |
+| `WATERMARK_TEXT`                 | Text to display for watermark                                                                                              | ``       |
+| `ENABLE_MACROS`                  | Enable Macros                                                                                                              | `FALSE`  |
+| `MACRO_SECURITY_LEVEL`           | Macro Security Level `1` Medium `0` Low                                                                                    | `1`      |
+| `ENABLE_METRICS_UNAUTHENTICATED` | Enable Unauthenticated Metrics                                                                                             | `FALSE`  |
+| `ENABLE_HOME_MODE`               | Enable more features with home mode                                                                                        | `FALSE`  |
+| `ENABLE_OVERWRITE_MODE`          | Enable overwrite mode (user can use the insert key)                                                                        | `TRUE`   |
+| `ENABLE_WASM`                    | Enable WASM support                                                                                                        | `TRUE`   |
+| `FORCE_WASM`                     | Force all requests to WASM                                                                                                 | `FALSE`  |
 
 #### Administration
 | Parameter              | Description                                   | Default           | `_FILE` |
@@ -181,11 +183,11 @@ Be sure to view the following repositories to understand all the customizable op
 The image comes with English (US, GB variants) baked into the image, however upon container startup you can add more languages via environment variables.
 Add multiple languages by seperating with a space.
 
-| Parameter      | Value   | Description                |
-| -------------- | ------- | -------------------------- |
-| `LANGUAGE`     | `en_GB` | English (Great Britain)    |
-|                | `en_US` | English (US)               |
-|                | `fr_FR` | French (France)            |
+| Parameter  | Value   | Description             |
+| ---------- | ------- | ----------------------- |
+| `LANGUAGE` | `en_GB` | English (Great Britain) |
+|            | `en_US` | English (US)            |
+|            | `fr_FR` | French (France)         |
 
 The above table is just a sample of valid values.
 
