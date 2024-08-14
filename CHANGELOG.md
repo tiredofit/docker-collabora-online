@@ -1,3 +1,10 @@
+## cp-24.04.6-2 2024-08-14 <dave at tiredofit dot ca>
+
+   ### Added
+      - Collabora Office 24.04.6-2
+      - Collabora Online 24.04.6-2
+
+
 ## cp-24.04.6-1 2024-07-31 <dave at tiredofit dot ca>
 
    ### Added
