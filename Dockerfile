@@ -143,6 +143,7 @@ RUN source /assets/functions/00-container && \
         ${GIT_REPO_SRC_ONLINE}/configure.ac \
         ${GIT_REPO_SRC_ONLINE}/browser/admin/admin.strings.js \
         ${GIT_REPO_SRC_ONLINE}/browser/src/control/Toolbar.js \
+        ${GIT_REPO_SRC_ONLINE}/browser/src/control/Control.AboutDialog.ts \
         ${GIT_REPO_SRC_ONLINE}/browser/src/core/Socket.js \
         ${GIT_REPO_SRC_ONLINE}/browser/src/layer/marker/ProgressOverlay.js \
         ${GIT_REPO_SRC_ONLINE}/browser/src/map/Clipboard.js \
