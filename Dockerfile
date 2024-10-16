@@ -247,7 +247,7 @@ RUN source /assets/functions/00-container && \
     chown -R cool /opt/* && \
     mkdir -p /var/cache/coolwsd && \
     chown -R cool /var/cache/coolwsd && \
-    setcap cap_fowner,cap_chown,cap_mknod,cap_sys_chroot=ep /opt/cool/bin/coolforkit && \
+    setcap cap_fowner,cap_chown,cap_mknod,cap_sys_chroot=ep /opt/cool/bin/coolforkit-caps && \
     setcap cap_sys_admin=ep /opt/cool/bin/coolmount && \
     mkdir -p /usr/share/hunspell && \
     mkdir -p /usr/share/hyphen && \

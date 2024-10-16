@@ -142,6 +142,7 @@ Be sure to view the following repositories to understand all the customizable op
 | `GROUP_DOWNLOAD_AS`              | Group Download as Icons into dropdown in notebookbar view                                                                  | `TRUE`   |
 | `WATERMARK_OPACITY`              | Watermark Opacity                                                                                                          | `0.2`    |
 | `WATERMARK_TEXT`                 | Text to display for watermark                                                                                              | ``       |
+| `ENABLE_DOCUMENT_SIGNING`                  | Enable Document Signing Settings                                                                                  | `TRUE`  |
 | `ENABLE_MACROS`                  | Enable Macros                                                                                                              | `FALSE`  |
 | `MACRO_SECURITY_LEVEL`           | Macro Security Level `1` Medium `0` Low                                                                                    | `1`      |
 | `ENABLE_METRICS_UNAUTHENTICATED` | Enable Unauthenticated Metrics                                                                                             | `FALSE`  |
@@ -326,15 +327,18 @@ Don’t forget to add the according languages to the [`LANGUAGE`](#languages-for
 #### Other Settings
 | Parameter                      | Description                                                                                                       | Default       |
 | ------------------------------ | ----------------------------------------------------------------------------------------------------------------- | ------------- |
+| `CERTIFICATES_PATH`            | Path to the NSS certificates that are available to all users                                                      | ``            |
 | `CHILD_ROOT_PATH`              | Child root path                                                                                                   | `child-roots` |
+| `CONTENT_SECURITY_POLICY`      | Content Security Policy                                                                                           | ``            |
 | `DOCUMENT_SIGNING_URL`         | Endpoint URL of signing server                                                                                    | ``            |
+| `ENABLE_ACCESSIBILITY`         | Enable Accessibility settings                                                                                     | `FALSE`       |
 | `ENABLE_CAPABILITIES`          | Enable Capabilities                                                                                               | `TRUE`        |
 | `ENABLE_CONFIG_RELOAD`         | Enable Reload of coolwsd if config changed in container                                                           | `TRUE`        |
 | `ENABLE_EXPERIMENTAL_FEATURES` | Enable experimental features                                                                                      | `FALSE`       |
 | `ENABLE_MOUNT_JAIL`            | Enable mounting jails                                                                                             | `true`        |
 | `ENABLE_SECCOMP`               | Enable Seccomp                                                                                                    | `TRUE`        |
 | `FILE_SERVER_ROOT_PATH`        | Path to directory considered as root                                                                              | `browser/../` |
-| `FRAME_ANCESTORS`              | Hosts where interface can be hosted in Iframe                                                                     | ``            |
+| `FRAME_ANCESTORS`              | Hosts where interface can be hosted in IFrame *OBSOLETE*                                                          | ``            |
 | `HEXIFY_EMBEDDED_URLS`         | Hexify Embedded URLS (useful for Azure deployments)                                                               | `FALSE`       |
 | `INDIRECTION_ENDPOINT`         | URL endpoint to server which zervers routeToken in json format                                                    |               |
 | `PDF_RESOLUTION_DPI`           | PDF Resolution DPI when rendering PDF documents as image                                                          | `96`          |

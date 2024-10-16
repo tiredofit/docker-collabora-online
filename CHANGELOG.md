@@ -1,3 +1,15 @@
+## 24.04.8-2.1 2024-10-16 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add accessibility toggle
+      - Add nss certificates path option
+      - Add document signing toggle
+      - Enable In APP config restart
+
+   ### Changed
+      - Fix issue with capabilities and child processes
+
+
 ## 24.04.8-2 2024-10-09 <dave at tiredofit dot ca>
 
    ### Added

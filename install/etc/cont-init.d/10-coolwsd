@@ -132,7 +132,13 @@ fi
 if [ "${SETUP_TYPE,,}" = "auto" ]; then
     print_notice "Autogenerating Configuration File"
 	### Replace Configuration directives
-	sed -i -e "s|<allowed_languages \(.*\)>.*</allowed_languages>|<allowed_languages \1>${LANGUAGE}</allowed_languages>|g" /etc/coolwsd/coolwsd.xml
+    sed -i \
+                -e "s|<enable type=\"bool\" desc=\"Controls whether accessibility\"\(.*\)>.*</enable>|<enable type=\"bool\" desc=\"Controls whether accessibility\1>${ENABLE_ACCESSIBILITY,,}</enable>|" \
+            /etc/coolwsd/coolwsd.xml
+
+    sed -i \
+                -e "s|<allowed_languages \(.*\)>.*</allowed_languages>|<allowed_languages \1>${LANGUAGE}</allowed_languages>|g" \
+            /etc/coolwsd/coolwsd.xml
 
     ## Language Tool
     sed -i \
@@ -152,10 +158,13 @@ if [ "${SETUP_TYPE,,}" = "auto" ]; then
             /etc/coolwsd/coolwsd.xml
 
 
-	sed -i -e "s|<sys_template_path \(.*\)>.*</sys_template_path>|<sys_template_path \1>${SYS_TEMPLATE_PATH}</sys_template_path>|" /etc/coolwsd/coolwsd.xml
-	sed -i -e "s|<child_root_path \(.*\)>.*</child_root_path>|<child_root_path \1>${CHILD_ROOT_PATH}</child_root_path>|" /etc/coolwsd/coolwsd.xml
-	sed -i -e "s|<mount_jail_tree \(.*\)>.*</mount_jail_tree>|<mount_jail_tree \1>${ENABLE_MOUNT_JAIL,,}</mount_jail_tree>|" /etc/coolwsd/coolwsd.xml
-	sed -i -e "s|<server_name \(.*\)>.*</server_name>|<server_name \1>${HOSTNAME}</server_name>|" /etc/coolwsd/coolwsd.xml
+	sed -i \
+                -e "s|<sys_template_path \(.*\)>.*</sys_template_path>|<sys_template_path \1>${SYS_TEMPLATE_PATH}</sys_template_path>|" \
+	            -e "s|<child_root_path \(.*\)>.*</child_root_path>|<child_root_path \1>${CHILD_ROOT_PATH}</child_root_path>|" \
+	            -e "s|<mount_jail_tree \(.*\)>.*</mount_jail_tree>|<mount_jail_tree \1>${ENABLE_MOUNT_JAIL,,}</mount_jail_tree>|" \
+            /etc/coolwsd/coolwsd.xml
+
+    sed -i -e "s|<server_name \(.*\)>.*</server_name>|<server_name \1>${HOSTNAME}</server_name>|" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<file_server_root_path \(.*\)>.*</file_server_root_path>|<file_server_root_path \1>${FILE_SERVER_ROOT_PATH}</file_server_root_path>|" /etc/coolwsd/coolwsd.xml
 	sed -i -e "s|<hexify_embedded_urls \(.*\)>.*<\/hexify_embedded_urls>|<hexify_embedded_urls \1>${HEXIFY_EMBEDDED_URLS,,}<\/hexify_embedded_urls>|" /etc/coolwsd/coolwsd.xml
     sed -i -e "s|<experimental_features \(.*\)>.*<\/experimental_features>|<experimental_features \1>${ENABLE_EXPERIMENTAL_FEATURES,,}<\/experimental_features>|" /etc/coolwsd/coolwsd.xml
@@ -245,6 +254,7 @@ if [ "${SETUP_TYPE,,}" = "auto" ]; then
 		sed -i "/<alias_groups .*>/a \              <group><host desc=\"hostname to allow or deny.\" allow=\"true\">${host}</host></group>" /etc/coolwsd/coolwsd.xml
 	done
     sed -i \
+                -e "s|<content_security_policy \(.*\)>.*<\/content_security_policy>|<content_security_policy \1>${CONTENT_SECURITY_POLICY}<\/content_security_policy>|" \
                 -e "s|<frame_ancestors \(.*\)>.*<\/frame_ancestors>|<frame_ancestors \1>${FRAME_ANCESTORS}<\/frame_ancestors>|" \
 	            -e "s|<connection_timeout \(.*\)>.*<\/connection_timeout>|<connection_timeout \1>${CONNECTION_TIMEOUT}<\/connection_timeout>|" \
             /etc/coolwsd/coolwsd.xml
@@ -274,6 +284,10 @@ if [ "${SETUP_TYPE,,}" = "auto" ]; then
                 -e "s|<enable_macros_execution \(.*\)>.*<\/enable_macros_execution>|<enable_macros_execution \1>${ENABLE_MACROS,,}<\/enable_macros_execution>|" \
                 -e "s|<macro_security_level \(.*\)>.*<\/macro_security_level>|<macro_security_level \1>${MACRO_SECURITY_LEVEL}<\/macro_security_level>|" \
                 -e "s|<enable_metrics_unauthenticated \(.*\)>.*<\/enable_metrics_unauthenticated>|<enable_metrics_unauthenticated \1>${ENABLE_METRICS_UNAUTHENTICATED,,}<\/enable_metrics_unauthenticated>|" \
+            /etc/coolwsd/coolwsd.xml
+
+	sed -i \
+                -e "s|<database_path\(.*\)>.*<\/database_path>|<database_path \1>${CERTIFICATES_PATH}<\/database_path>|" \
             /etc/coolwsd/coolwsd.xml
 
 	## Watermark
@@ -309,6 +323,9 @@ if [ "${SETUP_TYPE,,}" = "auto" ]; then
     ## Remote Config
     sed -i -e "s|<remote_url desc=\(.*\)>.*<\/remote_url>|<remote_url desc=\1>${REMOTE_URL}<\/remote_url>|" /etc/coolwsd/coolwsd.xml
 
+    ## Stop and restart on Config Change
+    sed -i -e "s|<stop_on_config_change desc=\(.*\)>.*<\/stop_on_config_change>|<stop_on_config_change desc=\1>${ENABLE_CONFIG_RELOAD,,}<\/stop_on_config_change>|" /etc/coolwsd/coolwsd.xml
+
     ## Remote Fonts
 	sed -i -e "s|<url desc=\"URL of optional JSON\(.*\)>.*<\/url>|<url desc=\"URL of optional JSON\1>${REMOTE_FONT_URL}<\/url>|" /etc/coolwsd/coolwsd.xml
 
@@ -336,6 +353,8 @@ if [ "${SETUP_TYPE,,}" = "auto" ]; then
                 -e "s|<force .*=\"When enabled, all requests are redirected to WASM\(.*\)>.*<\/force>|<force desc=\"When enabled, all requests are redirected to WASM\1>${FORCE_WASM}<\/force>|" \
             /etc/coolwsd/coolwsd.xml
 
+    ## Document Signing
+    sed -i -e "s|<enable .*=\"Enable document signing\(.*\)>.*<\/enable>|<enable desc=\"Enable document signing\1>${ENABLE_DOCUMENT_SIGNING}<\/enable>|" /etc/coolwsd/coolwsd.xml
 fi
 
 # Generate WOPI proof key
