@@ -124,7 +124,7 @@ The following directories should be mapped for persistent storage in order to ut
 
 #### Base Images used
 
-This image relies on a [Debian Linux](https://hub.docker.com/r/tiredofit/debian) base image that relies on an [init system](https://github.com/just-containers/s6-overlay) for added capabilities. Outgoing SMTP capabilities are handlded via `msmtp`. Individual container performance monitoring is performed by [zabbix-agent](https://zabbix.org). Additional tools include: `bash`,`curl`,`less`,`logrotate`,`nano`,`vim`.
+This image relies on a [Debian Linux](https://hub.docker.com/r/tiredofit/debian) base image that relies on an [init system](https://github.com/just-containers/s6-overlay) for added capabilities. Outgoing SMTP capabilities are handlded via `msmtp`. Individual container performance monitoring is performed by [zabbix-agent](https://zabbix.org). Additional tools include: `bash`,`curl`,`less`,`logrotate`,`nano`.
 
 Be sure to view the following repositories to understand all the customizable options:
 
@@ -142,7 +142,7 @@ Be sure to view the following repositories to understand all the customizable op
 | `GROUP_DOWNLOAD_AS`              | Group Download as Icons into dropdown in notebookbar view                                                                  | `TRUE`   |
 | `WATERMARK_OPACITY`              | Watermark Opacity                                                                                                          | `0.2`    |
 | `WATERMARK_TEXT`                 | Text to display for watermark                                                                                              | ``       |
-| `ENABLE_DOCUMENT_SIGNING`                  | Enable Document Signing Settings                                                                                  | `TRUE`  |
+| `ENABLE_DOCUMENT_SIGNING`        | Enable Document Signing Settings                                                                                           | `TRUE`   |
 | `ENABLE_MACROS`                  | Enable Macros                                                                                                              | `FALSE`  |
 | `MACRO_SECURITY_LEVEL`           | Macro Security Level `1` Medium `0` Low                                                                                    | `1`      |
 | `ENABLE_METRICS_UNAUTHENTICATED` | Enable Unauthenticated Metrics                                                                                             | `FALSE`  |
