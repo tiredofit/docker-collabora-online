@@ -1,3 +1,11 @@
+## 24.04.10-2 2024-12-03 <dave at tiredofit dot ca>
+
+   ### Added
+      - Poco Project 1.114.0
+      - Collabora Onlne 2024.04.10.2
+      - Collabora Office 2024.04.10.2
+
+
 ## 24.04.10-1 2024-11-20 <dave at tiredofit dot ca>
 
    ### Added
