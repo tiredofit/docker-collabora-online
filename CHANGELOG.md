@@ -1,3 +1,10 @@
+## 24.04.12-1 2025-01-22 <dave at tiredofit dot ca>
+
+   ### Added
+      - Collabor Online 24.04.12-1
+      - Collabora Office 24.04.12-1
+
+
 ## 24.04.11-3 2025-01-16 <dave at tiredofit dot ca>
 
    ### Added
