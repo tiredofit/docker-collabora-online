@@ -63,7 +63,7 @@ if [ -n "${DICTIONARIES}" ]; then
 
 	silent apt-get clean
 	rm -rf /var/lib/apt/lists/*
-	chown -R cool. /opt/libreoffice/share/extensions/*
+	chown -R cool: /opt/libreoffice/share/extensions/*
 	rm -rf /opt/cool/systemplate/*
     silent sudo -u cool /opt/cool/bin/coolwsd-systemplate-setup /opt/cool/systemplate /opt/libreoffice
 fi
