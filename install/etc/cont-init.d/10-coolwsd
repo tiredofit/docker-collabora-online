@@ -133,7 +133,8 @@ if [ "${SETUP_TYPE,,}" = "auto" ]; then
     print_notice "Autogenerating Configuration File"
 	### Replace Configuration directives
     sed -i \
-                -e "s|<enable type=\"bool\" desc=\"Controls whether accessibility\"\(.*\)>.*</enable>|<enable type=\"bool\" desc=\"Controls whether accessibility\1>${ENABLE_ACCESSIBILITY,,}</enable>|" \
+		-e "s|<enable type=\"bool\" desc=\"Controls whether accessibility\(.*\)>.*</enable>|<enable type=\"bool\" desc=\"Controls whether accessibility\1>${ENABLE_ACCESSIBILITY,,}</enable>|"
+
             /etc/coolwsd/coolwsd.xml
 
     sed -i \
