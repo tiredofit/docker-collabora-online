@@ -1,3 +1,13 @@
+## 25.04.7-2 2025-11-13 <dave at tiredofit dot ca>
+
+   ### Added
+      - Collabora Online 25.04.7-2
+      - Collaobra Office 25.04.7-2
+
+   ### Changed
+      - Fix accessibility mode - Credit R053NR07@github
+
+
 ## 25.04.7-1 2025-11-04 <dave at tiredofit dot ca>
 
    ### Added
